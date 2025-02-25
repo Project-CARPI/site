@@ -1,5 +1,7 @@
 import React from "react";
 import PlannerCourse from "../components/PlannerComponents/PlannerCourse";
+import SemesterBlock from "../components/PlannerComponents/SemesterBlock";
+import PlannerCourse from "../components/PlannerComponents/PlannerCourse";
 
 function Planner() {
   const exampleCourse = {
@@ -13,11 +15,31 @@ function Planner() {
     semestersOffered: ["Fall", "Spring"],
     credits: 4,
   };
+
+
+
+  const exampleSemester = {
+    semesterNumber: 1,
+    semesterSeason: "Fall",
+    creditsTotal: 16,
+    courseList: [exampleCourse,exampleCourse,exampleCourse,exampleCourse]
+  };
+ 
+
+
   return (
     <>
+      <SemesterBlock semester = {exampleSemester} />
       <PlannerCourse course={exampleCourse} />
     </>
+
+    
   );
+
 }
 
 export default Planner;
+
+
+
+

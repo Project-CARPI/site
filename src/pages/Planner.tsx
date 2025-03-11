@@ -1,7 +1,6 @@
 import React from "react";
 import PlannerCourse from "../components/PlannerComponents/PlannerCourse";
 import SemesterBlock from "../components/PlannerComponents/SemesterBlock";
-import PlannerCourse from "../components/PlannerComponents/PlannerCourse";
 
 function Planner() {
   const exampleCourse = {
@@ -20,7 +19,7 @@ function Planner() {
 
   const exampleSemester = {
     semesterNumber: 1,
-    semesterSeason: "Fall",
+    semesterSeason: "FALL",
     creditsTotal: 16,
     courseList: [exampleCourse,exampleCourse,exampleCourse,exampleCourse]
   };

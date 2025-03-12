@@ -9,6 +9,7 @@ import {
 interface CatalogProps {
   toolboxCourses: CourseEntry[];
   setToolboxCourses: React.Dispatch<React.SetStateAction<CourseEntry[]>>;
+  isDragging: boolean;
   // setSavedCourses: React.Dispatch<
   //   React.SetStateAction<{ [key: string]: CourseType }>
   // >;
@@ -17,6 +18,7 @@ interface CatalogProps {
 const Catalog: React.FC<CatalogProps> = ({
   toolboxCourses,
   setToolboxCourses,
+  isDragging,
   // setSavedCourses,
 }) => {
   const [searchResults, updateSearchResults] = useState([]);
@@ -26,10 +28,14 @@ const Catalog: React.FC<CatalogProps> = ({
       <img
         src="/carpi-black.png"
         alt="Carpi Logo"
-        className="w-1/4 m-auto mt-5"
+        className="w-1/4 m-auto pt-5"
       />
-      <SearchBar updateSearchResults={updateSearchResults} />
-      <div className="flex flex-wrap justify-center pb-38">
+      <div className={`${isDragging ? "brightness-50" : ""}`}>
+        <SearchBar updateSearchResults={updateSearchResults} />
+      </div>
+      <div
+        className={`flex flex-wrap justify-center pb-38 z-0 relative ${isDragging ? "brightness-50" : ""}`}
+      >
         {searchResults?.map((course: CourseType, index: number) => (
           <Course
             key={index}

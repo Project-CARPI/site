@@ -9,6 +9,7 @@ import { DragDropContext, DropResult } from "@hello-pangea/dnd";
 
 function App() {
   const [toolboxCourses, setToolboxCourses] = useState<CourseEntry[]>([]);
+  const [isDragging, setIsDragging] = useState<boolean>(false);
   // const [savedCourses, setSavedCourses] = useState<{
   //   [key: string]: CourseType;
   // }>({});
@@ -26,8 +27,9 @@ function App() {
   };
 
   const onDragEnd = (result: DropResult) => {
+    setIsDragging(false);
     const { source, destination } = result;
-    if (!destination) return; // If dropped outside, do nothing
+    if (!destination) return;
 
     const sInd = source.droppableId;
     const dInd = destination.droppableId;
@@ -37,35 +39,47 @@ function App() {
       setToolboxCourses(items);
     }
   };
+
+  const onDragStart = () => {
+    setIsDragging(true);
+  };
   return (
     <>
-      <div className="font-['Helvetica'] bg-carpipink min-h-screen">
-        <DragDropContext onDragEnd={onDragEnd}>
-          <Router>
-            <Routes>
-              <Route
-                path="/"
-                element={
-                  <Catalog
-                    toolboxCourses={toolboxCourses}
-                    setToolboxCourses={setToolboxCourses}
-                    // setSavedCourses={setSavedCourses}
-                  />
-                }
-              ></Route>
-              <Route path="/filters" element={<DepartmentFilters />} />
-              <Route
-                path="/planner"
-                element={
-                  <Planner
-                  // savedCourses={savedCourses}
-                  />
-                }
-              ></Route>
-            </Routes>
-            <Toolbox courses={toolboxCourses} />
-          </Router>
-        </DragDropContext>
+      <div className={`font-['Helvetica']  min-h-screen`}>
+        <div
+          className={`absolute top-0 left-0 w-full h-full z-0 bg-carpipink ${isDragging ? "brightness-50" : ""}`}
+        ></div>
+        <div className={`relative z-10`}>
+          <DragDropContext onDragEnd={onDragEnd} onDragStart={onDragStart}>
+            <Router>
+              <Routes>
+                <Route
+                  path="/"
+                  element={
+                    <Catalog
+                      isDragging={isDragging}
+                      toolboxCourses={toolboxCourses}
+                      setToolboxCourses={setToolboxCourses}
+
+                      // setSavedCourses={setSavedCourses}
+                    />
+                  }
+                ></Route>
+                <Route path="/filters" element={<DepartmentFilters />} />
+                <Route
+                  path="/planner"
+                  element={
+                    <Planner
+
+                    // savedCourses={savedCourses}
+                    />
+                  }
+                ></Route>
+              </Routes>
+              <Toolbox courses={toolboxCourses} isDragging={isDragging} />
+            </Router>
+          </DragDropContext>
+        </div>
       </div>
     </>
   );

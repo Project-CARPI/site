@@ -7,9 +7,10 @@ import { IoIosArrowDown } from "react-icons/io";
 import { CourseEntry } from "../../types/interfaces/Course.interface";
 interface ToolboxProps {
   courses: CourseEntry[];
+  isDragging: boolean;
 }
 
-const Toolbox: React.FC<ToolboxProps> = ({ courses }) => {
+const Toolbox: React.FC<ToolboxProps> = ({ courses, isDragging }) => {
   const [isOpen, setIsOpen] = useState(false);
 
   const toggleToolbox = () => {
@@ -23,7 +24,7 @@ const Toolbox: React.FC<ToolboxProps> = ({ courses }) => {
   };
   return (
     <>
-      <div className={`fixed bottom-0 w-screen`}>
+      <div className={`transition-all fixed bottom-0 w-screen z-100`}>
         <ToolboxButton
           isOpen={isOpen}
           toggleToolbox={toggleToolbox}
@@ -49,7 +50,7 @@ const Toolbox: React.FC<ToolboxProps> = ({ courses }) => {
                   <div
                     ref={provided.innerRef}
                     {...provided.droppableProps}
-                    className={`courses h-13 flex items-center px-2 w-screen overflow-x-auto whitespace-nowrap scrollbar-hide`}
+                    className={`courses h-15 flex items-center px-2 w-screen overflow-x-auto whitespace-nowrap scrollbar-hide ${snapshot.isDraggingOver ? "bg-[#394460]" : ""}`}
                   >
                     {courses.map((course, index) => (
                       <ToolboxCourse
@@ -57,6 +58,7 @@ const Toolbox: React.FC<ToolboxProps> = ({ courses }) => {
                         name={course.name}
                         count={course.count}
                         index={index}
+                        isDragging={isDragging}
                       />
                     ))}
                     {provided.placeholder}

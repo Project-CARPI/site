@@ -10,9 +10,6 @@ import { DragDropContext, DropResult } from "@hello-pangea/dnd";
 function App() {
   const [toolboxCourses, setToolboxCourses] = useState<CourseEntry[]>([]);
   const [isDragging, setIsDragging] = useState<boolean>(false);
-  // const [savedCourses, setSavedCourses] = useState<{
-  //   [key: string]: CourseType;
-  // }>({});
 
   const reorder = (
     list: CourseEntry[],
@@ -26,6 +23,12 @@ function App() {
     return result;
   };
 
+  const deleteCourse = (list: CourseEntry[], startIndex: number) => {
+    const result = Array.from(list);
+    result.splice(startIndex, 1);
+
+    return result;
+  };
   const onDragEnd = (result: DropResult) => {
     setIsDragging(false);
     const { source, destination } = result;
@@ -34,8 +37,11 @@ function App() {
     const sInd = source.droppableId;
     const dInd = destination.droppableId;
 
-    if (sInd === dInd) {
+    if (sInd === dInd && sInd === "toolbox") {
       const items = reorder(toolboxCourses, source.index, destination.index);
+      setToolboxCourses(items);
+    } else if (dInd === "garbage") {
+      const items = deleteCourse(toolboxCourses, source.index);
       setToolboxCourses(items);
     }
   };
@@ -47,7 +53,7 @@ function App() {
     <>
       <div className={`font-['Helvetica']  min-h-screen`}>
         <div
-          className={`absolute top-0 left-0 w-full h-full z-0 bg-carpipink ${isDragging ? "brightness-50" : ""}`}
+          className={`fixed top-0 left-0 w-full h-full z-0 bg-carpipink ${isDragging ? "brightness-50" : ""}`}
         ></div>
         <div className={`relative z-10`}>
           <DragDropContext onDragEnd={onDragEnd} onDragStart={onDragStart}>
@@ -60,21 +66,11 @@ function App() {
                       isDragging={isDragging}
                       toolboxCourses={toolboxCourses}
                       setToolboxCourses={setToolboxCourses}
-
-                      // setSavedCourses={setSavedCourses}
                     />
                   }
                 ></Route>
                 <Route path="/filters" element={<DepartmentFilters />} />
-                <Route
-                  path="/planner"
-                  element={
-                    <Planner
-
-                    // savedCourses={savedCourses}
-                    />
-                  }
-                ></Route>
+                <Route path="/planner" element={<Planner />}></Route>
               </Routes>
               <Toolbox courses={toolboxCourses} isDragging={isDragging} />
             </Router>

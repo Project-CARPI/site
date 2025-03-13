@@ -5,6 +5,8 @@ import ToolboxCourse from "./ToolboxCourse";
 import { Droppable } from "@hello-pangea/dnd";
 import { IoIosArrowDown } from "react-icons/io";
 import { CourseEntry } from "../../types/interfaces/Course.interface";
+import GarbageBin from "../GarbageBin";
+
 interface ToolboxProps {
   courses: CourseEntry[];
   isDragging: boolean;
@@ -30,6 +32,7 @@ const Toolbox: React.FC<ToolboxProps> = ({ courses, isDragging }) => {
           toggleToolbox={toggleToolbox}
           count={toolboxSum()}
         />
+        <GarbageBin isDragging={isDragging} />
         <div className={`flex justify-center`}>
           <div
             className={`${isOpen ? "" : "hidden"} bg-[#283044] h-36 w-screen rounded-t-xl`}
@@ -50,7 +53,7 @@ const Toolbox: React.FC<ToolboxProps> = ({ courses, isDragging }) => {
                   <div
                     ref={provided.innerRef}
                     {...provided.droppableProps}
-                    className={`courses h-15 flex items-center px-2 w-screen overflow-x-auto whitespace-nowrap scrollbar-hide ${snapshot.isDraggingOver ? "bg-[#394460]" : ""}`}
+                    className={`courses h-15 flex items-center px-2 w-screen overflow-x-auto whitespace-nowrap scrollbar-hide ${snapshot.isDraggingOver ? "bg-[#7e8eb4]" : ""}`}
                   >
                     {courses.map((course, index) => (
                       <ToolboxCourse

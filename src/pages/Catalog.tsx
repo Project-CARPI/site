@@ -10,16 +10,12 @@ interface CatalogProps {
   toolboxCourses: CourseEntry[];
   setToolboxCourses: React.Dispatch<React.SetStateAction<CourseEntry[]>>;
   isDragging: boolean;
-  // setSavedCourses: React.Dispatch<
-  //   React.SetStateAction<{ [key: string]: CourseType }>
-  // >;
 }
 
 const Catalog: React.FC<CatalogProps> = ({
   toolboxCourses,
   setToolboxCourses,
   isDragging,
-  // setSavedCourses,
 }) => {
   const [searchResults, updateSearchResults] = useState([]);
 

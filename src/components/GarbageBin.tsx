@@ -14,7 +14,7 @@ const GarbageBin: React.FC<GarbageBinProps> = ({ isDragging }) => {
           <div
             ref={provided.innerRef}
             {...provided.droppableProps}
-            className={`absolute bottom-40 ${isDragging ? "" : "invisible"} w-fit`}
+            className={`absolute bottom-35 ${isDragging ? "" : "invisible"} w-fit`}
           >
             {provided.placeholder}
             <div

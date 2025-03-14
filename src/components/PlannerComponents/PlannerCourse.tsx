@@ -9,8 +9,9 @@ interface PlannerCourseProps {
 const PlannerCourse: React.FC<PlannerCourseProps> = ({ course }) => {
   return (
     <>
+    <div className="flex flex-row">
       <div
-        className={`bg-[#283044] w-3/4 h-18 rounded-lg text-[#F5CECE] flex items-center`}
+        className={`bg-[#283044] w-full h-18 rounded-lg text-[#F5CECE] flex items-center`}
       >
         <div className={`flex justify-between w-11/12 m-auto text-2xl`}>
           <div className={`flex items-center`}>
@@ -33,6 +34,8 @@ const PlannerCourse: React.FC<PlannerCourseProps> = ({ course }) => {
           </div>
         </div>
       </div>
+    </div>
+      
     </>
   );
 };

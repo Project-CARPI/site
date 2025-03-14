@@ -28,8 +28,8 @@ function Planner() {
 
   return (
     <>
-      <SemesterBlock semester = {exampleSemester} />
-      <PlannerCourse course={exampleCourse} />
+    <div className="bg-[#F5CECE] p-4 flex min-h-screen h-fit flex-col"><SemesterBlock semester = {exampleSemester} /> <SemesterBlock semester = {exampleSemester}/> <SemesterBlock semester = {exampleSemester} /> </div>
+      
     </>
 
     

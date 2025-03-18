@@ -4,9 +4,10 @@ import api from "../../axios";
 import FilterPanel from "./FilterPanel";
 import ChosenTag from "./ChosenTag";
 import { Filters } from "../../types/Filters";
+import { CourseType } from "../../types/interfaces/Course.interface.ts";
 
 interface SearchBarProps {
-  updateSearchResults: (results: any) => void;
+  updateSearchResults: (results: CourseType[]) => void;
   // New props for state lifted to App.tsx
   searchPrompt: string;
   setSearchPrompt: React.Dispatch<React.SetStateAction<string>>;
@@ -32,7 +33,7 @@ const SearchBar: React.FC<SearchBarProps> = ({
 
     const search = async() => {
       const response = await api.get("course/search?searchPrompt=" + searchPrompt + "&deptFilters=" + deptFilters + "&attrFilters=" + attrFilters + "&semFilters=" + semFilters);
-      const data = response.data;
+      const data = response.data as CourseType[];
       console.log(data);
       updateSearchResults(data);
     }

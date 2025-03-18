@@ -1,5 +1,6 @@
 import React from "react";
 import PlannerCourse from "../components/PlannerComponents/PlannerCourse";
+import SemesterBlock from "../components/PlannerComponents/SemesterBlock";
 
 function Planner() {
   const exampleCourse = {
@@ -18,11 +19,31 @@ function Planner() {
     title_acronym: 0,
     title_abbrev: 1
   };
+
+
+
+  const exampleSemester = {
+    semesterNumber: 1,
+    semesterSeason: "FALL",
+    creditsTotal: 16,
+    courseList: [exampleCourse,exampleCourse,exampleCourse,exampleCourse]
+  };
+ 
+
+
   return (
     <>
-      <PlannerCourse course={exampleCourse} />
+    <div className="bg-[#F5CECE] p-4 flex min-h-screen h-fit flex-col"><SemesterBlock semester = {exampleSemester} /> <SemesterBlock semester = {exampleSemester}/> <SemesterBlock semester = {exampleSemester} /> </div>
+      
     </>
+
+    
   );
+
 }
 
 export default Planner;
+
+
+
+

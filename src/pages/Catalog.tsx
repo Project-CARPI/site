@@ -1,24 +1,40 @@
-import React, { useState } from "react";
+import React from "react";
 import Course from "../components/Course/Course";
 import SearchBar from "../components/SearchBar/SeachBar";
 import {
   CourseType,
   CourseEntry,
 } from "../types/interfaces/Course.interface.ts";
+import { Filters } from "../types/Filters";
 
 interface CatalogProps {
   toolboxCourses: CourseEntry[];
   setToolboxCourses: React.Dispatch<React.SetStateAction<CourseEntry[]>>;
   isDragging: boolean;
+  // New props added from the moved state
+  searchResults: CourseType[];
+  setSearchResults: React.Dispatch<React.SetStateAction<CourseType[]>>;
+  searchPrompt: string;
+  setSearchPrompt: React.Dispatch<React.SetStateAction<string>>;
+  showFilter: boolean;
+  setShowFilter: React.Dispatch<React.SetStateAction<boolean>>;
+  filters: Filters;
+  setFilters: React.Dispatch<React.SetStateAction<Filters>>;
 }
 
 const Catalog: React.FC<CatalogProps> = ({
   toolboxCourses,
   setToolboxCourses,
   isDragging,
+  searchResults,
+  setSearchResults,
+  searchPrompt,
+  setSearchPrompt,
+  showFilter,
+  setShowFilter,
+  filters,
+  setFilters,
 }) => {
-  const [searchResults, updateSearchResults] = useState([]);
-
   return (
     <>
       <img
@@ -27,7 +43,15 @@ const Catalog: React.FC<CatalogProps> = ({
         className="w-1/4 m-auto pt-5"
       />
       <div className={`${isDragging ? "brightness-50" : ""}`}>
-        <SearchBar updateSearchResults={updateSearchResults} />
+        <SearchBar 
+          updateSearchResults={setSearchResults}
+          searchPrompt={searchPrompt}
+          setSearchPrompt={setSearchPrompt}
+          showFilter={showFilter}
+          setShowFilter={setShowFilter}
+          filters={filters}
+          setFilters={setFilters}
+        />
       </div>
       <div
         className={`flex flex-wrap justify-center pb-38 z-0 relative ${isDragging ? "brightness-50" : ""}`}

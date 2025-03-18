@@ -4,12 +4,26 @@ import Catalog from "./pages/Catalog";
 import Planner from "./pages/Planner";
 import DepartmentFilters from "./components/Department-Filters.tsx";
 import Toolbox from "./components/Toolbox/Toolbox";
-import { CourseEntry } from "./types/interfaces/Course.interface.ts";
+import { CourseEntry, CourseType } from "./types/interfaces/Course.interface.ts";
 import { DragDropContext, DropResult } from "@hello-pangea/dnd";
+import { Filters } from "./types/Filters";
 
 function App() {
+  // Original state from App.tsx
   const [toolboxCourses, setToolboxCourses] = useState<CourseEntry[]>([]);
   const [isDragging, setIsDragging] = useState<boolean>(false);
+  
+  // Moved from Catalog.tsx
+  const [searchResults, setSearchResults] = useState<CourseType[]>([]);
+  
+  // Moved from SearchBar.tsx
+  const [searchPrompt, setSearchPrompt] = useState("");
+  const [showFilter, setShowFilter] = useState(false);
+  const [filters, setFilters] = useState<Filters>({
+    Subject: [],
+    Attributes: [],
+    Semesters: []
+  });
 
   const reorder = (
     list: CourseEntry[],
@@ -29,6 +43,7 @@ function App() {
 
     return result;
   };
+  
   const onDragEnd = (result: DropResult) => {
     setIsDragging(false);
     const { source, destination } = result;
@@ -49,6 +64,7 @@ function App() {
   const onDragStart = () => {
     setIsDragging(true);
   };
+  
   return (
     <>
       <div className={`font-['Helvetica']  min-h-screen`}>
@@ -66,6 +82,14 @@ function App() {
                       isDragging={isDragging}
                       toolboxCourses={toolboxCourses}
                       setToolboxCourses={setToolboxCourses}
+                      searchResults={searchResults}
+                      setSearchResults={setSearchResults}
+                      searchPrompt={searchPrompt}
+                      setSearchPrompt={setSearchPrompt}
+                      showFilter={showFilter}
+                      setShowFilter={setShowFilter}
+                      filters={filters}
+                      setFilters={setFilters}
                     />
                   }
                 ></Route>

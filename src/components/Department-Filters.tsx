@@ -65,7 +65,7 @@ const DepartmentFilters: React.FC<DepartmentFiltersProps> = ({
 
   // Render the list of departments
   return (
-    <div className="w-full h-full flex items-center justify-center bg-pink-100 p-2 overflow-hidden">
+    <div className="w-full h-full flex items-center justify-center bg-carpipink p-2 overflow-hidden mt-3">
       <div className="flex flex-wrap gap-2 justify-center overflow-y-auto max-h-full">
         {departments.map((dept) => (
           <button
@@ -73,12 +73,13 @@ const DepartmentFilters: React.FC<DepartmentFiltersProps> = ({
             className={`
               flex-shrink-0
               px-3 
-              py-1.5 
-              rounded-full 
+              py-2 
+              rounded-xl 
               border 
               border-black 
               text-xs
               transition-colors
+              text-[#09143C]
               ${selectedDepartment === dept.code 
                 ? 'bg-blue-100 border-blue-500' 
                 : 'bg-transparent active:bg-gray-100'

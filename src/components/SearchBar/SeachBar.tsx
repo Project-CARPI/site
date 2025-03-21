@@ -7,9 +7,10 @@ import { Filters } from "../../types/Filters";
 
 interface SearchBarProps {
   updateSearchResults: (results: any) => void;
+  onFocusChange?: (focused: boolean) => void;
 }
 
-const SearchBar: React.FC<SearchBarProps> = ({ updateSearchResults }) => {
+const SearchBar: React.FC<SearchBarProps> = ({ updateSearchResults, onFocusChange }) => {
   const [searchPrompt, setSearchPrompt] = useState("");
   const [showFilter, setShowFilter] = useState(false);
   const [filters, setFilters] = useState<Filters>({
@@ -78,6 +79,16 @@ const SearchBar: React.FC<SearchBarProps> = ({ updateSearchResults }) => {
             onClick={() => setShowFilter(true)}
             onChange={(e) => setSearchPrompt(e.target.value)}
             onKeyDown={(e) => { if (e.key === 'Enter' || e.key === "Done") handleSearch(e) }}
+
+            onFocus={() => {
+              setShowFilter(true);
+              onFocusChange?.(true);
+            }}
+            onBlur={() =>{
+              setShowFilter(false);
+              onFocusChange?.(false);
+            }}
+
           />
         </div>
         {showFilter && <IoClose onClick={() => { setShowFilter(false); setSearchPrompt("") }} />}

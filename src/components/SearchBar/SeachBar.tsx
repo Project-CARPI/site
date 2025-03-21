@@ -107,7 +107,17 @@ const SearchBar: React.FC<SearchBarProps> = ({ updateSearchResults, onFocusChang
           ))}
         </div>
 
-        <button className="unset w-[150px] text-right text-sm cursor-pointer" onClick={() => setShowFilter(prev => !prev)}>
+        <button className="unset w-[150px] text-right text-sm cursor-pointer" 
+            onClick={() => {
+              setShowFilter((prev) => {
+                const newValue = !prev;
+                onFocusChange?.(newValue);
+                return newValue;
+              });
+            }
+             
+
+        }>
           {showFilter ? "Hide Options" : "Show Options"}
         </button>
       </div>

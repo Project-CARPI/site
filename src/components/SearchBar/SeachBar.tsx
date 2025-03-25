@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { IoClose, IoSearchOutline } from "react-icons/io5";
 import api from "../../axios";
 import FilterPanel from "./FilterPanel";
@@ -19,20 +19,47 @@ const SearchBar: React.FC<SearchBarProps> = ({ updateSearchResults, onFocusChang
     Semesters: []
   })
 
+  const debounceTimeout = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const lastNoResultQuery = useRef<string | null>(null);
+
   useEffect(() => {
-    const deptFilters = filters.Subject.join(",");
-    const attrFilters = filters.Attributes.join(",");
-    const semFilters = filters.Semesters.join(",");
-
-    const search = async() => {
-      const response = await api.get("course/search?searchPrompt=" + searchPrompt + "&deptFilters=" + deptFilters + "&attrFilters=" + attrFilters + "&semFilters=" + semFilters);
-      const data = response.data;
-      console.log(data);
-      updateSearchResults(data);
+    if (debounceTimeout.current) {
+      clearTimeout(debounceTimeout.current);
     }
-
-    search();
-  }, [filters, searchPrompt])
+  
+    debounceTimeout.current = setTimeout(async () => {
+      const deptFilters = filters.Subject.join(",");
+      const attrFilters = filters.Attributes.join(",");
+      const semFilters = filters.Semesters.join(",");
+  
+      if (
+        lastNoResultQuery.current &&
+        searchPrompt.startsWith(lastNoResultQuery.current)
+      ) {
+        console.log("Skipping redundant no-result query");
+        return;
+      }
+  
+      try {
+        const response = await api.get("course/search?searchPrompt=" + searchPrompt + "&deptFilters=" + deptFilters + "&attrFilters=" + attrFilters + "&semFilters=" + semFilters);
+  
+        const data = response.data;
+        updateSearchResults(data);
+  
+        if (data.length === 0) {
+          lastNoResultQuery.current = searchPrompt;
+        } else {
+          lastNoResultQuery.current = null;
+        }
+      } catch (error) {
+        console.error("Search error:", error);
+      }
+    }, 500); // Change this delay if you want
+  
+    return () => {
+      if (debounceTimeout.current) clearTimeout(debounceTimeout.current);
+    };
+  }, [filters, searchPrompt]);
 
   const handleSearch = (e: React.KeyboardEvent) => {
     (e.currentTarget as HTMLInputElement).blur();
@@ -115,8 +142,6 @@ const SearchBar: React.FC<SearchBarProps> = ({ updateSearchResults, onFocusChang
                 return newValue;
               });
             }
-             
-
         }>
           {showFilter ? "Hide Options" : "Show Options"}
         </button>

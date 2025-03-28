@@ -21,7 +21,7 @@ const SearchBar: React.FC<SearchBarProps> = ({ updateSearchResults, onFocusChang
 
   const debounceTimeout = useRef<ReturnType<typeof setTimeout> | null>(null);
   const lastNoResultQuery = useRef<string | null>(null);
-
+ 
   useEffect(() => {
     if (debounceTimeout.current) {
       clearTimeout(debounceTimeout.current);
@@ -32,13 +32,17 @@ const SearchBar: React.FC<SearchBarProps> = ({ updateSearchResults, onFocusChang
       const attrFilters = filters.Attributes.join(",");
       const semFilters = filters.Semesters.join(",");
   
+      if(searchPrompt.length < 3){
+        lastNoResultQuery.current = null
+      }
+
       if (
         lastNoResultQuery.current &&
         searchPrompt.startsWith(lastNoResultQuery.current)
       ) {
         console.log("Skipping redundant no-result query");
         return;
-      }
+      } 
   
       try {
         const response = await api.get("course/search?searchPrompt=" + searchPrompt + "&deptFilters=" + deptFilters + "&attrFilters=" + attrFilters + "&semFilters=" + semFilters);
@@ -46,7 +50,7 @@ const SearchBar: React.FC<SearchBarProps> = ({ updateSearchResults, onFocusChang
         const data = response.data;
         updateSearchResults(data);
   
-        if (data.length === 0) {
+        if (data.length === 0 && searchPrompt.length >= 3) {
           lastNoResultQuery.current = searchPrompt;
         } else {
           lastNoResultQuery.current = null;
@@ -54,7 +58,7 @@ const SearchBar: React.FC<SearchBarProps> = ({ updateSearchResults, onFocusChang
       } catch (error) {
         console.error("Search error:", error);
       }
-    }, 500); // Change this delay if you want
+    }, 300); // Change this delay if you want
   
     return () => {
       if (debounceTimeout.current) clearTimeout(debounceTimeout.current);

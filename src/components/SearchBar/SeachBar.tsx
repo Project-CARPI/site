@@ -1,23 +1,31 @@
-import React, { useState, useEffect } from "react";
+import React, { useEffect } from "react";
 import { IoClose, IoSearchOutline } from "react-icons/io5";
 import api from "../../axios";
 import FilterPanel from "./FilterPanel";
 import ChosenTag from "./ChosenTag";
 import { Filters } from "../../types/Filters";
+import { CourseType } from "../../types/interfaces/Course.interface.ts";
 
 interface SearchBarProps {
-  updateSearchResults: (results: any) => void;
+  updateSearchResults: (results: CourseType[]) => void;
+  // New props for state lifted to App.tsx
+  searchPrompt: string;
+  setSearchPrompt: React.Dispatch<React.SetStateAction<string>>;
+  showFilter: boolean;
+  setShowFilter: React.Dispatch<React.SetStateAction<boolean>>;
+  filters: Filters;
+  setFilters: React.Dispatch<React.SetStateAction<Filters>>;
 }
 
-const SearchBar: React.FC<SearchBarProps> = ({ updateSearchResults }) => {
-  const [searchPrompt, setSearchPrompt] = useState("");
-  const [showFilter, setShowFilter] = useState(false);
-  const [filters, setFilters] = useState<Filters>({
-    Subject: [],
-    Attributes: [],
-    Semesters: []
-  })
-
+const SearchBar: React.FC<SearchBarProps> = ({ 
+  updateSearchResults,
+  searchPrompt,
+  setSearchPrompt,
+  showFilter,
+  setShowFilter,
+  filters,
+  setFilters
+}) => {
   useEffect(() => {
     const deptFilters = filters.Subject.join(",");
     const attrFilters = filters.Attributes.join(",");
@@ -25,13 +33,13 @@ const SearchBar: React.FC<SearchBarProps> = ({ updateSearchResults }) => {
 
     const search = async() => {
       const response = await api.get("course/search?searchPrompt=" + searchPrompt + "&deptFilters=" + deptFilters + "&attrFilters=" + attrFilters + "&semFilters=" + semFilters);
-      const data = response.data;
+      const data = response.data as CourseType[];
       console.log(data);
       updateSearchResults(data);
     }
 
     search();
-  }, [filters, searchPrompt])
+  }, [filters, searchPrompt, updateSearchResults]);
 
   const handleSearch = (e: React.KeyboardEvent) => {
     (e.currentTarget as HTMLInputElement).blur();

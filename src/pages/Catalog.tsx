@@ -1,22 +1,68 @@
-import React, { useState } from "react";
+import React from "react";
 import Course from "../components/Course/Course";
 import SearchBar from "../components/SearchBar/SeachBar";
+import {
+  CourseType,
+  CourseEntry,
+} from "../types/interfaces/Course.interface.ts";
+import { Filters } from "../types/Filters";
 
 interface CatalogProps {
-  toolboxCourses: { [key: string]: number };
-  setToolboxCourses: React.Dispatch<React.SetStateAction<{ [key: string]: number }>>;
+  toolboxCourses: CourseEntry[];
+  setToolboxCourses: React.Dispatch<React.SetStateAction<CourseEntry[]>>;
+  isDragging: boolean;
+  // New props added from the moved state
+  searchResults: CourseType[];
+  setSearchResults: React.Dispatch<React.SetStateAction<CourseType[]>>;
+  searchPrompt: string;
+  setSearchPrompt: React.Dispatch<React.SetStateAction<string>>;
+  showFilter: boolean;
+  setShowFilter: React.Dispatch<React.SetStateAction<boolean>>;
+  filters: Filters;
+  setFilters: React.Dispatch<React.SetStateAction<Filters>>;
 }
 
-const Catalog: React.FC<CatalogProps> = ({ toolboxCourses, setToolboxCourses }) => {
-  const [searchResults, updateSearchResults] = useState([]);
-
+const Catalog: React.FC<CatalogProps> = ({
+  toolboxCourses,
+  setToolboxCourses,
+  isDragging,
+  searchResults,
+  setSearchResults,
+  searchPrompt,
+  setSearchPrompt,
+  showFilter,
+  setShowFilter,
+  filters,
+  setFilters,
+}) => {
   return (
     <>
-      <img src="/carpi-black.png" alt="Carpi Logo" className="w-1/4 m-auto mt-5"/>
-      <SearchBar updateSearchResults={updateSearchResults}/>
-      <div className="flex flex-wrap justify-center pb-38">
-        {searchResults?.map((course: any, index: number) => (
-          <Course key={index} course={course} toolboxCourses={toolboxCourses} setToolboxCourses={setToolboxCourses} />
+      <img
+        src="/carpi-black.png"
+        alt="Carpi Logo"
+        className="w-1/4 m-auto pt-5"
+      />
+      <div className={`${isDragging ? "brightness-50" : ""}`}>
+        <SearchBar 
+          updateSearchResults={setSearchResults}
+          searchPrompt={searchPrompt}
+          setSearchPrompt={setSearchPrompt}
+          showFilter={showFilter}
+          setShowFilter={setShowFilter}
+          filters={filters}
+          setFilters={setFilters}
+        />
+      </div>
+      <div
+        className={`flex flex-wrap justify-center pb-38 z-0 relative ${isDragging ? "brightness-50" : ""}`}
+      >
+        {searchResults?.map((course: CourseType, index: number) => (
+          <Course
+            key={index}
+            course={course}
+            toolboxCourses={toolboxCourses}
+            setToolboxCourses={setToolboxCourses}
+          />
         ))}
       </div>
     </>

@@ -2,14 +2,17 @@ import React, { useState } from "react";
 import ToolboxButton from "./ToolboxButton";
 import NavButton from "./NavButton";
 import ToolboxCourse from "./ToolboxCourse";
-
+import { Droppable } from "@hello-pangea/dnd";
 import { IoIosArrowDown } from "react-icons/io";
+import { CourseEntry } from "../../types/interfaces/Course.interface";
+import GarbageBin from "../GarbageBin";
 
 interface ToolboxProps {
-  courses: { [key: string]: number };
+  courses: CourseEntry[];
+  isDragging: boolean;
 }
 
-const Toolbox: React.FC<ToolboxProps> = ({ courses }) => {
+const Toolbox: React.FC<ToolboxProps> = ({ courses, isDragging }) => {
   const [isOpen, setIsOpen] = useState(false);
 
   const toggleToolbox = () => {
@@ -18,17 +21,18 @@ const Toolbox: React.FC<ToolboxProps> = ({ courses }) => {
 
   const toolboxSum = () => {
     let sum = 0;
-    Object.values(courses).forEach((value) => (sum += value));
+    courses.forEach((course) => (sum += course.count));
     return sum;
   };
   return (
     <>
-      <div className={`fixed bottom-0 w-screen`}>
+      <div className={`transition-all fixed bottom-0 w-screen z-100`}>
         <ToolboxButton
           isOpen={isOpen}
           toggleToolbox={toggleToolbox}
           count={toolboxSum()}
         />
+        <GarbageBin isDragging={isDragging} />
         <div className={`flex justify-center`}>
           <div
             className={`${isOpen ? "" : "hidden"} bg-[#283044] h-36 w-screen rounded-t-xl`}
@@ -42,14 +46,31 @@ const Toolbox: React.FC<ToolboxProps> = ({ courses }) => {
                 <IoIosArrowDown className={`mx-2`} />
               </button>
             </div>
-            <div
-              className={`courses h-13 flex items-center px-2 w-screen overflow-x-auto whitespace-nowrap scrollbar-hide`}
-            >
-              {Object.entries(courses).map(([key, value]) => (
-                <ToolboxCourse key={key} name={key} count={value} />
-              ))}
-            </div>
+
+            <Droppable droppableId={`toolbox`} direction="horizontal">
+              {(provided, snapshot) => {
+                return (
+                  <div
+                    ref={provided.innerRef}
+                    {...provided.droppableProps}
+                    className={`courses h-15 flex items-center px-2 w-screen overflow-x-auto whitespace-nowrap scrollbar-hide ${snapshot.isDraggingOver ? "bg-[#7e8eb4]" : ""}`}
+                  >
+                    {courses.map((course, index) => (
+                      <ToolboxCourse
+                        key={course.name}
+                        name={course.name}
+                        count={course.count}
+                        index={index}
+                        isDragging={isDragging}
+                      />
+                    ))}
+                    {provided.placeholder}
+                  </div>
+                );
+              }}
+            </Droppable>
           </div>
+
           <NavButton />
         </div>
       </div>

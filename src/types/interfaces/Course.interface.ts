@@ -14,3 +14,9 @@ export interface CourseType {
   title_match: number;
   title_start_match: number;
 }
+
+export type CourseEntry = {
+  name: string;
+  count: number;
+  data: CourseType;
+};

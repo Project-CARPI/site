@@ -100,7 +100,7 @@ const Course: React.FC<CourseProps> = ({
             className={`text-sm`}
             transition={{ duration: 0.05 }}
           >
-            {course.desc_text}
+            {course.desc_text.trim() === "" ? "Empty Description" : course.desc_text}
           </motion.p>
         </div>
       </div>

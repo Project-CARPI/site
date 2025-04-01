@@ -70,7 +70,10 @@ function App() {
                   }
                 ></Route>
                 <Route path="/filters" element={<DepartmentFilters />} />
-                <Route path="/planner" element={<Planner />}></Route>
+                <Route
+                  path="/planner"
+                  element={<Planner isDragging={isDragging} />}
+                ></Route>
               </Routes>
               <Toolbox courses={toolboxCourses} isDragging={isDragging} />
             </Router>

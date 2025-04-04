@@ -1,12 +1,15 @@
 import React from "react";
 import PlannerCourse from "../PlannerComponents/PlannerCourse";
 import { SemesterType } from "../../types/interfaces/Semester.interface";
+import { Droppable } from "@hello-pangea/dnd";
 
 interface SemesterBlockProps {
   semester: SemesterType;
+  isDragging: boolean;
 }
 
-const SemesterBlock: React.FC<SemesterBlockProps> = ({ semester }) => {
+
+const SemesterBlock: React.FC<SemesterBlockProps> = ({ semester , isDragging}) => {
   return (
     <>
       <div className="flex mt-4">
@@ -32,13 +35,27 @@ const SemesterBlock: React.FC<SemesterBlockProps> = ({ semester }) => {
               {semester.creditsTotal}
             </div>
           </div>
-
-          <div className="flex flex-col space-y-2 w-full">
-            {semester.courseList.map((course) => (
-              <PlannerCourse key={course.id} course={course} />
+          <Droppable droppableId={`semesterblock`} direction="vertical">
+              {(provided, snapshot) => {
+                return (
+          <div 
+            ref={provided.innerRef}
+            {...provided.droppableProps}
+            className= {`flex flex-col space-y-2 w-full ${snapshot.isDraggingOver ? "bg-[#7e8eb4]" : ""}`}
+            >
+            {semester.courseList.map((course,index) => (
+              <PlannerCourse 
+              key={course.id} 
+              course={course} 
+              index={index}
+              isDragging={isDragging}
+              />
             ))}
+            {provided.placeholder}
           </div>
-
+                );
+              }}
+            </Droppable>
           <hr className="border-[calc(0.05px)] border-[#c3a9a9] w-full mt-4 text-[#c3a9a9] " />
         </div>
       </div>

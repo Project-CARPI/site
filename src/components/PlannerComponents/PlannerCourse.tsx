@@ -1,12 +1,16 @@
 import React, { useState, useEffect, useRef } from "react";
 import { MdDragIndicator, MdOutlineMoreHoriz } from "react-icons/md";
 import { CourseType } from "../../types/interfaces/Course.interface";
+import { Draggable } from "@hello-pangea/dnd";
 
 interface PlannerCourseProps {
   course: CourseType;
+  isDragging: boolean;
+  index: number;
 }
 
-const PlannerCourse: React.FC<PlannerCourseProps> = ({ course }) => {
+const PlannerCourse: React.FC<PlannerCourseProps> = ({ course, isDragging }) => {
+  const courseId = course.dept + course.code_num.toString();
   const [openPopup, setOpenPopup] = useState<boolean>(false);
   const componentRef = useRef<HTMLDivElement>(null);
 
@@ -42,6 +46,9 @@ const PlannerCourse: React.FC<PlannerCourseProps> = ({ course }) => {
 
   return (
     <>
+      <Draggable key={courseId} draggableId={courseId} index={}>
+      {(provided, snapshot) => {
+        return(
       <div className="flex flex-row relative">
         <div
           className={`bg-[#283044] w-full h-18 rounded-lg text-[#F5CECE] flex items-center px-2`}
@@ -95,6 +102,9 @@ const PlannerCourse: React.FC<PlannerCourseProps> = ({ course }) => {
           </div>
         )}
       </div>
+    );
+      }}
+      </Draggable>
     </>
   );
 };

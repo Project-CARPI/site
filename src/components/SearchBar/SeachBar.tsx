@@ -17,24 +17,24 @@ const SearchBar: React.FC<SearchBarProps> = ({ updateSearchResults }) => {
   const [filters, setFilters] = useState<Filters>({
     Subject: [],
     Attributes: [],
-    Semesters: []
-  })
+    Semesters: [],
+  });
 
   const debounceTimeout = useRef<ReturnType<typeof setTimeout> | null>(null);
   const lastNoResultQuery = useRef<string | null>(null);
- 
+
   useEffect(() => {
     if (debounceTimeout.current) {
       clearTimeout(debounceTimeout.current);
     }
-  
+
     debounceTimeout.current = setTimeout(async () => {
       const deptFilters = filters.Subject.join(",");
       const attrFilters = filters.Attributes.join(",");
       const semFilters = filters.Semesters.join(",");
-  
-      if(searchPrompt.length < 3){
-        lastNoResultQuery.current = null
+
+      if (searchPrompt.length < 3) {
+        lastNoResultQuery.current = null;
       }
 
       if (
@@ -43,14 +43,23 @@ const SearchBar: React.FC<SearchBarProps> = ({ updateSearchResults }) => {
       ) {
         console.log("Skipping redundant no-result query");
         return;
-      } 
-  
+      }
+
       try {
-        const response = await api.get("course/search?searchPrompt=" + searchPrompt + "&deptFilters=" + deptFilters + "&attrFilters=" + attrFilters + "&semFilters=" + semFilters);
-  
+        const response = await api.get(
+          "course/search?searchPrompt=" +
+            searchPrompt +
+            "&deptFilters=" +
+            deptFilters +
+            "&attrFilters=" +
+            attrFilters +
+            "&semFilters=" +
+            semFilters,
+        );
+
         const data = response.data;
         updateSearchResults(data);
-  
+
         if (data.length === 0 && searchPrompt.length >= 3) {
           lastNoResultQuery.current = searchPrompt;
         } else {
@@ -60,7 +69,7 @@ const SearchBar: React.FC<SearchBarProps> = ({ updateSearchResults }) => {
         console.error("Search error:", error);
       }
     }, 300); // Change this delay if you want
-  
+
     return () => {
       if (debounceTimeout.current) clearTimeout(debounceTimeout.current);
     };
@@ -69,36 +78,44 @@ const SearchBar: React.FC<SearchBarProps> = ({ updateSearchResults }) => {
   const handleSearch = (e: React.KeyboardEvent) => {
     (e.currentTarget as HTMLInputElement).blur();
     setShowFilter(false);
-  }
+  };
 
   const updateFilters = (category: keyof Filters, value: string) => {
     if (showDeptFilter) {
       setShowDeptFilter(false);
       window.scrollTo(0, 0);
     }
-    
-    setFilters(prev => {
+
+    setFilters((prev) => {
       if (prev[category].includes(value)) {
         const newFilters: Filters = { ...prev };
-        newFilters[category] = newFilters[category].filter(tag => tag !== value);
+        newFilters[category] = newFilters[category].filter(
+          (tag) => tag !== value,
+        );
         return newFilters;
       }
       return {
         ...prev,
-        [category]: [...prev[category], value]
+        [category]: [...prev[category], value],
       };
     });
   };
 
   const removeFilter = (value: string) => {
-    setFilters(prev => {
+    setFilters((prev) => {
       const newFilters: Filters = { ...prev };
       for (const category of Object.keys(prev) as (keyof Filters)[]) {
-        newFilters[category] = newFilters[category].filter(tag => tag !== value);
+        newFilters[category] = newFilters[category].filter(
+          (tag) => tag !== value,
+        );
       }
 
-      if (newFilters.Subject.length === 0 && newFilters.Attributes.length === 0 && newFilters.Semesters.length === 0) { 
-        setShowDeptFilter(true); 
+      if (
+        newFilters.Subject.length === 0 &&
+        newFilters.Attributes.length === 0 &&
+        newFilters.Semesters.length === 0
+      ) {
+        setShowDeptFilter(true);
         setShowFilter(false);
       }
       return newFilters;
@@ -120,10 +137,19 @@ const SearchBar: React.FC<SearchBarProps> = ({ updateSearchResults }) => {
             enterKeyHint="search"
             onClick={() => setShowFilter(true)}
             onChange={(e) => setSearchPrompt(e.target.value)}
-            onKeyDown={(e) => { if (e.key === 'Enter' || e.key === "Done") handleSearch(e) }}
+            onKeyDown={(e) => {
+              if (e.key === "Enter" || e.key === "Done") handleSearch(e);
+            }}
           />
         </div>
-        {showFilter && <IoClose onClick={() => { setShowFilter(false); setSearchPrompt("") }} />}
+        {showFilter && (
+          <IoClose
+            onClick={() => {
+              setShowFilter(false);
+              setSearchPrompt("");
+            }}
+          />
+        )}
       </div>
 
       <div className="flex items-start -mb-2">
@@ -139,19 +165,22 @@ const SearchBar: React.FC<SearchBarProps> = ({ updateSearchResults }) => {
           ))}
         </div>
 
-        <button className="unset w-[150px] text-right text-sm cursor-pointer mr-2" 
-            onClick={() => {
-              setShowFilter((prev) => {
-                const newValue = !prev;
-                return newValue;
-              });
-            }
-        }>
+        <button
+          className="unset w-[150px] text-right text-sm cursor-pointer mr-2"
+          onClick={() => {
+            setShowFilter((prev) => {
+              const newValue = !prev;
+              return newValue;
+            });
+          }}
+        >
           {showFilter ? "Hide Options" : "Show Options"}
         </button>
       </div>
 
-      {showFilter && <FilterPanel filters={filters} updateFilters={updateFilters} />}
+      {showFilter && (
+        <FilterPanel filters={filters} updateFilters={updateFilters} />
+      )}
       {showDeptFilter && <DepartmentFilters updateFilters={updateFilters} />}
     </div>
   );

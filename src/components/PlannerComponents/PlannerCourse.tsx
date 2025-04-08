@@ -38,10 +38,12 @@ const PlannerCourse: React.FC<PlannerCourseProps> = ({ course }) => {
       .split(" ")
       .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
       .join(" ");
-  }
+  };
 
   return (
-    <div className={`bg-[#283044] w-3/4 h-18 rounded-lg text-[#F5CECE] flex items-center relative`}>
+    <div
+      className={`bg-[#283044] w-3/4 h-18 rounded-lg text-[#F5CECE] flex items-center relative`}
+    >
       <div className={`flex justify-between w-11/12 m-auto text-2xl`}>
         <div className={`flex items-center`}>
           <MdDragIndicator />
@@ -65,7 +67,6 @@ const PlannerCourse: React.FC<PlannerCourseProps> = ({ course }) => {
           />
         </div>
       </div>
-      
 
       {/* Popup Menu */}
       {openPopup && (

@@ -1,4 +1,5 @@
 import React from 'react';
+import { Filters } from "../types/Filters";
 
 // Department type
 interface Department {
@@ -51,19 +52,11 @@ const departments: Department[] = [
 
 // DepartmentFilters component
 interface DepartmentFiltersProps {
-  onSelect?: (department: Department) => void;
-  selectedDepartment?: string;
-  isVisible?: boolean;
+  updateFilters: (category: keyof Filters, value: string) => void;
 }
 
-const DepartmentFilters: React.FC<DepartmentFiltersProps> = ({ 
-  onSelect,
-  selectedDepartment,
-  isVisible = true
-}) => {
-  if (!isVisible) return null;
-
-  // Render the list of departments
+// DepartmentFilters functional component
+const DepartmentFilters: React.FC<DepartmentFiltersProps> = ({ updateFilters }) => {
   return (
     <div className="w-full h-full flex items-center justify-center bg-carpipink p-2 overflow-hidden mt-3">
       <div className="flex flex-wrap gap-2 justify-center overflow-y-auto max-h-full">
@@ -80,13 +73,9 @@ const DepartmentFilters: React.FC<DepartmentFiltersProps> = ({
               text-xs
               transition-colors
               text-[#09143C]
-              ${selectedDepartment === dept.code 
-                ? 'bg-blue-100 border-blue-500' 
-                : 'bg-transparent active:bg-gray-100'
-              }
               hover:bg-black hover:text-white
             `}
-            onClick={() => onSelect?.(dept)}
+            onClick={() => updateFilters("Subject", dept.code)}
           >
             <div className="flex gap-2 items-center whitespace-nowrap">
               <span className="font-bold">{dept.code}</span>

@@ -1,7 +1,6 @@
 import React, { useState } from "react";
 import Course from "../components/Course/Course";
 import SearchBar from "../components/SearchBar/SeachBar";
-import DepartmentFilters from "../components/Department-Filters";
 
 interface CatalogProps {
   toolboxCourses: { [key: string]: number };
@@ -15,14 +14,12 @@ interface CatalogProps{
 
 const Catalog: React.FC<CatalogProps> = ({ toolboxCourses, setToolboxCourses }) => {
   const [searchResults, updateSearchResults] = useState([]);
-  const [hideCatalog, setHideCatalog] = useState(false);
 
   return (
     <>
       <img src="/carpi-black.png" alt="Carpi Logo" className="w-1/4 m-auto mt-5"/>
-      <SearchBar updateSearchResults={updateSearchResults} onFocusChange={(focused => setHideCatalog(focused))}/>
+      <SearchBar updateSearchResults={updateSearchResults}/>
       <div className="flex flex-wrap justify-center pb-38">
-        <DepartmentFilters isVisible = {!hideCatalog}/>
         {searchResults?.map((course: any, index: number) => (
           <Course key={index} course={course} toolboxCourses={toolboxCourses} setToolboxCourses={setToolboxCourses} />
         ))}

@@ -4,13 +4,14 @@ import api from "../../axios";
 import FilterPanel from "./FilterPanel";
 import ChosenTag from "./ChosenTag";
 import { Filters } from "../../types/Filters";
+import DepartmentFilters from "../Department-Filters";
 
 interface SearchBarProps {
   updateSearchResults: (results: any) => void;
-  onFocusChange?: (focused: boolean) => void;
 }
 
-const SearchBar: React.FC<SearchBarProps> = ({ updateSearchResults, onFocusChange }) => {
+const SearchBar: React.FC<SearchBarProps> = ({ updateSearchResults }) => {
+  const [showDeptFilter, setShowDeptFilter] = useState(true);
   const [searchPrompt, setSearchPrompt] = useState("");
   const [showFilter, setShowFilter] = useState(false);
   const [filters, setFilters] = useState<Filters>({
@@ -71,6 +72,11 @@ const SearchBar: React.FC<SearchBarProps> = ({ updateSearchResults, onFocusChang
   }
 
   const updateFilters = (category: keyof Filters, value: string) => {
+    if (showDeptFilter) {
+      setShowDeptFilter(false);
+      window.scrollTo(0, 0);
+    }
+    
     setFilters(prev => {
       if (prev[category].includes(value)) {
         const newFilters: Filters = { ...prev };
@@ -90,13 +96,18 @@ const SearchBar: React.FC<SearchBarProps> = ({ updateSearchResults, onFocusChang
       for (const category of Object.keys(prev) as (keyof Filters)[]) {
         newFilters[category] = newFilters[category].filter(tag => tag !== value);
       }
+
+      if (newFilters.Subject.length === 0 && newFilters.Attributes.length === 0 && newFilters.Semesters.length === 0) { 
+        setShowDeptFilter(true); 
+        setShowFilter(false);
+      }
       return newFilters;
     });
   };
 
   return (
-    <div className="p-6 pt-0 pb-0">
-      <div className="flex justify-between items-center border-b p-2 mb-2">
+    <div className="p-4 pt-0 pb-0">
+      <div className="flex justify-between items-center border-b p-2 m-2">
         <div className="flex items-center gap-2 w-full">
           <IoSearchOutline />
           <input
@@ -110,16 +121,6 @@ const SearchBar: React.FC<SearchBarProps> = ({ updateSearchResults, onFocusChang
             onClick={() => setShowFilter(true)}
             onChange={(e) => setSearchPrompt(e.target.value)}
             onKeyDown={(e) => { if (e.key === 'Enter' || e.key === "Done") handleSearch(e) }}
-
-            onFocus={() => {
-              setShowFilter(true);
-              onFocusChange?.(true);
-            }}
-            onBlur={() =>{
-              setShowFilter(false);
-              onFocusChange?.(false);
-            }}
-
           />
         </div>
         {showFilter && <IoClose onClick={() => { setShowFilter(false); setSearchPrompt("") }} />}
@@ -138,11 +139,10 @@ const SearchBar: React.FC<SearchBarProps> = ({ updateSearchResults, onFocusChang
           ))}
         </div>
 
-        <button className="unset w-[150px] text-right text-sm cursor-pointer" 
+        <button className="unset w-[150px] text-right text-sm cursor-pointer mr-2" 
             onClick={() => {
               setShowFilter((prev) => {
                 const newValue = !prev;
-                onFocusChange?.(newValue);
                 return newValue;
               });
             }
@@ -152,6 +152,7 @@ const SearchBar: React.FC<SearchBarProps> = ({ updateSearchResults, onFocusChang
       </div>
 
       {showFilter && <FilterPanel filters={filters} updateFilters={updateFilters} />}
+      {showDeptFilter && <DepartmentFilters updateFilters={updateFilters} />}
     </div>
   );
 };

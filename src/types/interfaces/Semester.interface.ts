@@ -1,10 +1,8 @@
-import {CourseType} from "../../components/PlannerComponents/PlannerCourse";
+import { CourseType } from "../../components/PlannerComponents/PlannerCourse";
 
 export interface SemesterType {
-    semesterNumber: number;
-    semesterSeason: string;
-    creditsTotal: number;
-    courseList: CourseType[];
+  semesterNumber: number;
+  semesterSeason: string;
+  creditsTotal: number;
+  courseList: CourseType[];
 }
-  
-  

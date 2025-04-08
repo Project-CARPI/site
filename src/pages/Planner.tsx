@@ -21,30 +21,22 @@ function Planner() {
     title_abbrev: 1,
   };
 
-
-
   const exampleSemester = {
     semesterNumber: 1,
     semesterSeason: "FALL",
     creditsTotal: 16,
-    courseList: [exampleCourse,exampleCourse,exampleCourse,exampleCourse]
+    courseList: [exampleCourse, exampleCourse, exampleCourse, exampleCourse],
   };
- 
-
 
   return (
     <>
-    <div className="bg-[#F5CECE] p-4 flex min-h-screen h-fit flex-col"><SemesterBlock semester = {exampleSemester} /> <SemesterBlock semester = {exampleSemester}/> <SemesterBlock semester = {exampleSemester} /> </div>
-      
+      <div className="bg-[#F5CECE] p-4 flex min-h-screen h-fit flex-col">
+        <SemesterBlock semester={exampleSemester} />{" "}
+        <SemesterBlock semester={exampleSemester} />{" "}
+        <SemesterBlock semester={exampleSemester} />{" "}
+      </div>
     </>
-
-    
   );
-
 }
 
 export default Planner;
-
-
-
-

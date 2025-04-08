@@ -88,9 +88,8 @@ const DepartmentFilters: React.FC<DepartmentFiltersProps> = ({
             `}
             onClick={() => onSelect?.(dept)}
           >
-            <div className="flex items-center whitespace-nowrap">
+            <div className="flex gap-2 items-center whitespace-nowrap">
               <span className="font-bold">{dept.code}</span>
-              <span className="mx-1">·</span>
               <span className="font-normal">{dept.name}</span>
             </div>
           </button>

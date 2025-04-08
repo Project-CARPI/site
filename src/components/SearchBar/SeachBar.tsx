@@ -5,9 +5,17 @@ import FilterPanel from "./FilterPanel";
 import ChosenTag from "./ChosenTag";
 import { Filters } from "../../types/Filters";
 import DepartmentFilters from "../Department-Filters";
+import { CourseType } from "../../types/interfaces/Course.interface.ts";
 
 interface SearchBarProps {
-  updateSearchResults: (results: any) => void;
+  updateSearchResults: (results: CourseType[]) => void;
+  // New props for state lifted to App.tsx
+  searchPrompt: string;
+  setSearchPrompt: React.Dispatch<React.SetStateAction<string>>;
+  showFilter: boolean;
+  setShowFilter: React.Dispatch<React.SetStateAction<boolean>>;
+  filters: Filters;
+  setFilters: React.Dispatch<React.SetStateAction<Filters>>;
 }
 
 const SearchBar: React.FC<SearchBarProps> = ({ updateSearchResults }) => {

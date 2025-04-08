@@ -2,14 +2,15 @@ import React, { useState } from "react";
 import Tag from "./Tag";
 import AddButton from "./AddButton";
 import { motion } from "framer-motion";
-import { CourseType } from "../../types/interfaces/Course.interface";
+import {
+  CourseType,
+  CourseEntry,
+} from "../../types/interfaces/Course.interface";
 
 interface CourseProps {
   course: CourseType;
-  toolboxCourses: { [key: string]: number };
-  setToolboxCourses: React.Dispatch<
-    React.SetStateAction<{ [key: string]: number }>
-  >;
+  toolboxCourses: CourseEntry[];
+  setToolboxCourses: React.Dispatch<React.SetStateAction<CourseEntry[]>>;
 }
 
 const Course: React.FC<CourseProps> = ({
@@ -31,16 +32,30 @@ const Course: React.FC<CourseProps> = ({
       .join(" ");
   };
 
-  const courseDisplay = `${course.dept + course.code_num} ${toTitleCase(course.title)}`;
+  const courseDisplay: string = `${course.dept + course.code_num} ${toTitleCase(course.title)}`;
   const addCourse = (e: React.MouseEvent<HTMLButtonElement>) => {
     e.stopPropagation();
-    setToolboxCourses((prevCourses) => ({
-      ...prevCourses,
-      [courseDisplay]: (prevCourses[courseDisplay] || 0) + 1,
-    }));
-  };
 
-  const courseCount = toolboxCourses[courseDisplay];
+    setToolboxCourses((prevCourses) => {
+      const existingIndex = prevCourses.findIndex(
+        (c) => c.name === courseDisplay
+      );
+
+      if (existingIndex !== -1) {
+        return prevCourses.map((c, i) =>
+          i === existingIndex ? { ...c, count: c.count + 1 } : c
+        );
+      } else {
+        return [
+          ...prevCourses,
+          { name: courseDisplay, count: 1, data: course },
+        ];
+      }
+    });
+  };
+  const toolboxCourse =
+    toolboxCourses[toolboxCourses.findIndex((c) => c.name === courseDisplay)];
+  const courseCount = toolboxCourse ? toolboxCourse.count : undefined;
   return (
     <>
       <div

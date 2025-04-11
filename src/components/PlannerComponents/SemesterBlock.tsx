@@ -5,11 +5,11 @@ import { Droppable } from "@hello-pangea/dnd";
 
 interface SemesterBlockProps {
   semester: SemesterType;
-  isDragging: boolean;
+  courseDragging: boolean;
 }
 
 
-const SemesterBlock: React.FC<SemesterBlockProps> = ({ semester , isDragging}) => {
+const SemesterBlock: React.FC<SemesterBlockProps> = ({ semester , courseDragging}) => {
   return (
     <>
       <div className="flex mt-4">
@@ -41,14 +41,14 @@ const SemesterBlock: React.FC<SemesterBlockProps> = ({ semester , isDragging}) =
           <div 
             ref={provided.innerRef}
             {...provided.droppableProps}
-            className= {`flex flex-col space-y-2 w-full ${snapshot.isDraggingOver ? "bg-[#7e8eb4]" : ""}`}
+            className= {`flex flex-col space-y-2 w-full `}
             >
             {semester.courseList.map((course,index) => (
               <PlannerCourse 
               key={course.id} 
               course={course} 
               index={index}
-              isDragging={isDragging}
+              courseDragging={courseDragging}
               />
             ))}
             {provided.placeholder}

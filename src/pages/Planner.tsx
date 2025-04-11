@@ -4,9 +4,10 @@ import SemesterBlock from "../components/PlannerComponents/SemesterBlock";
 
 interface PlannerProps {
   isDragging: boolean;
+  courseDragging:boolean;
 }
 
-const Planner: React.FC<PlannerProps> = ({ isDragging }) => {
+const Planner: React.FC<PlannerProps> = ({ isDragging, courseDragging}) => {
   const exampleCourse = {
     dept: "CSCI",
     code_num: "2600",
@@ -35,9 +36,9 @@ const Planner: React.FC<PlannerProps> = ({ isDragging }) => {
   return (
     <>
       <div
-        className={`bg-[#F5CECE] p-4 flex min-h-screen h-fit flex-col z-0 relative ${isDragging ? "brightness-50" : ""}`}
+        className={`bg-[#F5CECE] p-4 flex min-h-screen h-fit flex-col z-0 relative ${isDragging || courseDragging ? "brightness-50" : ""}`}
       >
-        <SemesterBlock semester={exampleSemester} />{" "}
+        <SemesterBlock semester={exampleSemester} courseDragging={Planner.courseDragging} />{" "}
         <SemesterBlock semester={exampleSemester} />{" "}
         <SemesterBlock semester={exampleSemester} />{" "}
       </div>

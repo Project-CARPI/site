@@ -10,6 +10,7 @@ import { DragDropContext, DropResult } from "@hello-pangea/dnd";
 function App() {
   const [toolboxCourses, setToolboxCourses] = useState<CourseEntry[]>([]);
   const [isDragging, setIsDragging] = useState<boolean>(false);
+  const [courseDragging, setCourseDragging] = useState<boolean>(false);
 
   const reorder = (
     list: CourseEntry[],
@@ -44,6 +45,10 @@ function App() {
       const items = deleteCourse(toolboxCourses, source.index);
       setToolboxCourses(items);
     }
+    if (sInd === dInd && sInd === "semesterblock") {
+      const items = reorder(toolboxCourses, source.index, destination.index);
+      setToolboxCourses(items);
+    } 
   };
 
   const onDragStart = () => {

@@ -5,7 +5,7 @@ import { Draggable } from "@hello-pangea/dnd";
 
 interface PlannerCourseProps {
   course: CourseType;
-  courseDragging: boolean;
+  isDragging: boolean;
   index: number;
 }
 

@@ -1,10 +1,13 @@
 import { Draggable } from "@hello-pangea/dnd";
-
+import PlannerCourse from "./PlannerComponents/PlannerCourse";
+import ToolboxCourse from "./Toolbox/ToolboxCourse";
+import { CourseType } from "../types/interfaces/Course.interface";
 interface DraggableItemProps {
   name: string;
   count: number;
   index: number;
   isDragging: boolean;
+  course: CourseType;
 }
 
 const DraggableItem: React.FC<DraggableItemProps> = ({
@@ -12,12 +15,16 @@ const DraggableItem: React.FC<DraggableItemProps> = ({
   count,
   index,
   isDragging,
+  course,
 }) => {
   return (
-    <Draggable draggableId={item.id} index={index}>
+    <Draggable draggableId={``} index={index}>
       {(provided, snapshot) => {
-        const isOverZoneA = snapshot.draggingOver === "zone-a";
-        const isOverZoneB = snapshot.draggingOver === "zone-b";
+        const isOverToolbox = snapshot.draggingOver === "toolbox";
+        const isOverPlanner =
+          snapshot.draggingOver === null
+            ? false
+            : snapshot.draggingOver.includes("planner");
 
         return (
           <div
@@ -31,12 +38,26 @@ const DraggableItem: React.FC<DraggableItemProps> = ({
               cursor: "grab",
             }}
           >
-            {isOverZoneA ? (
-              <CompactView data={item} />
-            ) : isOverZoneB ? (
-              <ExpandedView data={item} />
+            {isOverToolbox ? (
+              <ToolboxCourse
+                name={name}
+                count={count}
+                isDragging={isDragging}
+                index={index}
+              />
+            ) : isOverPlanner ? (
+              <PlannerCourse
+                index={index}
+                isDragging={isDragging}
+                course={course}
+              />
             ) : (
-              <CompactView data={item} />
+              <ToolboxCourse
+                name={name}
+                count={count}
+                isDragging={isDragging}
+                index={index}
+              />
             )}
           </div>
         );

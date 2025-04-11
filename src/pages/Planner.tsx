@@ -1,12 +1,20 @@
 import React from "react";
 // import PlannerCourse from "../components/PlannerComponents/PlannerCourse";
 import SemesterBlock from "../components/PlannerComponents/SemesterBlock";
+import { SemesterType } from "../types/interfaces/Semester.interface";
+import AddSemester from "../components/PlannerComponents/AddSemester";
 
 interface PlannerProps {
   isDragging: boolean;
+  plannerCourses: SemesterType[];
+  setPlannerCourses: () => React.Dispatch<React.SetStateAction<SemesterType[]>>;
 }
 
-const Planner: React.FC<PlannerProps> = ({ isDragging }) => {
+const Planner: React.FC<PlannerProps> = ({
+  isDragging,
+  plannerCourses,
+  setPlannerCourses,
+}) => {
   const exampleCourse = {
     dept: "CSCI",
     code_num: "2600",
@@ -35,14 +43,18 @@ const Planner: React.FC<PlannerProps> = ({ isDragging }) => {
   return (
     <>
       <div
-        className={`bg-[#F5CECE] p-4 flex min-h-screen h-fit flex-col z-0 relative ${isDragging || courseDragging ? "brightness-50" : ""}`}
+        className={`bg-[#F5CECE] p-4 flex min-h-screen h-fit flex-col z-0 relative ${isDragging || isDragging ? "brightness-50" : ""}`}
       >
-        <SemesterBlock isDragging={isDragging} semester={exampleSemester} />{" "}
-        <SemesterBlock isDragging={isDragging} semester={exampleSemester} />{" "}
-        <SemesterBlock
-          isDragging={isDragging}
-          semester={exampleSemester}
-        />{" "}
+        {plannerCourses.map((semester, index) => {
+          return (
+            <SemesterBlock
+              isDragging={isDragging}
+              semester={semester}
+              index={index + 1}
+            />
+          );
+        })}
+        <AddSemester setPlannerCourses={setPlannerCourses} />
       </div>
     </>
   );

@@ -6,11 +6,12 @@ import DepartmentFilters from "./components/Department-Filters.tsx";
 import Toolbox from "./components/Toolbox/Toolbox";
 import { CourseEntry } from "./types/interfaces/Course.interface.ts";
 import { DragDropContext, DropResult } from "@hello-pangea/dnd";
+import { SemesterType } from "./types/interfaces/Semester.interface.ts";
 
 function App() {
   const [toolboxCourses, setToolboxCourses] = useState<CourseEntry[]>([]);
   const [isDragging, setIsDragging] = useState<boolean>(false);
-  const [courseDragging, setCourseDragging] = useState<boolean>(false);
+  const [plannerCourses, setPlannerCourses] = useState<SemesterType[]>([]);
 
   const reorder = (
     list: CourseEntry[],
@@ -48,7 +49,7 @@ function App() {
     if (sInd === dInd && sInd === "semesterblock") {
       const items = reorder(toolboxCourses, source.index, destination.index);
       setToolboxCourses(items);
-    } 
+    }
   };
 
   const onDragStart = () => {
@@ -56,7 +57,7 @@ function App() {
   };
   return (
     <>
-      <div className={`font-['Helvetica']  min-h-screen`}>
+      <div className={`font-['Helvetica'] min-h-screen`}>
         <div
           className={`fixed top-0 left-0 w-full h-full z-0 bg-carpipink ${isDragging ? "brightness-50" : ""}`}
         ></div>
@@ -77,7 +78,13 @@ function App() {
                 <Route path="/filters" element={<DepartmentFilters />} />
                 <Route
                   path="/planner"
-                  element={<Planner isDragging={isDragging} />}
+                  element={
+                    <Planner
+                      isDragging={isDragging}
+                      plannerCourses={plannerCourses}
+                      setPlannerCourses={setPlannerCourses}
+                    />
+                  }
                 ></Route>
               </Routes>
               <Toolbox courses={toolboxCourses} isDragging={isDragging} />

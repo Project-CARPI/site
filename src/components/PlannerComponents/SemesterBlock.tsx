@@ -8,8 +8,10 @@ interface SemesterBlockProps {
   courseDragging: boolean;
 }
 
-
-const SemesterBlock: React.FC<SemesterBlockProps> = ({ semester , courseDragging}) => {
+const SemesterBlock: React.FC<SemesterBlockProps> = ({
+  semester,
+  isDragging,
+}) => {
   return (
     <>
       <div className="flex mt-4">
@@ -36,26 +38,26 @@ const SemesterBlock: React.FC<SemesterBlockProps> = ({ semester , courseDragging
             </div>
           </div>
           <Droppable droppableId={`semesterblock`} direction="vertical">
-              {(provided, snapshot) => {
-                return (
-          <div 
-            ref={provided.innerRef}
-            {...provided.droppableProps}
-            className= {`flex flex-col space-y-2 w-full `}
-            >
-            {semester.courseList.map((course,index) => (
-              <PlannerCourse 
-              key={course.id} 
-              course={course} 
-              index={index}
-              courseDragging={courseDragging}
-              />
-            ))}
-            {provided.placeholder}
-          </div>
-                );
-              }}
-            </Droppable>
+            {(provided, snapshot) => {
+              return (
+                <div
+                  ref={provided.innerRef}
+                  {...provided.droppableProps}
+                  className={`flex flex-col space-y-2 w-full ${snapshot.isDraggingOver ? "bg-[#7e8eb4]" : ""}`}
+                >
+                  {semester.courseList.map((course, index) => (
+                    <PlannerCourse
+                      key={course.dept + course.code_num}
+                      course={course}
+                      index={index}
+                      isDragging={isDragging}
+                    />
+                  ))}
+                  {provided.placeholder}
+                </div>
+              );
+            }}
+          </Droppable>
           <hr className="border-[calc(0.05px)] border-[#c3a9a9] w-full mt-4 text-[#c3a9a9] " />
         </div>
       </div>

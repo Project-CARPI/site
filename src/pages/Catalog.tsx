@@ -43,7 +43,7 @@ const Catalog: React.FC<CatalogProps> = ({
         className="w-1/4 m-auto pt-5"
       />
       <div className={`${isDragging ? "brightness-50" : ""}`}>
-        <SearchBar 
+        <SearchBar
           updateSearchResults={setSearchResults}
           searchPrompt={searchPrompt}
           setSearchPrompt={setSearchPrompt}
@@ -65,6 +65,10 @@ const Catalog: React.FC<CatalogProps> = ({
           />
         ))}
       </div>
+
+      <button className="border-1 border-black rounded-full h-fit font-medium text-sm">
+        {" "}
+      </button>
     </>
   );
 };

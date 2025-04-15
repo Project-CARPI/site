@@ -20,8 +20,11 @@ const AddSemester: React.FC<AddSemesterProps> = ({ setPlannerCourses }) => {
 
   return (
     <>
-      <button onClick={handleAddCourse} className="">
-        Add Semester
+      <button
+        onClick={handleAddCourse}
+        className="border-1 border-black rounded-3xl w-2/3 mx-auto py-1 my-4"
+      >
+        + Add Semester Block
       </button>
     </>
   );

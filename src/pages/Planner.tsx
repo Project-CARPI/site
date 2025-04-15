@@ -21,7 +21,13 @@ const Planner: React.FC<PlannerProps> = ({
         className={`bg-[#F5CECE] p-4 flex min-h-screen h-fit flex-col z-0 relative ${isDragging || isDragging ? "brightness-50" : ""}`}
       >
         {plannerCourses.map((semester, index) => {
-          return <SemesterBlock semester={semester} index={index + 1} />;
+          return (
+            <SemesterBlock
+              semester={semester}
+              index={index + 1}
+              key={semester.semesterNumber}
+            />
+          );
         })}
         <AddSemester setPlannerCourses={setPlannerCourses} />
       </div>

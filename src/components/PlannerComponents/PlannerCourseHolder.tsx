@@ -7,7 +7,6 @@ interface PlannerCourseHolderProps {
 const PlannerCourseHolder: React.FC<PlannerCourseHolderProps> = ({
   isHover,
 }) => {
-  console.log(isHover);
   return (
     <>
       <div

@@ -3,6 +3,8 @@ import PlannerCourse from "../PlannerComponents/PlannerCourse";
 import { SemesterType } from "../../types/interfaces/Semester.interface";
 import { Droppable } from "@hello-pangea/dnd";
 import PlannerCourseHolder from "./PlannerCourseHolder";
+import DraggableItem from "../DraggableItem";
+
 interface SemesterBlockProps {
   semester: SemesterType;
   isDragging: boolean;
@@ -45,15 +47,17 @@ const SemesterBlock: React.FC<SemesterBlockProps> = ({
                 <div
                   ref={provided.innerRef}
                   {...provided.droppableProps}
-                  className={`flex flex-col space-y-2 w-full ${snapshot.isDraggingOver ? "bg-[#7e8eb4]" : ""}`}
+                  className={`flex flex-col space-y-2 w-full `}
                 >
                   {semester.courseList.length === 0 && <PlannerCourseHolder />}
                   {semester.courseList.map((course, index) => (
-                    <PlannerCourse
-                      key={course.dept + course.code_num}
+                    <DraggableItem
+                      key={index}
                       course={course}
                       index={index}
-                      isDragging={isDragging}
+                      count={1}
+                      name={course.dept + course.code_num + index}
+                      location="planner"
                     />
                   ))}
                   {provided.placeholder}

@@ -4,14 +4,30 @@ import Catalog from "./pages/Catalog";
 import Planner from "./pages/Planner";
 import DepartmentFilters from "./components/Department-Filters.tsx";
 import Toolbox from "./components/Toolbox/Toolbox";
-import { CourseEntry } from "./types/interfaces/Course.interface.ts";
+import {
+  CourseEntry,
+  CourseType,
+} from "./types/interfaces/Course.interface.ts";
 import { DragDropContext, DropResult } from "@hello-pangea/dnd";
 import { SemesterType } from "./types/interfaces/Semester.interface.ts";
+import { Filters } from "./types/Filters";
 
 function App() {
+  // Original state from App.tsx
   const [toolboxCourses, setToolboxCourses] = useState<CourseEntry[]>([]);
   const [plannerCourses, setPlannerCourses] = useState<SemesterType[]>([]);
   const [isDragging, setIsDragging] = useState<boolean>(false);
+
+  const [searchResults, setSearchResults] = useState<CourseType[]>([]);
+
+  // Moved from SearchBar.tsx
+  const [searchPrompt, setSearchPrompt] = useState("");
+  const [showFilter, setShowFilter] = useState(false);
+  const [filters, setFilters] = useState<Filters>({
+    Subject: [],
+    Attributes: [],
+    Semesters: [],
+  });
 
   // Reorders a simple array
   const reorder = <T,>(
@@ -191,6 +207,14 @@ function App() {
                     isDragging={isDragging}
                     toolboxCourses={toolboxCourses}
                     setToolboxCourses={setToolboxCourses}
+                    searchResults={searchResults}
+                    setSearchResults={setSearchResults}
+                    searchPrompt={searchPrompt}
+                    setSearchPrompt={setSearchPrompt}
+                    showFilter={showFilter}
+                    setShowFilter={setShowFilter}
+                    filters={filters}
+                    setFilters={setFilters}
                   />
                 }
               />

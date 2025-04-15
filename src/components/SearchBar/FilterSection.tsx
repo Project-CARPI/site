@@ -13,12 +13,17 @@ interface FilterSectionProps {
   updateFilters: (category: keyof Filters, value: string) => void;
 }
 
-const FilterSection: React.FC<FilterSectionProps> = ({ sectionName, tags, selected, updateFilters }) => {
+const FilterSection: React.FC<FilterSectionProps> = ({
+  sectionName,
+  tags,
+  selected,
+  updateFilters,
+}) => {
   return (
     <div className="mt-2">
       <h1>{sectionName}</h1>
       <div className="flex overflow-x-auto">
-        {tags.map(tag => (
+        {tags.map((tag) => (
           <button
             key={tag.id}
             className={`rounded-2xl px-3 py-1 text-sm mr-1 mb-1 flex-none

@@ -38,12 +38,12 @@ const Course: React.FC<CourseProps> = ({
 
     setToolboxCourses((prevCourses) => {
       const existingIndex = prevCourses.findIndex(
-        (c) => c.name === courseDisplay
+        (c) => c.name === courseDisplay,
       );
 
       if (existingIndex !== -1) {
         return prevCourses.map((c, i) =>
-          i === existingIndex ? { ...c, count: c.count + 1 } : c
+          i === existingIndex ? { ...c, count: c.count + 1 } : c,
         );
       } else {
         return [
@@ -100,7 +100,9 @@ const Course: React.FC<CourseProps> = ({
             className={`text-sm`}
             transition={{ duration: 0.05 }}
           >
-            {course.desc_text}
+            {course.desc_text.trim() === ""
+              ? "Empty Description"
+              : course.desc_text}
           </motion.p>
         </div>
       </div>

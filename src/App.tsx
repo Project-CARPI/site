@@ -186,6 +186,77 @@ function App() {
 
       return;
     }
+
+    // if (sInd.startsWith("planner-") && dInd === "toolbox") {
+    //   const sourceSemesterIndex = parseInt(sInd.split("-")[1]);
+
+    //   setPlannerCourses((prev) => {
+    //     const updated = [...prev];
+    //     const sourceSemester = updated[sourceSemesterIndex - 1];
+    //     const courseListCopy = [...sourceSemester.courseList];
+    //     const [removedCourse] = courseListCopy.splice(source.index, 1);
+
+    //     if (!removedCourse) return prev;
+
+    //     updated[sourceSemesterIndex - 1] = {
+    //       ...sourceSemester,
+    //       courseList: courseListCopy,
+    //       creditsTotal:
+    //         sourceSemester.creditsTotal - removedCourse.data.credit_max,
+    //     };
+
+    //     setToolboxCourses((prevToolbox) => {
+    //       const existing = prevToolbox.find(
+    //         (c) =>
+    //           c.data.dept === removedCourse.data.dept &&
+    //           c.data.code_num === removedCourse.data.code_num
+    //       );
+
+    //       if (existing) {
+    //         return prevToolbox.map((c) =>
+    //           c.name === existing.name ? { ...c, count: c.count + 1 } : c
+    //         );
+    //       } else {
+    //         return [
+    //           ...prevToolbox,
+    //           {
+    //             name: removedCourse.data.dept + removedCourse.data.code_num,
+    //             data: removedCourse.data,
+    //             count: 1,
+    //           },
+    //         ];
+    //       }
+    //     });
+
+    //     return updated;
+    //   });
+
+    //   return;
+    // }
+
+    if (sInd.startsWith("planner-") && dInd === "garbage") {
+      const sourceSemesterIndex = parseInt(sInd.split("-")[1]);
+
+      setPlannerCourses((prev) => {
+        const updated = [...prev];
+        const sourceSemester = updated[sourceSemesterIndex - 1];
+        const courseListCopy = [...sourceSemester.courseList];
+        const [removedCourse] = courseListCopy.splice(source.index, 1);
+
+        if (!removedCourse) return prev;
+
+        updated[sourceSemesterIndex - 1] = {
+          ...sourceSemester,
+          courseList: courseListCopy,
+          creditsTotal:
+            sourceSemester.creditsTotal - removedCourse.data.credit_max,
+        };
+
+        return updated;
+      });
+
+      return;
+    }
   };
 
   return (

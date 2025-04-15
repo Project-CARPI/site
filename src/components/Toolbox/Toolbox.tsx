@@ -63,6 +63,9 @@ const Toolbox: React.FC<ToolboxProps> = ({ courses, isDragging }) => {
                         index={index}
                         course={course.data}
                         location="toolbox"
+                        setPlannerCourses={null}
+                        setToolboxCourses={null}
+                        semesterIndex={null}
                       />
                     ))}
                     {provided.placeholder}

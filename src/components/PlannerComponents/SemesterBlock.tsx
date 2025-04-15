@@ -1,15 +1,22 @@
-import React from "react";
+import React, { Dispatch, SetStateAction } from "react";
 import { SemesterType } from "../../types/interfaces/Semester.interface";
 import { Droppable } from "@hello-pangea/dnd";
 import PlannerCourseHolder from "./PlannerCourseHolder";
 import DraggableItem from "../DraggableItem";
-
+import { CourseEntry } from "../../types/interfaces/Course.interface";
 interface SemesterBlockProps {
   semester: SemesterType;
   index: number;
+  setPlannerCourses: Dispatch<SetStateAction<SemesterType[]>>;
+  setToolboxCourses: Dispatch<SetStateAction<CourseEntry[]>>;
 }
 
-const SemesterBlock: React.FC<SemesterBlockProps> = ({ semester, index }) => {
+const SemesterBlock: React.FC<SemesterBlockProps> = ({
+  semester,
+  index,
+  setPlannerCourses,
+  setToolboxCourses,
+}) => {
   return (
     <>
       <div className="flex mt-4">
@@ -53,13 +60,16 @@ const SemesterBlock: React.FC<SemesterBlockProps> = ({ semester, index }) => {
                     <PlannerCourseHolder isHover={true} />
                   )}
                   {!isEmpty &&
-                    semester.courseList.map((course, index) => (
+                    semester.courseList.map((course, courseIndex) => (
                       <DraggableItem
                         key={course.name}
                         name={course.name}
                         course={course.data}
                         count={course.count}
-                        index={index}
+                        index={courseIndex}
+                        semesterIndex={index}
+                        setPlannerCourses={setPlannerCourses}
+                        setToolboxCourses={setToolboxCourses}
                         location="planner"
                       />
                     ))}

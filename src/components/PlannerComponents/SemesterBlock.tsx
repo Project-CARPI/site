@@ -37,30 +37,38 @@ const SemesterBlock: React.FC<SemesterBlockProps> = ({ semester, index }) => {
           </div>
           <Droppable droppableId={`planner-${index}`} direction="vertical">
             {(provided, snapshot) => {
+              const isEmpty = semester.courseList.length === 0;
+              const isHovering = snapshot.isDraggingOver;
+
               return (
                 <div
                   ref={provided.innerRef}
                   {...provided.droppableProps}
-                  className={`flex flex-col space-y-2 w-full `}
+                  className="flex flex-col space-y-2 w-full"
                 >
-                  {semester.courseList.length === 0 && (
-                    <PlannerCourseHolder isHover={snapshot.isDraggingOver} />
+                  {isEmpty && !isHovering && (
+                    <PlannerCourseHolder isHover={false} />
                   )}
-                  {semester.courseList.map((course, index) => (
-                    <DraggableItem
-                      key={course.name}
-                      course={course.data}
-                      index={index}
-                      count={course.count}
-                      name={course.name}
-                      location="planner"
-                    />
-                  ))}
+                  {isEmpty && isHovering && (
+                    <PlannerCourseHolder isHover={true} />
+                  )}
+                  {!isEmpty &&
+                    semester.courseList.map((course, index) => (
+                      <DraggableItem
+                        key={course.name}
+                        name={course.name}
+                        course={course.data}
+                        count={course.count}
+                        index={index}
+                        location="planner"
+                      />
+                    ))}
                   {provided.placeholder}
                 </div>
               );
             }}
           </Droppable>
+
           <hr className="border-[calc(0.05px)] border-[#c3a9a9] w-full mt-4 text-[#c3a9a9] " />
         </div>
       </div>

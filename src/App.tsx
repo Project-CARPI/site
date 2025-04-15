@@ -14,7 +14,14 @@ import { Filters } from "./types/Filters";
 function App() {
   // Original state from App.tsx
   const [toolboxCourses, setToolboxCourses] = useState<CourseEntry[]>([]);
-  const [plannerCourses, setPlannerCourses] = useState<SemesterType[]>([]);
+  const [plannerCourses, setPlannerCourses] = useState<SemesterType[]>([
+    {
+      semesterNumber: 1,
+      semesterSeason: "fall",
+      creditsTotal: 0,
+      courseList: [],
+    },
+  ]);
   const [isDragging, setIsDragging] = useState<boolean>(false);
 
   const [searchResults, setSearchResults] = useState<CourseType[]>([]);

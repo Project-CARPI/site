@@ -2,7 +2,6 @@ import { useState } from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import Catalog from "./pages/Catalog";
 import Planner from "./pages/Planner";
-import DepartmentFilters from "./components/Department-Filters.tsx";
 import Toolbox from "./components/Toolbox/Toolbox";
 import {
   CourseEntry,
@@ -218,7 +217,6 @@ function App() {
                   />
                 }
               />
-              <Route path="/filters" element={<DepartmentFilters />} />
               <Route
                 path="/planner"
                 element={

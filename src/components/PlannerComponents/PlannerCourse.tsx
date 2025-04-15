@@ -8,11 +8,7 @@ interface PlannerCourseProps {
   index: number;
 }
 
-const PlannerCourse: React.FC<PlannerCourseProps> = ({
-  course,
-  isDragging,
-}) => {
-  const courseId = course.dept + course.code_num.toString();
+const PlannerCourse: React.FC<PlannerCourseProps> = ({ course }) => {
   const [openPopup, setOpenPopup] = useState<boolean>(false);
   const componentRef = useRef<HTMLDivElement>(null);
 

@@ -46,7 +46,6 @@ function App() {
     const sInd = source.droppableId;
     const dInd = destination.droppableId;
 
-    // 1️⃣ Reorder within toolbox
     if (sInd === "toolbox" && dInd === "toolbox") {
       setToolboxCourses((prev) =>
         reorder(prev, source.index, destination.index)
@@ -54,7 +53,6 @@ function App() {
       return;
     }
 
-    // 2️⃣ Delete from toolbox
     if (dInd === "garbage" && sInd === "toolbox") {
       setToolboxCourses((prev) => {
         const updated = [...prev];
@@ -64,12 +62,11 @@ function App() {
       return;
     }
 
-    // 3️⃣ Reorder within a planner semester
     if (sInd === dInd && dInd.startsWith("planner-")) {
       const semesterIndex = parseInt(dInd.split("-")[1]);
       setPlannerCourses((prev) =>
         prev.map((semester, idx) =>
-          idx === semesterIndex
+          idx === semesterIndex - 1
             ? {
                 ...semester,
                 courseList: reorder(
@@ -84,7 +81,58 @@ function App() {
       return;
     }
 
-    // 4️⃣ Moving from toolbox to planner
+    if (sInd.startsWith("planner-") && dInd.startsWith("planner-")) {
+      const sourceSemesterIndex = parseInt(sInd.split("-")[1]);
+      const destSemesterIndex = parseInt(dInd.split("-")[1]);
+
+      setPlannerCourses((prev) => {
+        const updated = [...prev];
+        const sourceIdx = sourceSemesterIndex - 1;
+        const destIdx = destSemesterIndex - 1;
+
+        const sourceSemester = updated[sourceIdx];
+        const destSemester = updated[destIdx];
+
+        if (
+          !sourceSemester ||
+          !destSemester ||
+          source.index < 0 ||
+          source.index >= sourceSemester.courseList.length
+        ) {
+          console.warn("Invalid source or destination index");
+          return prev;
+        }
+
+        const courseListCopy = [...sourceSemester.courseList];
+        const [movedCourse] = courseListCopy.splice(source.index, 1);
+
+        if (!movedCourse) {
+          console.warn("Failed to extract course from source");
+          return prev;
+        }
+
+        updated[sourceIdx] = {
+          ...sourceSemester,
+          courseList: courseListCopy,
+          creditsTotal:
+            sourceSemester.creditsTotal - movedCourse.data.credit_max,
+        };
+
+        const destListCopy = [...destSemester.courseList];
+        destListCopy.splice(destination.index, 0, movedCourse);
+
+        updated[destIdx] = {
+          ...destSemester,
+          courseList: destListCopy,
+          creditsTotal: destSemester.creditsTotal + movedCourse.data.credit_max,
+        };
+
+        return updated;
+      });
+
+      return;
+    }
+
     const fromToolbox = sInd === "toolbox";
     const toPlanner = dInd.startsWith("planner-");
 
@@ -96,19 +144,22 @@ function App() {
         const newCourse = cloneCourse(courseToClone);
 
         setPlannerCourses((prev) =>
-          prev.map((semester, idx) =>
-            idx + 1 === semesterIndex
-              ? {
-                  ...semester,
-                  courseList: [...semester.courseList, newCourse.data],
-                  creditsTotal:
-                    semester.creditsTotal + courseToClone.data.credit_max,
-                }
-              : semester
-          )
+          prev.map((semester, idx) => {
+            if (idx + 1 === semesterIndex) {
+              const updatedList = [...semester.courseList];
+              updatedList.splice(destination.index, 0, newCourse);
+
+              return {
+                ...semester,
+                courseList: updatedList,
+                creditsTotal:
+                  semester.creditsTotal + courseToClone.data.credit_max,
+              };
+            }
+            return semester;
+          })
         );
 
-        // Decrement count or remove from toolbox
         setToolboxCourses((prev) =>
           prev
             .map((c) =>
@@ -120,8 +171,6 @@ function App() {
 
       return;
     }
-
-    // Add more logic here for planner ↔ planner drag, or planner → toolbox if needed
   };
 
   return (

@@ -1,11 +1,11 @@
 import React, { useState } from "react";
 import ToolboxButton from "./ToolboxButton";
 import NavButton from "./NavButton";
-import ToolboxCourse from "./ToolboxCourse";
 import { Droppable } from "@hello-pangea/dnd";
 import { IoIosArrowDown } from "react-icons/io";
 import { CourseEntry } from "../../types/interfaces/Course.interface";
 import GarbageBin from "../GarbageBin";
+import DraggableItem from "../DraggableItem";
 
 interface ToolboxProps {
   courses: CourseEntry[];
@@ -56,12 +56,13 @@ const Toolbox: React.FC<ToolboxProps> = ({ courses, isDragging }) => {
                     className={`courses h-15 flex items-center px-2 w-screen overflow-x-auto whitespace-nowrap scrollbar-hide ${snapshot.isDraggingOver ? "bg-[#7e8eb4]" : ""}`}
                   >
                     {courses.map((course, index) => (
-                      <ToolboxCourse
+                      <DraggableItem
                         key={course.name}
                         name={course.name}
                         count={course.count}
                         index={index}
-                        isDragging={isDragging}
+                        course={course.data}
+                        location="toolbox"
                       />
                     ))}
                     {provided.placeholder}

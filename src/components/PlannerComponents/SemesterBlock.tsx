@@ -1,12 +1,15 @@
 import React from "react";
-import PlannerCourse, { CourseType } from "../PlannerComponents/PlannerCourse";
 import { SemesterType } from "../../types/interfaces/Semester.interface";
+import { Droppable } from "@hello-pangea/dnd";
+import PlannerCourseHolder from "./PlannerCourseHolder";
+import DraggableItem from "../DraggableItem";
 
 interface SemesterBlockProps {
   semester: SemesterType;
+  index: number;
 }
 
-const SemesterBlock: React.FC<SemesterBlockProps> = ({ semester }) => {
+const SemesterBlock: React.FC<SemesterBlockProps> = ({ semester, index }) => {
   return (
     <>
       <div className="flex mt-4">
@@ -32,12 +35,39 @@ const SemesterBlock: React.FC<SemesterBlockProps> = ({ semester }) => {
               {semester.creditsTotal}
             </div>
           </div>
+          <Droppable droppableId={`planner-${index}`} direction="vertical">
+            {(provided, snapshot) => {
+              const isEmpty = semester.courseList.length === 0;
+              const isHovering = snapshot.isDraggingOver;
 
-          <div className="flex flex-col space-y-2 w-full">
-            {semester.courseList.map((course) => (
-              <PlannerCourse key={course.id} course={course} />
-            ))}
-          </div>
+              return (
+                <div
+                  ref={provided.innerRef}
+                  {...provided.droppableProps}
+                  className="flex flex-col space-y-2 w-full"
+                >
+                  {isEmpty && !isHovering && (
+                    <PlannerCourseHolder isHover={false} />
+                  )}
+                  {isEmpty && isHovering && (
+                    <PlannerCourseHolder isHover={true} />
+                  )}
+                  {!isEmpty &&
+                    semester.courseList.map((course, index) => (
+                      <DraggableItem
+                        key={course.name}
+                        name={course.name}
+                        course={course.data}
+                        count={course.count}
+                        index={index}
+                        location="planner"
+                      />
+                    ))}
+                  {provided.placeholder}
+                </div>
+              );
+            }}
+          </Droppable>
 
           <hr className="border-[calc(0.05px)] border-[#c3a9a9] w-full mt-4 text-[#c3a9a9] " />
         </div>

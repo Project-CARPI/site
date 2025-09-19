@@ -302,6 +302,7 @@ function App() {
                     isDragging={isDragging}
                     plannerCourses={plannerCourses}
                     setPlannerCourses={setPlannerCourses}
+                    setToolboxCourses={setToolboxCourses}
                   />
                 }
               />

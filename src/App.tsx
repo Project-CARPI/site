@@ -3,6 +3,7 @@ import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import Catalog from "./pages/Catalog";
 import Planner from "./pages/Planner";
 import Toolbox from "./components/Toolbox/Toolbox";
+import HomePage from "./pages/HomePage";
 import {
   CourseEntry,
   CourseType,
@@ -39,7 +40,7 @@ function App() {
   const reorder = <T,>(
     list: T[],
     startIndex: number,
-    endIndex: number,
+    endIndex: number
   ): T[] => {
     const result = [...list];
     const [removed] = result.splice(startIndex, 1);
@@ -70,7 +71,7 @@ function App() {
 
     if (sInd === "toolbox" && dInd === "toolbox") {
       setToolboxCourses((prev) =>
-        reorder(prev, source.index, destination.index),
+        reorder(prev, source.index, destination.index)
       );
       return;
     }
@@ -94,11 +95,11 @@ function App() {
                 courseList: reorder(
                   semester.courseList,
                   source.index,
-                  destination.index,
+                  destination.index
                 ),
               }
-            : semester,
-        ),
+            : semester
+        )
       );
       return;
     }
@@ -179,15 +180,15 @@ function App() {
               };
             }
             return semester;
-          }),
+          })
         );
 
         setToolboxCourses((prev) =>
           prev
             .map((c) =>
-              c.name === courseToClone.name ? { ...c, count: c.count - 1 } : c,
+              c.name === courseToClone.name ? { ...c, count: c.count - 1 } : c
             )
-            .filter((c) => c.count > 0),
+            .filter((c) => c.count > 0)
         );
       }
 
@@ -279,6 +280,26 @@ function App() {
             <Routes>
               <Route
                 path="/"
+                element={
+                  <HomePage
+                    isDragging={isDragging}
+                    toolboxCourses={toolboxCourses}
+                    setToolboxCourses={setToolboxCourses}
+                    plannerCourses={plannerCourses}
+                    setPlannerCourses={setPlannerCourses}
+                    searchResults={searchResults}
+                    setSearchResults={setSearchResults}
+                    searchPrompt={searchPrompt}
+                    setSearchPrompt={setSearchPrompt}
+                    showFilter={showFilter}
+                    setShowFilter={setShowFilter}
+                    filters={filters}
+                    setFilters={setFilters}
+                  />
+                }
+              />
+              <Route
+                path="/catalog"
                 element={
                   <Catalog
                     isDragging={isDragging}

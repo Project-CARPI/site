@@ -43,7 +43,7 @@ const DraggableItem: React.FC<DraggableItemProps> = ({
           {location === "planner" &&
           setPlannerCourses &&
           setToolboxCourses &&
-          semesterIndex ? (
+          semesterIndex !== null ? (
             <PlannerCourse
               index={index}
               isDragging={snapshot.isDragging}

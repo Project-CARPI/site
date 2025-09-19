@@ -33,32 +33,39 @@ const HomePage = (props: HomePageProps) => {
   }, []);
 
   return (
-    <div className="flex flex-row">
-      <div className={isDesktop ? "w-1/2" : "w-full"}>
-        <Catalog
-          isDragging={props.isDragging}
-          toolboxCourses={props.toolboxCourses}
-          setToolboxCourses={props.setToolboxCourses}
-          searchResults={props.searchResults}
-          setSearchResults={props.setSearchResults}
-          searchPrompt={props.searchPrompt}
-          setSearchPrompt={props.setSearchPrompt}
-          showFilter={props.showFilter}
-          setShowFilter={props.setShowFilter}
-          filters={props.filters}
-          setFilters={props.setFilters}
-        />
-      </div>
-      {isDesktop && (
-        <div className="w-1/2">
-          <Planner
+    <div>
+      <img
+        src="/carpi-black.png"
+        alt="Carpi Logo"
+        className="w-1/4 lg:w-1/12 m-auto pt-5"
+      />
+      <div className="flex flex-row">
+        <div className={isDesktop ? "w-1/2" : "w-full"}>
+          <Catalog
             isDragging={props.isDragging}
-            plannerCourses={props.plannerCourses}
-            setPlannerCourses={props.setPlannerCourses}
+            toolboxCourses={props.toolboxCourses}
             setToolboxCourses={props.setToolboxCourses}
+            searchResults={props.searchResults}
+            setSearchResults={props.setSearchResults}
+            searchPrompt={props.searchPrompt}
+            setSearchPrompt={props.setSearchPrompt}
+            showFilter={props.showFilter}
+            setShowFilter={props.setShowFilter}
+            filters={props.filters}
+            setFilters={props.setFilters}
           />
         </div>
-      )}
+        {isDesktop && (
+          <div className="w-1/2">
+            <Planner
+              isDragging={props.isDragging}
+              plannerCourses={props.plannerCourses}
+              setPlannerCourses={props.setPlannerCourses}
+              setToolboxCourses={props.setToolboxCourses}
+            />
+          </div>
+        )}
+      </div>
     </div>
   );
 };

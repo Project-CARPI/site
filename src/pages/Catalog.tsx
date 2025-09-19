@@ -37,11 +37,6 @@ const Catalog: React.FC<CatalogProps> = ({
 }) => {
   return (
     <>
-      <img
-        src="/carpi-black.png"
-        alt="Carpi Logo"
-        className="w-1/4 m-auto pt-5"
-      />
       <div className={`${isDragging ? "brightness-50" : ""}`}>
         <SearchBar
           updateSearchResults={setSearchResults}

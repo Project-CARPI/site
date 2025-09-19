@@ -1,4 +1,5 @@
-import { useState, useEffect } from "react";
+import useIsDesktop from "../hooks/useIsDesktop";
+
 import Catalog from "./Catalog";
 import Planner from "./Planner";
 import { CourseEntry, CourseType } from "../types/interfaces/Course.interface";
@@ -22,15 +23,7 @@ interface HomePageProps {
 }
 
 const HomePage = (props: HomePageProps) => {
-  const [isDesktop, setIsDesktop] = useState(window.innerWidth > 1024);
-
-  useEffect(() => {
-    const handleResize = () => {
-      setIsDesktop(window.innerWidth > 1024);
-    };
-    window.addEventListener("resize", handleResize);
-    return () => window.removeEventListener("resize", handleResize);
-  }, []);
+  const isDesktop = useIsDesktop();
 
   return (
     <div>

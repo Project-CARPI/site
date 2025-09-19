@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import ToolboxButton from "./ToolboxButton";
 import NavButton from "./NavButton";
 import { Droppable } from "@hello-pangea/dnd";
@@ -13,7 +13,16 @@ interface ToolboxProps {
 }
 
 const Toolbox: React.FC<ToolboxProps> = ({ courses, isDragging }) => {
+  const [isDesktop, setIsDesktop] = useState(window.innerWidth > 1024);
   const [isOpen, setIsOpen] = useState(false);
+
+  useEffect(() => {
+    const handleResize = () => {
+      setIsDesktop(window.innerWidth > 1024);
+    };
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
 
   const toggleToolbox = () => {
     setIsOpen((open) => !open);
@@ -75,7 +84,7 @@ const Toolbox: React.FC<ToolboxProps> = ({ courses, isDragging }) => {
             </Droppable>
           </div>
 
-          <NavButton />
+          {!isDesktop && <NavButton />}
         </div>
       </div>
     </>

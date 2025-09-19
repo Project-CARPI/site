@@ -172,7 +172,6 @@ const PlannerCourse: React.FC<PlannerCourseProps> = ({
   };
 
   const handleDelete = () => {
-    console.log(semesterIndex);
     setPlannerCourses((prev) =>
       prev.map((semester, i) =>
         i === semesterIndex - 1

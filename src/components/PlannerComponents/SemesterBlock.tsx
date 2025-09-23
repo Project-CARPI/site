@@ -79,7 +79,7 @@ const SemesterBlock: React.FC<SemesterBlockProps> = ({
             }}
           </Droppable>
 
-          <hr className="border-[calc(0.05px)] border-[#c3a9a9] w-full mt-4 text-[#c3a9a9] " />
+          {/* <hr className="border-[calc(0.05px)] border-[#c3a9a9] w-full mt-4 text-[#c3a9a9] " /> */}
         </div>
       </div>
     </>

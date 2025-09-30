@@ -1,9 +1,7 @@
 import React from "react";
 import { Dispatch, SetStateAction } from "react";
-import useIsDesktop from "../hooks/useIsDesktop";
 
-import SemesterBlock from "../components/PlannerComponents/SemesterBlock";
-import DesktopSemesterBlock from "../components/PlannerComponents/DesktopSemesterBlock";
+import SemesterBlock from "../components/PlannerComponents/SemesterBlocks/SemesterBlock";
 import { SemesterType } from "../types/interfaces/Semester.interface";
 import { CourseEntry } from "../types/interfaces/Course.interface";
 import AddSemester from "../components/PlannerComponents/AddSemester";
@@ -21,35 +19,21 @@ const Planner: React.FC<PlannerProps> = ({
   setPlannerCourses,
   setToolboxCourses,
 }) => {
-  const isDesktop = useIsDesktop();
-
   return (
     <div className="flex flex-col">
       <div
         className={`p-4 flex justify-between flex-wrap gap-y-4 z-0 ${isDragging || isDragging ? "brightness-50" : ""}`}
       >
         {plannerCourses.map((semester, index) => {
-          if (isDesktop) {
-            return (
-              <DesktopSemesterBlock
-                semester={semester}
-                index={index + 1}
-                key={semester.semesterNumber}
-                setPlannerCourses={setPlannerCourses}
-                setToolboxCourses={setToolboxCourses}
-              />
-            );
-          } else {
-            return (
-              <SemesterBlock
-                semester={semester}
-                index={index + 1}
-                key={semester.semesterNumber}
-                setPlannerCourses={setPlannerCourses}
-                setToolboxCourses={setToolboxCourses}
-              />
-            );
-          }
+          return (
+            <SemesterBlock
+              semester={semester}
+              index={index + 1}
+              key={semester.semesterNumber}
+              setPlannerCourses={setPlannerCourses}
+              setToolboxCourses={setToolboxCourses}
+            />
+          );
         })}
       </div>
       <AddSemester setPlannerCourses={setPlannerCourses} />

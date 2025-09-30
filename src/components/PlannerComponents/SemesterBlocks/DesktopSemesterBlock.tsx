@@ -1,16 +1,10 @@
-import React, { Dispatch, SetStateAction } from "react";
-import { SemesterType } from "../../types/interfaces/Semester.interface";
-import { Droppable } from "@hello-pangea/dnd";
-import PlannerCourseHolder from "./PlannerCourseHolder";
-import DraggableItem from "../DraggableItem";
-import { CourseEntry } from "../../types/interfaces/Course.interface";
+import React from "react";
 
-interface SemesterBlockProps {
-  semester: SemesterType;
-  index: number;
-  setPlannerCourses: Dispatch<SetStateAction<SemesterType[]>>;
-  setToolboxCourses: Dispatch<SetStateAction<CourseEntry[]>>;
-}
+import { Droppable } from "@hello-pangea/dnd";
+import PlannerCourseHolder from "../PlannerCourseHolder";
+import DraggableItem from "../../DraggableItem";
+
+import { SemesterBlockProps } from "./SemesterBlock";
 
 const DesktopSemesterBlock: React.FC<SemesterBlockProps> = ({
   semester,

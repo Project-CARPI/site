@@ -28,7 +28,7 @@ const Planner: React.FC<PlannerProps> = ({
           return (
             <SemesterBlock
               semester={semester}
-              index={index + 1}
+              index={index}
               key={semester.semesterNumber}
               setPlannerCourses={setPlannerCourses}
               setToolboxCourses={setToolboxCourses}

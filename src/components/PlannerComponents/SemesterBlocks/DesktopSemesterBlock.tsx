@@ -35,7 +35,7 @@ const DesktopSemesterBlock: React.FC<SemesterBlockProps> = ({
             <div
               ref={provided.innerRef}
               {...provided.droppableProps}
-              className="flex flex-col space-y-2 w-full"
+              className="flex flex-col space-y-2"
             >
               {isEmpty && !isHovering && (
                 <PlannerCourseHolder isHover={false} />

@@ -40,7 +40,7 @@ function App() {
   const reorder = <T,>(
     list: T[],
     startIndex: number,
-    endIndex: number,
+    endIndex: number
   ): T[] => {
     const result = [...list];
     const [removed] = result.splice(startIndex, 1);
@@ -71,7 +71,7 @@ function App() {
 
     if (sInd === "toolbox" && dInd === "toolbox") {
       setToolboxCourses((prev) =>
-        reorder(prev, source.index, destination.index),
+        reorder(prev, source.index, destination.index)
       );
       return;
     }
@@ -89,17 +89,17 @@ function App() {
       const semesterIndex = parseInt(dInd.split("-")[1]);
       setPlannerCourses((prev) =>
         prev.map((semester, idx) =>
-          idx === semesterIndex - 1
+          idx === semesterIndex
             ? {
                 ...semester,
                 courseList: reorder(
                   semester.courseList,
                   source.index,
-                  destination.index,
+                  destination.index
                 ),
               }
-            : semester,
-        ),
+            : semester
+        )
       );
       return;
     }
@@ -110,8 +110,8 @@ function App() {
 
       setPlannerCourses((prev) => {
         const updated = [...prev];
-        const sourceIdx = sourceSemesterIndex - 1;
-        const destIdx = destSemesterIndex - 1;
+        const sourceIdx = sourceSemesterIndex;
+        const destIdx = destSemesterIndex;
 
         const sourceSemester = updated[sourceIdx];
         const destSemester = updated[destIdx];
@@ -180,15 +180,15 @@ function App() {
               };
             }
             return semester;
-          }),
+          })
         );
 
         setToolboxCourses((prev) =>
           prev
             .map((c) =>
-              c.name === courseToClone.name ? { ...c, count: c.count - 1 } : c,
+              c.name === courseToClone.name ? { ...c, count: c.count - 1 } : c
             )
-            .filter((c) => c.count > 0),
+            .filter((c) => c.count > 0)
         );
       }
 

@@ -22,27 +22,25 @@ const SemesterBlock: React.FC<SemesterBlockProps> = ({
   const isDesktop = useIsDesktop();
 
   if (isDesktop) {
-    if (isDesktop) {
-      return (
-        <DesktopSemesterBlock
-          semester={semester}
-          index={index + 1}
-          key={semester.semesterNumber}
-          setPlannerCourses={setPlannerCourses}
-          setToolboxCourses={setToolboxCourses}
-        />
-      );
-    } else {
-      return (
-        <MobileSemesterBlock
-          semester={semester}
-          index={index + 1}
-          key={semester.semesterNumber}
-          setPlannerCourses={setPlannerCourses}
-          setToolboxCourses={setToolboxCourses}
-        />
-      );
-    }
+    return (
+      <DesktopSemesterBlock
+        semester={semester}
+        index={index + 1}
+        key={semester.semesterNumber}
+        setPlannerCourses={setPlannerCourses}
+        setToolboxCourses={setToolboxCourses}
+      />
+    );
+  } else {
+    return (
+      <MobileSemesterBlock
+        semester={semester}
+        index={index + 1}
+        key={semester.semesterNumber}
+        setPlannerCourses={setPlannerCourses}
+        setToolboxCourses={setToolboxCourses}
+      />
+    );
   }
 };
 

@@ -18,12 +18,11 @@ const Planner: React.FC<PlannerProps> = ({
   setPlannerCourses,
   setToolboxCourses,
 }) => {
-
   const handleDeleteSemester = (semesterNumber: number) => {
     setPlannerCourses((prev) =>
       prev
         .filter((s) => s.semesterNumber !== semesterNumber)
-        .map((s, idx) => ({ ...s, semesterNumber: idx + 1 }))
+        .map((s, idx) => ({ ...s, semesterNumber: idx + 1 })),
     );
   };
 
@@ -45,11 +44,10 @@ const Planner: React.FC<PlannerProps> = ({
             semesterNumber={semester.semesterNumber}
             onDelete={handleDeleteSemester}
           />
-                    <hr className="border-[calc(0.05px)] border-[#c3a9a9] w-full mt-4 text-[#c3a9a9] " />
-
+          <hr className="border-[calc(0.05px)] border-[#c3a9a9] w-full mt-4 text-[#c3a9a9] " />
         </div>
       ))}
-      
+
       <AddSemester setPlannerCourses={setPlannerCourses} />
     </div>
   );

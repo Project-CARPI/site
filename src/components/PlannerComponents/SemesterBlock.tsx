@@ -78,7 +78,6 @@ const SemesterBlock: React.FC<SemesterBlockProps> = ({
               );
             }}
           </Droppable>
-
         </div>
       </div>
     </>

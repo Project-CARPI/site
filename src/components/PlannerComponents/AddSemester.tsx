@@ -5,7 +5,6 @@ interface AddSemesterProps {
   setPlannerCourses: React.Dispatch<React.SetStateAction<SemesterType[]>>;
 }
 
-
 const AddSemester: React.FC<AddSemesterProps> = ({ setPlannerCourses }) => {
   const handleAddCourse = () => {
     setPlannerCourses((prevCourses) => [

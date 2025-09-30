@@ -18,12 +18,12 @@ const Planner: React.FC<PlannerProps> = ({
   setPlannerCourses,
   setToolboxCourses,
 }) => {
-  // ✅ Define the delete handler here
+
   const handleDeleteSemester = (semesterNumber: number) => {
     setPlannerCourses((prev) =>
       prev
         .filter((s) => s.semesterNumber !== semesterNumber)
-        .map((s, idx) => ({ ...s, semesterNumber: idx + 1 })) // reindex numbers
+        .map((s, idx) => ({ ...s, semesterNumber: idx + 1 }))
     );
   };
 

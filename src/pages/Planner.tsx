@@ -24,32 +24,34 @@ const Planner: React.FC<PlannerProps> = ({
   const isDesktop = useIsDesktop();
 
   return (
-    <div
-      className={`p-4 flex min-h-screen h-fit flex-col z-0 relative ${isDragging || isDragging ? "brightness-50" : ""}`}
-    >
-      {plannerCourses.map((semester, index) => {
-        if (isDesktop) {
-          return (
-            <DesktopSemesterBlock
-              semester={semester}
-              index={index + 1}
-              key={semester.semesterNumber}
-              setPlannerCourses={setPlannerCourses}
-              setToolboxCourses={setToolboxCourses}
-            />
-          );
-        } else {
-          return (
-            <SemesterBlock
-              semester={semester}
-              index={index + 1}
-              key={semester.semesterNumber}
-              setPlannerCourses={setPlannerCourses}
-              setToolboxCourses={setToolboxCourses}
-            />
-          );
-        }
-      })}
+    <div className="flex flex-col">
+      <div
+        className={`p-4 flex justify-between flex-wrap gap-y-4 z-0 ${isDragging || isDragging ? "brightness-50" : ""}`}
+      >
+        {plannerCourses.map((semester, index) => {
+          if (isDesktop) {
+            return (
+              <DesktopSemesterBlock
+                semester={semester}
+                index={index + 1}
+                key={semester.semesterNumber}
+                setPlannerCourses={setPlannerCourses}
+                setToolboxCourses={setToolboxCourses}
+              />
+            );
+          } else {
+            return (
+              <SemesterBlock
+                semester={semester}
+                index={index + 1}
+                key={semester.semesterNumber}
+                setPlannerCourses={setPlannerCourses}
+                setToolboxCourses={setToolboxCourses}
+              />
+            );
+          }
+        })}
+      </div>
       <AddSemester setPlannerCourses={setPlannerCourses} />
     </div>
   );

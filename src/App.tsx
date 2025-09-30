@@ -40,7 +40,7 @@ function App() {
   const reorder = <T,>(
     list: T[],
     startIndex: number,
-    endIndex: number
+    endIndex: number,
   ): T[] => {
     const result = [...list];
     const [removed] = result.splice(startIndex, 1);
@@ -71,7 +71,7 @@ function App() {
 
     if (sInd === "toolbox" && dInd === "toolbox") {
       setToolboxCourses((prev) =>
-        reorder(prev, source.index, destination.index)
+        reorder(prev, source.index, destination.index),
       );
       return;
     }
@@ -95,11 +95,11 @@ function App() {
                 courseList: reorder(
                   semester.courseList,
                   source.index,
-                  destination.index
+                  destination.index,
                 ),
               }
-            : semester
-        )
+            : semester,
+        ),
       );
       return;
     }
@@ -180,15 +180,15 @@ function App() {
               };
             }
             return semester;
-          })
+          }),
         );
 
         setToolboxCourses((prev) =>
           prev
             .map((c) =>
-              c.name === courseToClone.name ? { ...c, count: c.count - 1 } : c
+              c.name === courseToClone.name ? { ...c, count: c.count - 1 } : c,
             )
-            .filter((c) => c.count > 0)
+            .filter((c) => c.count > 0),
         );
       }
 

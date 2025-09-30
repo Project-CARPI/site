@@ -19,7 +19,7 @@ const DesktopSemesterBlock: React.FC<SemesterBlockProps> = ({
   setToolboxCourses,
 }) => {
   return (
-    <div className="w-1/2 flex flex-col space-y-2">
+    <div className="flex w-1/2 flex-col space-y-2">
       <div className="flex justify-between">
         <span className="text-md font-bold">
           Semester {semester.semesterNumber}

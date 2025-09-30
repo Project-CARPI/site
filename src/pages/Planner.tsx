@@ -1,6 +1,9 @@
 import React from "react";
 import { Dispatch, SetStateAction } from "react";
+import useIsDesktop from "../hooks/useIsDesktop";
+
 import SemesterBlock from "../components/PlannerComponents/SemesterBlock";
+import DesktopSemesterBlock from "../components/PlannerComponents/DesktopSemesterBlock";
 import { SemesterType } from "../types/interfaces/Semester.interface";
 import { CourseEntry } from "../types/interfaces/Course.interface";
 import AddSemester from "../components/PlannerComponents/AddSemester";
@@ -18,21 +21,35 @@ const Planner: React.FC<PlannerProps> = ({
   setPlannerCourses,
   setToolboxCourses,
 }) => {
+  const isDesktop = useIsDesktop();
+
   return (
     <>
       <div
         className={`bg-[#F5CECE] p-4 flex min-h-screen h-fit flex-col z-0 relative ${isDragging || isDragging ? "brightness-50" : ""}`}
       >
         {plannerCourses.map((semester, index) => {
-          return (
-            <SemesterBlock
-              semester={semester}
-              index={index + 1}
-              key={semester.semesterNumber}
-              setPlannerCourses={setPlannerCourses}
-              setToolboxCourses={setToolboxCourses}
-            />
-          );
+          if (isDesktop) {
+            return (
+              <DesktopSemesterBlock
+                semester={semester}
+                index={index + 1}
+                key={semester.semesterNumber}
+                setPlannerCourses={setPlannerCourses}
+                setToolboxCourses={setToolboxCourses}
+              />
+            );
+          } else {
+            return (
+              <SemesterBlock
+                semester={semester}
+                index={index + 1}
+                key={semester.semesterNumber}
+                setPlannerCourses={setPlannerCourses}
+                setToolboxCourses={setToolboxCourses}
+              />
+            );
+          }
         })}
         <AddSemester setPlannerCourses={setPlannerCourses} />
       </div>

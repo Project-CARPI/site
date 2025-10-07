@@ -37,7 +37,8 @@ const Catalog: React.FC<CatalogProps> = ({
 }) => {
   return (
     <>
-      <div className={`${isDragging ? "brightness-50" : ""}`}>
+      <div className={`sticky top-20 z-10 bg-carpipink pt-4`}>
+        <h1 className="font-bold text-xl ml-6">Courses</h1>
         <SearchBar
           updateSearchResults={setSearchResults}
           searchPrompt={searchPrompt}
@@ -48,6 +49,7 @@ const Catalog: React.FC<CatalogProps> = ({
           setFilters={setFilters}
         />
       </div>
+
       <div
         className={`flex flex-wrap justify-center pb-38 z-0 relative ${isDragging ? "brightness-50" : ""}`}
       >

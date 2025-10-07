@@ -27,14 +27,11 @@ const HomePage = (props: HomePageProps) => {
 
   return (
     <div>
-      <img
-        src="/carpi-black.png"
-        alt="Carpi Logo"
-        className="w-1/4 lg:w-1/12 m-auto pt-5"
-      />
+      <header className="sticky top-0 z-10 flex h-20 items-center justify-center bg-carpipink m-4">
+        <img src="/carpi-black.png" alt="Carpi Logo" className="h-full" />
+      </header>
       <div className="flex flex-row">
         <div className={isDesktop ? "w-1/2" : "w-full"}>
-          <h1 className="font-bold text-xl ml-6">Courses</h1>
           <Catalog
             isDragging={props.isDragging}
             toolboxCourses={props.toolboxCourses}
@@ -50,7 +47,7 @@ const HomePage = (props: HomePageProps) => {
           />
         </div>
         {isDesktop && (
-          <div className="w-1/2">
+          <div className="w-1/2 sticky top-22 h-[calc(100vh-5rem)]">
             <h1 className="font-bold text-xl ml-4">Planner</h1>
             <Planner
               isDragging={props.isDragging}

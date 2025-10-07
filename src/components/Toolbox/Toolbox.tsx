@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import useIsDesktop from "../../hooks/useIsDesktop";
 
 import ToolboxButton from "./ToolboxButton";
@@ -16,24 +16,24 @@ interface ToolboxProps {
 
 const Toolbox: React.FC<ToolboxProps> = ({ courses, isDragging }) => {
   const [isOpen, setIsOpen] = useState(false);
+  const [count, updateCount] = useState(0);
   const isDesktop = useIsDesktop();
 
   const toggleToolbox = () => {
     setIsOpen((open) => !open);
   };
 
-  const toolboxSum = () => {
-    let sum = 0;
-    courses.forEach((course) => (sum += course.count));
-    return sum;
-  };
+  useEffect(() => {
+    updateCount(courses.length);
+  }, [courses]);
+
   return (
     <div className={`transition-all fixed bottom-0 w-screen z-100`}>
       {!isDesktop && (
         <ToolboxButton
           isOpen={isOpen}
           toggleToolbox={toggleToolbox}
-          count={toolboxSum()}
+          count={count}
         />
       )}
       <GarbageBin isDragging={isDragging} />
@@ -50,6 +50,13 @@ const Toolbox: React.FC<ToolboxProps> = ({ courses, isDragging }) => {
               <IoIosArrowDown
                 className={`mx-2 transition-transform duration-300 ${isOpen ? "" : "rotate-180"}`}
               />
+              <div
+                className={`${
+                  count === 0 ? "hidden" : ""
+                } rounded-full bg-[#78A1BB] w-6 h-6 flex justify-center items-center text-white text-sm font-medium`}
+              >
+                <p>{count}</p>
+              </div>
             </button>
           </div>
 

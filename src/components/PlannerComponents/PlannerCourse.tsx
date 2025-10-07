@@ -63,8 +63,8 @@ const PlannerCourse: React.FC<PlannerCourseProps> = ({
                 ...semester.courseList.slice(index + 1),
               ],
             }
-          : semester,
-      ),
+          : semester
+      )
     );
   };
 
@@ -116,7 +116,7 @@ const PlannerCourse: React.FC<PlannerCourseProps> = ({
                 semester.creditsTotal -
                 prev[semesterIndex - 1].courseList[index].data.credit_max,
             }
-          : semester,
+          : semester
       );
 
       return updatedPlanner.map((semester, i) =>
@@ -126,7 +126,7 @@ const PlannerCourse: React.FC<PlannerCourseProps> = ({
               courseList: [...semester.courseList, courseCopy],
               creditsTotal: semester.creditsTotal + courseCopy.data.credit_max,
             }
-          : semester,
+          : semester
       );
     });
   };
@@ -150,12 +150,12 @@ const PlannerCourse: React.FC<PlannerCourseProps> = ({
               creditsTotal:
                 semester.creditsTotal - courseToMove.data.credit_max,
             }
-          : semester,
+          : semester
       );
 
       setToolboxCourses((toolboxPrev) => {
         const existingIndex = toolboxPrev.findIndex(
-          (entry) => entry.name === cleanedName,
+          (entry) => entry.name === cleanedName
         );
 
         if (existingIndex !== -1) {
@@ -182,8 +182,8 @@ const PlannerCourse: React.FC<PlannerCourseProps> = ({
                 semester.creditsTotal -
                 semester.courseList[index].data.credit_max,
             }
-          : semester,
-      ),
+          : semester
+      )
     );
   };
 
@@ -203,25 +203,23 @@ const PlannerCourse: React.FC<PlannerCourseProps> = ({
   };
 
   return (
-    <div className="flex flex-row relative">
+    <div className="relative">
       <div
-        className={`bg-[#283044] w-full h-18 rounded-lg text-[#F5CECE] flex items-center px-2`}
+        className={`bg-[#283044] w-full rounded-2xl text-[#F5CECE] flex justify-between px-2 py-3`}
       >
-        <div className={`flex justify-between w-11/12 m-auto text-2xl`}>
-          <div className={`flex items-center`}>
-            <MdDragIndicator />
-            <div className={`text-sm ml-1`}>
-              <b>
-                {course.dept}
-                {course.code_num}
-              </b>
-              <p>{toTitleCase(course.title)}</p>
-            </div>
+        <div className={`flex gap-2 items-center`}>
+          <MdDragIndicator className="text-2xl" />
+          <div className={`text-sm`}>
+            <b>
+              {course.dept}
+              {course.code_num}
+            </b>
+            <p>{toTitleCase(course.title)}</p>
           </div>
         </div>
-        <div className={`flex items-center`}>
+        <div className={`flex gap-1 items-center`}>
           <div
-            className={`rounded-full bg-[#F5CECE] text-[#283044] w-5 h-5 flex items-center justify-center text-sm mr-1 font-medium`}
+            className={`rounded-full bg-[#F5CECE] text-[#283044] w-5 h-5 flex items-center justify-center text-sm`}
           >
             <p>{course.credit_max}</p>
           </div>

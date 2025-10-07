@@ -8,9 +8,27 @@
 }
 
 body {
-  @apply bg-carpipink;
+  scrollbar-color: var(--color-darkblue) var(--color-carpipink);
+  scrollbar-width: thin;
 }
 
+/* scrollbar for webkit browsers */
+::-webkit-scrollbar {
+  width: 12px;
+  height: 12px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--color-carpipink);
+}
+
+::-webkit-scrollbar-thumb {
+  background-color: var(--color-darkblue);
+  border-radius: 9999px;
+  border: 3px solid var(--color-carpipink);
+}
+
+/* prevent blurriness of images */
 img {
   image-rendering: crisp-edges;
   image-rendering: -webkit-optimize-contrast;

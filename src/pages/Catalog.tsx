@@ -36,7 +36,7 @@ const Catalog: React.FC<CatalogProps> = ({
   setFilters,
 }) => {
   return (
-    <>
+    <div>
       <div className={`sticky top-20 z-10 bg-carpipink pt-4`}>
         <h1 className="font-bold text-xl ml-6">Courses</h1>
         <SearchBar
@@ -50,9 +50,7 @@ const Catalog: React.FC<CatalogProps> = ({
         />
       </div>
 
-      <div
-        className={`flex flex-wrap justify-center pb-38 z-0 relative ${isDragging ? "brightness-50" : ""}`}
-      >
+      <div className={`flex flex-wrap justify-center pb-38 z-0 relative`}>
         {searchResults?.map((course: CourseType, index: number) => (
           <Course
             key={index}
@@ -66,7 +64,7 @@ const Catalog: React.FC<CatalogProps> = ({
       <button className="border-1 border-black rounded-full h-fit font-medium text-sm">
         {" "}
       </button>
-    </>
+    </div>
   );
 };
 

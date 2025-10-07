@@ -26,7 +26,7 @@ const HomePage = (props: HomePageProps) => {
   const isDesktop = useIsDesktop();
 
   return (
-    <div>
+    <div className={`${props.isDragging ? "brightness-50" : ""}`}>
       <header className="sticky top-0 z-10 flex h-20 items-center justify-center bg-carpipink m-4">
         <img src="/carpi-black.png" alt="Carpi Logo" className="h-full" />
       </header>

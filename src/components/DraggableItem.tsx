@@ -29,39 +29,50 @@ const DraggableItem: React.FC<DraggableItemProps> = ({
 }) => {
   return (
     <Draggable draggableId={`${name}`} index={index}>
-      {(provided, snapshot) => (
-        <div
-          ref={provided.innerRef}
-          {...provided.draggableProps}
-          {...provided.dragHandleProps}
-          style={{
-            ...provided.draggableProps.style,
-            cursor: "grab",
-          }}
-          className="relative"
-        >
-          {location === "planner" &&
-          setPlannerCourses &&
-          setToolboxCourses &&
-          semesterIndex !== null ? (
-            <PlannerCourse
-              index={index}
-              isDragging={snapshot.isDragging}
-              course={course}
-              setPlannerCourses={setPlannerCourses}
-              setToolboxCourses={setToolboxCourses}
-              semesterIndex={semesterIndex}
-            />
-          ) : (
-            <ToolboxCourse
-              name={name}
-              count={count}
-              isDragging={snapshot.isDragging}
-              index={index}
-            />
-          )}
-        </div>
-      )}
+      {(provided, snapshot) => {
+        // create a mutable copy of the style object provided by the library
+        const style = {
+          ...provided.draggableProps.style,
+          cursor: "grab",
+        };
+
+        // unset top and let properties when dragging
+        if (snapshot.isDragging) {
+          (style as any).top = undefined;
+          (style as any).left = undefined;
+        }
+
+        return (
+          <div
+            ref={provided.innerRef}
+            {...provided.draggableProps}
+            {...provided.dragHandleProps}
+            style={style}
+            className=""
+          >
+            {location === "planner" &&
+            setPlannerCourses &&
+            setToolboxCourses &&
+            semesterIndex !== null ? (
+              <PlannerCourse
+                index={index}
+                isDragging={snapshot.isDragging}
+                course={course}
+                setPlannerCourses={setPlannerCourses}
+                setToolboxCourses={setToolboxCourses}
+                semesterIndex={semesterIndex}
+              />
+            ) : (
+              <ToolboxCourse
+                name={name}
+                count={count}
+                isDragging={snapshot.isDragging}
+                index={index}
+              />
+            )}
+          </div>
+        );
+      }}
     </Draggable>
   );
 };

@@ -206,33 +206,33 @@ const PlannerCourse: React.FC<PlannerCourseProps> = ({
 
   /* Right-Click Context Menu */
   return (
-    <div className={`relative z-200 `}>
-      <div
-        className={`bg-[#283044] w-full rounded-2xl text-[#F5CECE] flex justify-between px-2 py-3`}
-      >
-        <div className={`flex gap-2 items-center`}>
-          <MdDragIndicator className="text-2xl" />
-          <div className={`text-sm`}>
-            <b>
-              {course.dept}
-              {course.code_num}
-            </b>
-            <p>{toTitleCase(course.title)}</p>
+    <RightClickContextMenu.Root>
+      <RightClickContextMenu.Trigger>
+        <div className="flex justify-between bg-[#283044] rounded-2xl text-[#F5CECE] gap-4 px-2 py-3">
+          <div className={`flex gap-2 items-center`}>
+            <MdDragIndicator className="text-2xl" />
+            <div className={`text-sm`}>
+              <b>
+                {course.dept}
+                {course.code_num}
+              </b>
+              <p>{toTitleCase(course.title)}</p>
+            </div>
           </div>
-        </div>
-        <div className={`flex gap-1 items-center`}>
-          <div
-            className={`rounded-full bg-[#F5CECE] text-[#283044] w-5 h-5 flex items-center justify-center text-sm`}
-          >
-            <p>{course.credit_max}</p>
-          </div>
-          <MdOutlineMoreHoriz
-            onClick={togglePopup}
-            className="cursor-pointer text-2xl"
-          />
-        </div>
-      </div>
 
+          <div className={`flex gap-1 items-center`}>
+            <div
+              className={`rounded-full bg-[#F5CECE] text-[#283044] w-5 h-5 flex items-center justify-center text-sm`}
+            >
+              <p>{course.credit_max}</p>
+            </div>
+            <MdOutlineMoreHoriz
+              onClick={togglePopup}
+              className="cursor-pointer text-2xl"
+            />
+          </div>
+        </div>
+      </RightClickContextMenu.Trigger>
       <RightClickContextMenu.Portal>
         <RightClickContextMenu.Content className="bg-[#F5CECE] rounded-xl border border-slate-500 text-[#283044] text-xs p-2 shadow-lg z-50">
           <RightClickContextMenu.Item

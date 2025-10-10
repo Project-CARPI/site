@@ -1,5 +1,5 @@
 import React, { Dispatch, SetStateAction } from "react";
-import SemesterBlock from "../components/PlannerComponents/SemesterBlock";
+import SemesterBlock from "../components/PlannerComponents/SemesterBlocks/SemesterBlock";
 import { SemesterType } from "../types/interfaces/Semester.interface";
 import { CourseEntry } from "../types/interfaces/Course.interface";
 import AddSemester from "../components/PlannerComponents/AddSemester";
@@ -27,16 +27,13 @@ const Planner: React.FC<PlannerProps> = ({
   };
 
   return (
-    <div
-      className={`bg-[#F5CECE] p-4 flex min-h-screen h-fit flex-col z-0 relative ${
-        isDragging ? "brightness-50" : ""
-      }`}
-    >
+    <div className="flex flex-col gap-4 p-4">
       {plannerCourses.map((semester, index) => (
-        <div key={semester.semesterNumber} className="mb-4">
+        <div key={semester.semesterNumber}>
           <SemesterBlock
             semester={semester}
-            index={index + 1}
+            index={index}
+            key={semester.semesterNumber}
             setPlannerCourses={setPlannerCourses}
             setToolboxCourses={setToolboxCourses}
           />

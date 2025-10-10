@@ -47,7 +47,7 @@ const HomePage = (props: HomePageProps) => {
           />
         </div>
         {isDesktop && (
-          <div className="w-1/2 sticky top-22 h-[calc(100vh-5rem)]">
+          <div className="w-1/2 sticky top-22 h-[calc(100vh-5rem)] z-10">
             <h1 className="font-bold text-xl ml-4">Planner</h1>
             <Planner
               isDragging={props.isDragging}

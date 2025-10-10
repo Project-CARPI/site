@@ -48,7 +48,6 @@ const DraggableItem: React.FC<DraggableItemProps> = ({
             {...provided.draggableProps}
             {...provided.dragHandleProps}
             style={style}
-            className=""
           >
             {location === "planner" &&
             setPlannerCourses &&

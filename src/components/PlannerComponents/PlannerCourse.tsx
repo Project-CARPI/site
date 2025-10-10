@@ -22,6 +22,7 @@ interface PlannerCourseProps {
 const PlannerCourse: React.FC<PlannerCourseProps> = ({
   course,
   index,
+  isDragging,
   setPlannerCourses,
   setToolboxCourses,
   semesterIndex,
@@ -63,8 +64,8 @@ const PlannerCourse: React.FC<PlannerCourseProps> = ({
                 ...semester.courseList.slice(index + 1),
               ],
             }
-          : semester,
-      ),
+          : semester
+      )
     );
   };
 
@@ -116,7 +117,7 @@ const PlannerCourse: React.FC<PlannerCourseProps> = ({
                 semester.creditsTotal -
                 prev[semesterIndex - 1].courseList[index].data.credit_max,
             }
-          : semester,
+          : semester
       );
 
       return updatedPlanner.map((semester, i) =>
@@ -126,7 +127,7 @@ const PlannerCourse: React.FC<PlannerCourseProps> = ({
               courseList: [...semester.courseList, courseCopy],
               creditsTotal: semester.creditsTotal + courseCopy.data.credit_max,
             }
-          : semester,
+          : semester
       );
     });
   };
@@ -150,12 +151,12 @@ const PlannerCourse: React.FC<PlannerCourseProps> = ({
               creditsTotal:
                 semester.creditsTotal - courseToMove.data.credit_max,
             }
-          : semester,
+          : semester
       );
 
       setToolboxCourses((toolboxPrev) => {
         const existingIndex = toolboxPrev.findIndex(
-          (entry) => entry.name === cleanedName,
+          (entry) => entry.name === cleanedName
         );
 
         if (existingIndex !== -1) {
@@ -182,8 +183,8 @@ const PlannerCourse: React.FC<PlannerCourseProps> = ({
                 semester.creditsTotal -
                 semester.courseList[index].data.credit_max,
             }
-          : semester,
-      ),
+          : semester
+      )
     );
   };
 
@@ -203,7 +204,7 @@ const PlannerCourse: React.FC<PlannerCourseProps> = ({
   };
 
   return (
-    <div className="relative">
+    <div className={`relative z-200 `}>
       <div
         className={`bg-[#283044] w-full rounded-2xl text-[#F5CECE] flex justify-between px-2 py-3`}
       >

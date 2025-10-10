@@ -48,64 +48,62 @@ export default function App() {
           isDragging ? "brightness-50" : ""
         }`}
       ></div>
-      <div className="relative z-10">
-        <DragDropContext onDragEnd={onDragEnd} onDragStart={onDragStart}>
-          <Router>
-            <Routes>
-              <Route
-                path="/"
-                element={
-                  <HomePage
-                    isDragging={isDragging}
-                    toolboxCourses={toolboxCourses}
-                    setToolboxCourses={setToolboxCourses}
-                    plannerCourses={plannerCourses}
-                    setPlannerCourses={setPlannerCourses}
-                    searchResults={searchResults}
-                    setSearchResults={setSearchResults}
-                    searchPrompt={searchPrompt}
-                    setSearchPrompt={setSearchPrompt}
-                    showFilter={showFilter}
-                    setShowFilter={setShowFilter}
-                    filters={filters}
-                    setFilters={setFilters}
-                  />
-                }
-              />
-              <Route
-                path="/catalog"
-                element={
-                  <Catalog
-                    isDragging={isDragging}
-                    toolboxCourses={toolboxCourses}
-                    setToolboxCourses={setToolboxCourses}
-                    searchResults={searchResults}
-                    setSearchResults={setSearchResults}
-                    searchPrompt={searchPrompt}
-                    setSearchPrompt={setSearchPrompt}
-                    showFilter={showFilter}
-                    setShowFilter={setShowFilter}
-                    filters={filters}
-                    setFilters={setFilters}
-                  />
-                }
-              />
-              <Route
-                path="/planner"
-                element={
-                  <Planner
-                    isDragging={isDragging}
-                    plannerCourses={plannerCourses}
-                    setPlannerCourses={setPlannerCourses}
-                    setToolboxCourses={setToolboxCourses}
-                  />
-                }
-              />
-            </Routes>
-            <Toolbox courses={toolboxCourses} isDragging={isDragging} />
-          </Router>
-        </DragDropContext>
-      </div>
+      <DragDropContext onDragEnd={onDragEnd} onDragStart={onDragStart}>
+        <Router>
+          <Routes>
+            <Route
+              path="/"
+              element={
+                <HomePage
+                  isDragging={isDragging}
+                  toolboxCourses={toolboxCourses}
+                  setToolboxCourses={setToolboxCourses}
+                  plannerCourses={plannerCourses}
+                  setPlannerCourses={setPlannerCourses}
+                  searchResults={searchResults}
+                  setSearchResults={setSearchResults}
+                  searchPrompt={searchPrompt}
+                  setSearchPrompt={setSearchPrompt}
+                  showFilter={showFilter}
+                  setShowFilter={setShowFilter}
+                  filters={filters}
+                  setFilters={setFilters}
+                />
+              }
+            />
+            <Route
+              path="/catalog"
+              element={
+                <Catalog
+                  isDragging={isDragging}
+                  toolboxCourses={toolboxCourses}
+                  setToolboxCourses={setToolboxCourses}
+                  searchResults={searchResults}
+                  setSearchResults={setSearchResults}
+                  searchPrompt={searchPrompt}
+                  setSearchPrompt={setSearchPrompt}
+                  showFilter={showFilter}
+                  setShowFilter={setShowFilter}
+                  filters={filters}
+                  setFilters={setFilters}
+                />
+              }
+            />
+            <Route
+              path="/planner"
+              element={
+                <Planner
+                  isDragging={isDragging}
+                  plannerCourses={plannerCourses}
+                  setPlannerCourses={setPlannerCourses}
+                  setToolboxCourses={setToolboxCourses}
+                />
+              }
+            />
+          </Routes>
+          <Toolbox courses={toolboxCourses} isDragging={isDragging} />
+        </Router>
+      </DragDropContext>
     </div>
   );
 }

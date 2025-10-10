@@ -9,6 +9,7 @@ import { MdDragIndicator, MdOutlineMoreHoriz } from "react-icons/md";
 import { CourseType } from "../../types/interfaces/Course.interface";
 import { SemesterType } from "../../types/interfaces/Semester.interface";
 import { CourseEntry } from "../../types/interfaces/Course.interface";
+import * as RightClickContextMenu from "@radix-ui/react-context-menu";
 
 interface PlannerCourseProps {
   course: CourseType;
@@ -203,6 +204,7 @@ const PlannerCourse: React.FC<PlannerCourseProps> = ({
       .join(" ");
   };
 
+  /* Right-Click Context Menu */
   return (
     <div className={`relative z-200 `}>
       <div
@@ -231,42 +233,36 @@ const PlannerCourse: React.FC<PlannerCourseProps> = ({
         </div>
       </div>
 
-      {/* Popup Menu */}
-      {openPopup && (
-        <div
-          ref={componentRef}
-          className="absolute bg-[#F5CECE] rounded-xl border border-slate-500 text-[#283044] text-xs p-2 right-0 top-8 shadow-lg z-1"
-        >
-          <div className="flex flex-col items-start space-y-1">
-            <button
-              className="hover:bg-gray-300 p-1 w-full text-left"
-              onClick={handleDuplicate}
-            >
-              Duplicate
-            </button>
-            <button
-              className="hover:bg-gray-300 p-1 w-full text-left"
-              onClick={handleMoveNext}
-            >
-              Move to next sem
-            </button>
-            <hr className="w-full border-gray-400" />
-            <button
-              className="hover:bg-gray-300 p-1 w-full text-left"
-              onClick={handleMoveToolbox}
-            >
-              Back to toolbox
-            </button>
-            <button
-              className="hover:bg-red-300 p-1 w-full text-left"
-              onClick={handleDelete}
-            >
-              Delete
-            </button>
-          </div>
-        </div>
-      )}
-    </div>
+      <RightClickContextMenu.Portal>
+        <RightClickContextMenu.Content className="bg-[#F5CECE] rounded-xl border border-slate-500 text-[#283044] text-xs p-2 shadow-lg z-50">
+          <RightClickContextMenu.Item
+            className="hover:bg-gray-300 p-1 rounded w-full text-left"
+            onSelect={handleDuplicate}
+          >
+            Duplicate
+          </RightClickContextMenu.Item>
+          <RightClickContextMenu.Item
+            className="hover:bg-gray-300 p-1 rounded w-full text-left"
+            onSelect={handleMoveNext}
+          >
+            Move to next sem
+          </RightClickContextMenu.Item>
+          <RightClickContextMenu.Separator className="h-px bg-gray-400 my-1" />
+          <RightClickContextMenu.Item
+            className="hover:bg-gray-300 p-1 rounded w-full text-left"
+            onSelect={handleMoveToolbox}
+          >
+            Move back to toolbox
+          </RightClickContextMenu.Item>
+          <RightClickContextMenu.Item
+            className="hover:bg-red-300 p-1 rounded w-full text-left"
+            onSelect={handleDelete}
+          >
+            Delete
+          </RightClickContextMenu.Item>
+        </RightClickContextMenu.Content>
+      </RightClickContextMenu.Portal>
+    </RightClickContextMenu.Root>
   );
 };
 

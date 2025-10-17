@@ -57,7 +57,7 @@ const Toolbox: React.FC<ToolboxProps> = ({ courses, isDragging }) => {
         }`}
       >
         <div
-          className="flex items-center justify-between p-3 mx-2 cursor-pointer"
+          className="flex items-center gap-4 p-3 mx-2 cursor-pointer"
           onClick={toggleToolbox}
           role="button"
           aria-expanded={isOpen}
@@ -80,14 +80,12 @@ const Toolbox: React.FC<ToolboxProps> = ({ courses, isDragging }) => {
 
         <div id="toolbox-content">
           <Droppable droppableId="toolbox" direction="horizontal">
-            {(provided, snapshot) => (
+            {(provided) => (
               <div
                 ref={provided.innerRef}
                 {...provided.droppableProps}
-                className={`courses flex items-center overflow-x-auto whitespace-nowrap px-4 pb-2 scrollbar-hide transition-colors ${
-                  snapshot.isDraggingOver ? "bg-[#7e8eb4]" : ""
-                }`}
-                style={{ minHeight: "120px" }}
+                className={`courses flex items-center justify-center scrollbar-thumb-darkblue scrollbar-track-darkblue scrollbar-thin overflow-x-auto whitespace-nowrap px-4 pb-2 scrollbar-hide transition-colors`}
+                style={{ minHeight: "50px" }}
               >
                 {courses.map((course, index) => (
                   <DraggableItem

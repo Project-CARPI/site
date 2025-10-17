@@ -26,11 +26,13 @@ const HomePage = (props: HomePageProps) => {
   const isDesktop = useIsDesktop();
 
   return (
-    <div className={`${props.isDragging ? "brightness-50" : ""}`}>
-      <header className="sticky top-0 z-10 flex h-20 items-center justify-center bg-carpipink m-4">
+    <div
+      className={`max-h-dvh overflow-hidden ${props.isDragging ? "brightness-50" : ""}`}
+    >
+      <header className="sticky top-0 flex h-20 items-center justify-center bg-carpipink m-4">
         <img src="/carpi-black.png" alt="Carpi Logo" className="h-full" />
       </header>
-      <div className="flex flex-row">
+      <div className="flex flex-row sticky top-22">
         <div className={isDesktop ? "w-1/2" : "w-full"}>
           <Catalog
             isDragging={props.isDragging}
@@ -47,7 +49,7 @@ const HomePage = (props: HomePageProps) => {
           />
         </div>
         {isDesktop && (
-          <div className="w-1/2 sticky top-22 h-[calc(100vh-5rem)] z-10">
+          <div className="w-1/2">
             <h1 className="font-bold text-xl ml-4">Planner</h1>
             <Planner
               isDragging={props.isDragging}

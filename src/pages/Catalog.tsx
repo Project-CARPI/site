@@ -50,15 +50,21 @@ const Catalog: React.FC<CatalogProps> = ({
         />
       </div>
 
-      <div className={`flex flex-wrap justify-center pb-38 z-0 relative`}>
-        {searchResults?.map((course: CourseType, index: number) => (
-          <Course
-            key={index}
-            course={course}
-            toolboxCourses={toolboxCourses}
-            setToolboxCourses={setToolboxCourses}
-          />
-        ))}
+      <div className="h-[calc(100vh-20rem)] overflow-hidden">
+        <div
+          className={`h-full w-full overflow-y-auto scrollbar-hide pr-4 flex flex-wrap justify-center pb-38 z-0 relative ${
+            isDragging ? "brightness-50" : ""
+          }`}
+        >
+          {searchResults?.map((course: CourseType, index: number) => (
+            <Course
+              key={index}
+              course={course}
+              toolboxCourses={toolboxCourses}
+              setToolboxCourses={setToolboxCourses}
+            />
+          ))}
+        </div>
       </div>
 
       <button className="border-1 border-black rounded-full h-fit font-medium text-sm">

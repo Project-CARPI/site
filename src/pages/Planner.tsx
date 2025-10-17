@@ -27,25 +27,26 @@ const Planner: React.FC<PlannerProps> = ({
   };
 
   return (
-    <div className="flex flex-col gap-4 p-4">
-      {plannerCourses.map((semester, index) => (
-        <div key={semester.semesterNumber}>
-          <SemesterBlock
-            semester={semester}
-            index={index}
-            key={semester.semesterNumber}
-            setPlannerCourses={setPlannerCourses}
-            setToolboxCourses={setToolboxCourses}
-          />
-          <DeleteSemester
-            semesterNumber={semester.semesterNumber}
-            onDelete={handleDeleteSemester}
-          />
-          <hr className="border-[calc(0.05px)] border-[#c3a9a9] w-full mt-4 text-[#c3a9a9] " />
-        </div>
-      ))}
-
-      <AddSemester setPlannerCourses={setPlannerCourses} />
+    <div className="h-[calc(100vh-10rem)] overflow-hidden">
+      <div className="h-full w-full overflow-y-auto scrollbar-hide pr-4 flex flex-col gap-4 p-4">
+        {plannerCourses.map((semester, index) => (
+          <div key={semester.semesterNumber}>
+            <SemesterBlock
+              semester={semester}
+              index={index}
+              key={semester.semesterNumber}
+              setPlannerCourses={setPlannerCourses}
+              setToolboxCourses={setToolboxCourses}
+            />
+            <DeleteSemester
+              semesterNumber={semester.semesterNumber}
+              onDelete={handleDeleteSemester}
+            />
+            <hr className="border-[calc(0.05px)] border-[#c3a9a9] w-full mt-4 text-[#c3a9a9] " />
+          </div>
+        ))}
+        <AddSemester setPlannerCourses={setPlannerCourses} />
+      </div>
     </div>
   );
 };

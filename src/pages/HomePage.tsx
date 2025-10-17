@@ -50,7 +50,6 @@ const HomePage = (props: HomePageProps) => {
         </div>
         {isDesktop && (
           <div className="w-1/2">
-            <h1 className="font-bold text-xl ml-4">Planner</h1>
             <Planner
               isDragging={props.isDragging}
               plannerCourses={props.plannerCourses}

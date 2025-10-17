@@ -28,6 +28,11 @@ const Planner: React.FC<PlannerProps> = ({
 
   return (
     <div className="h-[calc(100vh-10rem)] overflow-hidden">
+      <header className="md:hidden sticky top-0 flex h-20 items-center justify-center bg-carpipink m-4">
+        <img src="/carpi-black.png" alt="Carpi Logo" className="h-full" />
+      </header>
+
+      <h1 className="font-bold text-xl ml-4">Planner</h1>
       <div className="h-full w-full overflow-y-auto scrollbar-hide pr-4 flex flex-col gap-4 p-4">
         {plannerCourses.map((semester, index) => (
           <div key={semester.semesterNumber}>

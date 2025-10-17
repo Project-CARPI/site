@@ -33,7 +33,7 @@ const Toolbox: React.FC<ToolboxProps> = ({ courses, isDragging }) => {
 
   return (
     <div
-      className={`fixed bottom-0 left-0 w-screen z-50 ${
+      className={`fixed bottom-0 left-0 flex flex-col items-center justify-center w-screen z-50 ${
         !isOpen && isDesktop ? "pointer-events-none" : "pointer-events-auto"
       }`}
     >
@@ -105,9 +105,9 @@ const Toolbox: React.FC<ToolboxProps> = ({ courses, isDragging }) => {
             )}
           </Droppable>
         </div>
-
-        {!isDesktop && <NavButton />}
       </div>
+
+      {!isDesktop && <NavButton />}
     </div>
   );
 };

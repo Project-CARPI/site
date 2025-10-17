@@ -75,8 +75,20 @@ const Course: React.FC<CourseProps> = ({
             <div className={`text-lg ml-1`}>
               <b>
                 {course.dept}
-                {course.code_num}
+                {course.code_num} -
               </b>
+              <i>
+                {course.credit_min !== course.credit_max ? (
+                  <span className="ml-2 text-gray-500">
+                    {course.credit_min}–{course.credit_max} credits
+                  </span>
+                ) : (
+                  <span className="ml-2 text-gray-500">
+                    {course.credit_max} credits
+                  </span>
+                )}
+              </i>
+
               <p>{toTitleCase(course.title)}</p>
             </div>
             <div className={`flex flex-wrap mt-1`}>

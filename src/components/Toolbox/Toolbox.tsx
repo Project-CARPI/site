@@ -15,76 +15,96 @@ interface ToolboxProps {
 }
 
 const Toolbox: React.FC<ToolboxProps> = ({ courses, isDragging }) => {
-  const [isOpen, setIsOpen] = useState(false);
-  const [count, updateCount] = useState(0);
   const isDesktop = useIsDesktop();
+  const [isOpen, setIsOpen] = useState(isDesktop);
+  const [count, setCount] = useState(0);
+
+  useEffect(() => {
+    setCount(courses.length);
+  }, [courses]);
+
+  useEffect(() => {
+    setIsOpen(isDesktop);
+  }, [isDesktop]);
 
   const toggleToolbox = () => {
     setIsOpen((open) => !open);
   };
 
-  useEffect(() => {
-    updateCount(courses.length);
-  }, [courses]);
-
   return (
-    <div className={`transition-all fixed bottom-0 w-screen z-100`}>
-      {!isDesktop && (
+    <div
+      className={`fixed bottom-0 left-0 w-screen z-50 ${
+        !isOpen && isDesktop ? "pointer-events-none" : "pointer-events-auto"
+      }`}
+    >
+      {!isDesktop && !isOpen && (
         <ToolboxButton
           isOpen={isOpen}
           toggleToolbox={toggleToolbox}
           count={count}
         />
       )}
-      <GarbageBin isDragging={isDragging} />
-      <div className={`flex justify-center`}>
-        <div
-          className={`${isDesktop ? (isOpen ? "translate-y-0" : "translate-y-[calc(100%-44px)]") : isOpen ? "" : "hidden"} bg-[#283044] h-36 w-screen rounded-t-xl transition-transform duration-300 ease-in-out`}
-        >
-          <div className={`close-toolbox`}>
-            <button
-              className={`flex items-center text-[#F5CECE] font-semibold mt-2 mx-5 text-xl p-1 ${isDesktop ? "cursor-default" : ""}`}
-              onClick={toggleToolbox}
-            >
-              TOOLBOX
-              <IoIosArrowDown
-                className={`mx-2 transition-transform duration-300 ${isOpen ? "" : "rotate-180"}`}
-              />
-              <div
-                className={`${
-                  count === 0 ? "hidden" : ""
-                } rounded-full bg-[#78A1BB] w-6 h-6 flex justify-center items-center text-white text-sm font-medium`}
-              >
-                <p>{count}</p>
-              </div>
-            </button>
-          </div>
 
-          <Droppable droppableId={`toolbox`} direction="horizontal">
-            {(provided, snapshot) => {
-              return (
-                <div
-                  ref={provided.innerRef}
-                  {...provided.droppableProps}
-                  className={`courses h-15 flex items-center px-2 w-screen overflow-x-auto whitespace-nowrap scrollbar-hide ${snapshot.isDraggingOver ? "bg-[#7e8eb4]" : ""}`}
-                >
-                  {courses.map((course, index) => (
-                    <DraggableItem
-                      key={course.name}
-                      name={course.name}
-                      count={course.count}
-                      index={index}
-                      course={course.data}
-                      location="toolbox"
-                      setPlannerCourses={null}
-                      setToolboxCourses={null}
-                      semesterIndex={null}
-                    />
-                  ))}
-                  {provided.placeholder}
-                </div>
-              );
-            }}
+      <GarbageBin isDragging={isDragging} />
+
+      <div
+        className={`w-full transform bg-[#283044] rounded-t-xl transition-transform duration-300 ease-in-out pointer-events-auto ${
+          isOpen
+            ? "translate-y-0"
+            : isDesktop
+              ? "translate-y-[calc(100%-52px)]"
+              : "translate-y-full"
+        }`}
+      >
+        <div
+          className="flex items-center justify-between p-3 mx-2 cursor-pointer"
+          onClick={toggleToolbox}
+          role="button"
+          aria-expanded={isOpen}
+          aria-controls="toolbox-content"
+        >
+          <div className="flex items-center">
+            <h2 className="text-[#F5CECE] font-semibold text-xl">TOOLBOX</h2>
+            <IoIosArrowDown
+              className={`ml-2 text-2xl text-[#F5CECE] transition-transform duration-300 ${
+                isOpen ? "rotate-180" : ""
+              }`}
+            />
+          </div>
+          {count > 0 && (
+            <div className="flex h-6 w-6 items-center justify-center rounded-full bg-[#78A1BB] text-sm font-medium text-white">
+              {count}
+            </div>
+          )}
+        </div>
+
+        <div id="toolbox-content">
+          <Droppable droppableId="toolbox" direction="horizontal">
+            {(provided, snapshot) => (
+              <div
+                ref={provided.innerRef}
+                {...provided.droppableProps}
+                className={`courses flex items-center overflow-x-auto whitespace-nowrap px-4 pb-2 scrollbar-hide transition-colors ${
+                  snapshot.isDraggingOver ? "bg-[#7e8eb4]" : ""
+                }`}
+                style={{ minHeight: "120px" }}
+              >
+                {courses.map((course, index) => (
+                  <DraggableItem
+                    key={course.name}
+                    name={course.name}
+                    count={course.count}
+                    index={index}
+                    course={course.data}
+                    location="toolbox"
+                    setPlannerCourses={null}
+                    setToolboxCourses={null}
+                    semesterIndex={null}
+                  />
+                ))}
+                {provided.placeholder}
+              </div>
+            )}
           </Droppable>
         </div>
 

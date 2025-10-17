@@ -31,8 +31,12 @@ const Planner: React.FC<PlannerProps> = ({
         <img src="/carpi-black.png" alt="Carpi Logo" className="h-full" />
       </header>
 
-      <h1 className="font-bold text-xl ml-4">Planner</h1>
-      <div className="h-full w-full overflow-y-auto scrollbar-hide pr-4 flex flex-col gap-4 p-4">
+      <div className="flex justify-between mb-4">
+        <h1 className="font-bold text-xl ml-4">Planner</h1>
+        <AddSemester setPlannerCourses={setPlannerCourses} />
+      </div>
+
+      <section className="h-full w-full overflow-y-auto scrollbar-hide pr-4 flex flex-col gap-4 p-4">
         {plannerCourses.map((semester, index) => (
           <div key={semester.semesterNumber}>
             <SemesterBlock
@@ -49,8 +53,7 @@ const Planner: React.FC<PlannerProps> = ({
             <hr className="border-[calc(0.05px)] border-[#c3a9a9] w-full mt-4 text-[#c3a9a9] " />
           </div>
         ))}
-        <AddSemester setPlannerCourses={setPlannerCourses} />
-      </div>
+      </section>
     </div>
   );
 };

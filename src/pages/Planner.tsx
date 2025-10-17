@@ -26,8 +26,8 @@ const Planner: React.FC<PlannerProps> = ({
   };
 
   return (
-    <div className="h-[calc(100vh-10rem)] overflow-hidden">
-      <header className="md:hidden sticky top-0 flex h-20 items-center justify-center bg-carpipink m-4">
+    <div className="h-[calc(100vh-10rem)]">
+      <header className="md:hidden flex h-20 items-center justify-center bg-carpipink m-4">
         <img src="/carpi-black.png" alt="Carpi Logo" className="h-full" />
       </header>
 

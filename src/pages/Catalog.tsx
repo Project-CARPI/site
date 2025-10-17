@@ -35,7 +35,7 @@ const Catalog: React.FC<CatalogProps> = ({
   setFilters,
 }) => {
   return (
-    <div>
+    <>
       <div className={`sticky top-20 z-10`}>
         <h1 className="font-bold text-xl ml-6">Courses</h1>
         <SearchBar
@@ -49,7 +49,7 @@ const Catalog: React.FC<CatalogProps> = ({
         />
       </div>
 
-      <div className="md:h-[calc(100vh-18rem)] md:overflow-hidden">
+      <div className="md:h-[calc(100vh-17rem)] md:overflow-hidden">
         <div
           className={`h-full w-full overflow-y-auto scrollbar-hide pr-4 flex flex-wrap justify-center pb-38 z-0 relative`}
         >
@@ -65,7 +65,7 @@ const Catalog: React.FC<CatalogProps> = ({
       </div>
 
       <button className="border-1 border-black rounded-full h-fit font-medium text-sm" />
-    </div>
+    </>
   );
 };
 

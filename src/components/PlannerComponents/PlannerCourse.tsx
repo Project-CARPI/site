@@ -23,7 +23,6 @@ interface PlannerCourseProps {
 const PlannerCourse: React.FC<PlannerCourseProps> = ({
   course,
   index,
-  isDragging,
   setPlannerCourses,
   setToolboxCourses,
   semesterIndex,

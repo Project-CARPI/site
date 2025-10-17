@@ -13,7 +13,6 @@ interface PlannerProps {
 }
 
 const Planner: React.FC<PlannerProps> = ({
-  isDragging,
   plannerCourses,
   setPlannerCourses,
   setToolboxCourses,

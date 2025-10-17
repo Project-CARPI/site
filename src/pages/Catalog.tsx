@@ -25,7 +25,6 @@ interface CatalogProps {
 const Catalog: React.FC<CatalogProps> = ({
   toolboxCourses,
   setToolboxCourses,
-  isDragging,
   searchResults,
   setSearchResults,
   searchPrompt,

@@ -7,11 +7,7 @@ interface ToolboxCourseProps {
   isDragging: boolean;
 }
 
-const ToolboxCourse: React.FC<ToolboxCourseProps> = ({
-  name,
-  count,
-  isDragging,
-}) => {
+const ToolboxCourse: React.FC<ToolboxCourseProps> = ({ name, count }) => {
   return (
     <div
       className={`bg-[#D9D9D9] w-fit px-3 rounded-lg py-1 relative mx-2 whitespace-nowrap overflow-visible transition-transform ease-in-out z-200 

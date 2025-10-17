@@ -52,9 +52,7 @@ const Catalog: React.FC<CatalogProps> = ({
 
       <div className="md:h-[calc(100vh-18rem)] md:overflow-hidden">
         <div
-          className={`h-full w-full overflow-y-auto scrollbar-hide pr-4 flex flex-wrap justify-center pb-38 z-0 relative ${
-            isDragging ? "brightness-50" : ""
-          }`}
+          className={`h-full w-full overflow-y-auto scrollbar-hide pr-4 flex flex-wrap justify-center pb-38 z-0 relative`}
         >
           {searchResults?.map((course: CourseType, index: number) => (
             <Course

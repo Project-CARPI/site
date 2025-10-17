@@ -15,7 +15,7 @@ const ToolboxCourse: React.FC<ToolboxCourseProps> = ({
   return (
     <div
       className={`bg-[#D9D9D9] w-fit px-3 rounded-lg py-1 relative mx-2 whitespace-nowrap overflow-visible transition-transform ease-in-out z-200 
-        ${isDragging ? "brightness-125 scale-105 shadow-sm shadow-carpipink" : ""}`}
+        `}
     >
       <div
         className={`${

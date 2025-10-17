@@ -44,7 +44,7 @@ export default function App() {
   return (
     <div className="font-['Helvetica'] min-h-screen">
       <div
-        className={`fixed top-0 left-0 w-full h-full z-0 bg-carpipink ${
+        className={`fixed top-0 left-0 w-full h-full  ${
           isDragging ? "brightness-50" : ""
         }`}
       ></div>

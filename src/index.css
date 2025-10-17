@@ -9,6 +9,7 @@
 }
 
 body {
+  background-color: var(--color-carpipink);
   scrollbar-color: var(--color-darkblue) var(--color-carpipink);
   scrollbar-width: thin;
 }

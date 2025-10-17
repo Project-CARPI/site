@@ -37,7 +37,7 @@ const Catalog: React.FC<CatalogProps> = ({
 }) => {
   return (
     <div>
-      <div className={`sticky top-20 z-10 bg-carpipink pt-4`}>
+      <div className={`sticky top-20 z-10`}>
         <h1 className="font-bold text-xl ml-6">Courses</h1>
         <SearchBar
           updateSearchResults={setSearchResults}
@@ -50,7 +50,7 @@ const Catalog: React.FC<CatalogProps> = ({
         />
       </div>
 
-      <div className="h-[calc(100vh-20rem)] overflow-hidden">
+      <div className="md:h-[calc(100vh-20rem)] md:overflow-hidden">
         <div
           className={`h-full w-full overflow-y-auto scrollbar-hide pr-4 flex flex-wrap justify-center pb-38 z-0 relative ${
             isDragging ? "brightness-50" : ""
@@ -67,9 +67,7 @@ const Catalog: React.FC<CatalogProps> = ({
         </div>
       </div>
 
-      <button className="border-1 border-black rounded-full h-fit font-medium text-sm">
-        {" "}
-      </button>
+      <button className="border-1 border-black rounded-full h-fit font-medium text-sm" />
     </div>
   );
 };

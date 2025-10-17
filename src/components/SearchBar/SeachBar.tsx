@@ -62,7 +62,7 @@ const SearchBar: React.FC<SearchBarProps> = ({ updateSearchResults }) => {
             "&attrFilters=" +
             attrFilters +
             "&semFilters=" +
-            semFilters,
+            semFilters
         );
 
         const data = response.data;
@@ -98,7 +98,7 @@ const SearchBar: React.FC<SearchBarProps> = ({ updateSearchResults }) => {
       if (prev[category].includes(value)) {
         const newFilters: Filters = { ...prev };
         newFilters[category] = newFilters[category].filter(
-          (tag) => tag !== value,
+          (tag) => tag !== value
         );
         return newFilters;
       }
@@ -114,7 +114,7 @@ const SearchBar: React.FC<SearchBarProps> = ({ updateSearchResults }) => {
       const newFilters: Filters = { ...prev };
       for (const category of Object.keys(prev) as (keyof Filters)[]) {
         newFilters[category] = newFilters[category].filter(
-          (tag) => tag !== value,
+          (tag) => tag !== value
         );
       }
 
@@ -131,7 +131,7 @@ const SearchBar: React.FC<SearchBarProps> = ({ updateSearchResults }) => {
   };
 
   return (
-    <div className="p-4 pt-0 pb-0">
+    <div className="p-4 pt-0 pb-0 w-full">
       <div className="flex justify-between items-center border-b p-2 m-2">
         <div className="flex items-center gap-2 w-full">
           <IoSearchOutline />
@@ -161,7 +161,7 @@ const SearchBar: React.FC<SearchBarProps> = ({ updateSearchResults }) => {
       </div>
 
       <div className="flex items-start -mb-2">
-        <div className="flex flex-wrap mb-2 w-full">
+        <div className="flex flex-wrap w-full">
           {filters.Subject.map((tag, index) => (
             <ChosenTag key={index} name={tag} onRemove={removeFilter} />
           ))}
@@ -189,7 +189,12 @@ const SearchBar: React.FC<SearchBarProps> = ({ updateSearchResults }) => {
       {showFilter && (
         <FilterPanel filters={filters} updateFilters={updateFilters} />
       )}
-      {showDeptFilter && <DepartmentFilters updateFilters={updateFilters} />}
+
+      {showDeptFilter && (
+        <div className="md:h-[calc(100vh-19rem)] mt-4">
+          <DepartmentFilters updateFilters={updateFilters} />
+        </div>
+      )}
     </div>
   );
 };

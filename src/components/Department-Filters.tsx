@@ -53,42 +53,38 @@ const departments: Department[] = [
   { code: "WRIT", name: "Writing" },
 ];
 
-// DepartmentFilters component
 interface DepartmentFiltersProps {
   updateFilters: (category: keyof Filters, value: string) => void;
 }
 
-// DepartmentFilters functional component
 const DepartmentFilters: React.FC<DepartmentFiltersProps> = ({
   updateFilters,
 }) => {
   return (
-    <div className="w-full h-full flex items-center justify-center bg-carpipink p-2 overflow-hidden mt-3">
-      <div className="flex flex-wrap gap-2 justify-center overflow-y-auto max-h-full">
-        {departments.map((dept) => (
-          <button
-            key={dept.code}
-            className={`
-              flex-shrink-0
-              px-3 
-              py-2 
-              rounded-xl 
-              border 
-              border-black 
-              text-xs
-              transition-colors
-              text-[#09143C]
-              hover:bg-black hover:text-white
-            `}
-            onClick={() => updateFilters("Subject", dept.code)}
-          >
-            <div className="flex gap-2 items-center whitespace-nowrap">
-              <span className="font-bold">{dept.code}</span>
-              <span className="font-normal">{dept.name}</span>
-            </div>
-          </button>
-        ))}
-      </div>
+    <div className="md:h-full md:w-full md:overflow-y-auto flex flex-wrap justify-center gap-2">
+      {departments.map((dept) => (
+        <button
+          key={dept.code}
+          className={`
+            flex-shrink-0
+            px-3 
+            py-2 
+            rounded-xl 
+            border 
+            border-black 
+            text-xs
+            transition-colors
+            text-[#09143C]
+            hover:bg-black hover:text-white
+          `}
+          onClick={() => updateFilters("Subject", dept.code)}
+        >
+          <div className="flex items-center gap-2 whitespace-nowrap">
+            <span className="font-bold">{dept.code}</span>
+            <span className="font-normal">{dept.name}</span>
+          </div>
+        </button>
+      ))}
     </div>
   );
 };

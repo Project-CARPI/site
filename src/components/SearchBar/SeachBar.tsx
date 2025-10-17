@@ -191,7 +191,7 @@ const SearchBar: React.FC<SearchBarProps> = ({ updateSearchResults }) => {
       )}
 
       {showDeptFilter && (
-        <div className="md:h-[calc(100vh-19rem)] mt-4">
+        <div className="md:h-[calc(100vh-18rem)] mt-4">
           <DepartmentFilters updateFilters={updateFilters} />
         </div>
       )}

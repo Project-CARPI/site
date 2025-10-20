@@ -41,21 +41,24 @@ const DesktopSemesterBlock: React.FC<SemesterBlockProps> = ({
                 <PlannerCourseHolder isHover={false} />
               )}
               {isEmpty && isHovering && <PlannerCourseHolder isHover={true} />}
-              {!isEmpty &&
-                semester.courseList.map((course, courseIndex) => (
-                  <DraggableItem
-                    key={course.name}
-                    name={course.name}
-                    course={course.data}
-                    count={course.count}
-                    index={courseIndex}
-                    semesterIndex={index}
-                    setPlannerCourses={setPlannerCourses}
-                    setToolboxCourses={setToolboxCourses}
-                    location="planner"
-                  />
-                ))}
-              {provided.placeholder}
+              {!isEmpty && (
+                <>
+                  {semester.courseList.map((course, courseIndex) => (
+                    <DraggableItem
+                      key={course.name}
+                      name={course.name}
+                      course={course.data}
+                      count={course.count}
+                      index={courseIndex}
+                      semesterIndex={index}
+                      setPlannerCourses={setPlannerCourses}
+                      setToolboxCourses={setToolboxCourses}
+                      location="planner"
+                    />
+                  ))}
+                  {provided.placeholder}
+                </>
+              )}
             </div>
           );
         }}

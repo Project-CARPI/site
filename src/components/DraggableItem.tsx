@@ -41,7 +41,7 @@ const DraggableItem: React.FC<DraggableItemProps> = ({
         };
 
         // unset top and let properties when dragging
-        if (snapshot.isDragging) {
+        if (snapshot.isDragging && location === "toolbox") {
           (style as React.CSSProperties).top = undefined;
           (style as React.CSSProperties).left = undefined;
         }

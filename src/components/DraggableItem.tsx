@@ -42,8 +42,8 @@ const DraggableItem: React.FC<DraggableItemProps> = ({
 
         // unset top and let properties when dragging
         if (snapshot.isDragging) {
-          (style as any).top = undefined;
-          (style as any).left = undefined;
+          (style as React.CSSProperties).top = undefined;
+          (style as React.CSSProperties).left = undefined;
         }
 
         return (

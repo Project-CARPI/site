@@ -1,5 +1,4 @@
 import React from "react";
-import { SemesterType } from "../../types/interfaces/Semester.interface";
 
 interface DeleteSemesterProps {
   semesterNumber: number;

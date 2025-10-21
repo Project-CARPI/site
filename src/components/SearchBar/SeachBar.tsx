@@ -7,6 +7,7 @@ import { Filters } from "../../types/Filters";
 import DepartmentFilters from "../Department-Filters";
 import { CourseType } from "../../types/interfaces/Course.interface.ts";
 import useIsDesktop from "../../hooks/useIsDesktop.ts";
+import FilterPanelPopup from "./FilterPanel/FilterPanelPopup.tsx";
 
 interface SearchBarProps {
   updateSearchResults: (results: CourseType[]) => void;
@@ -184,9 +185,16 @@ const SearchBar: React.FC<SearchBarProps> = ({
         </button>
       </div>
 
-      {showFilter && (
-        <FilterPanel filters={filters} updateFilters={updateFilters} />
-      )}
+      {showFilter &&
+        (isDesktop ? (
+          <FilterPanelPopup
+            filters={filters}
+            updateFilters={updateFilters}
+            setShowFilter={setShowFilter}
+          />
+        ) : (
+          <FilterPanel filters={filters} updateFilters={updateFilters} />
+        ))}
 
       {showDeptFilter && (
         <div className="md:h-[calc(100vh-17rem)] mt-2">

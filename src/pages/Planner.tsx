@@ -26,17 +26,17 @@ const Planner: React.FC<PlannerProps> = ({
   };
 
   return (
-    <div className="md:h-[calc(100vh-10rem)]">
-      <header className="md:hidden flex h-20 items-center justify-center bg-carpipink m-4">
+    <div className="md:h-[calc(100vh-10rem)] md:m-0 m-4">
+      <header className="md:hidden flex h-20 items-center justify-center bg-carpipink mt-4">
         <img src="/carpi-black.png" alt="Carpi Logo" className="h-full" />
       </header>
 
-      <div className="flex justify-between mb-4">
-        <h1 className="font-bold text-xl ml-4">Planner</h1>
-        <AddSemester setPlannerCourses={setPlannerCourses} />
-      </div>
+      <section className="h-full w-full overflow-y-auto scrollbar-hide pr-4 flex flex-col gap-4">
+        <div className="flex justify-between">
+          <h1 className="font-bold text-xl">Planner</h1>
+          <AddSemester setPlannerCourses={setPlannerCourses} />
+        </div>
 
-      <section className="h-full w-full overflow-y-auto scrollbar-hide pr-4 flex flex-col gap-4 p-4">
         {plannerCourses.map((semester, index) => (
           <div key={semester.semesterNumber}>
             <SemesterBlock

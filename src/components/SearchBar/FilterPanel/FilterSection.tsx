@@ -1,5 +1,5 @@
 import React from "react";
-import { Filters } from "../../types/Filters";
+import { Filters } from "../../../types/Filters";
 
 interface TagProp {
   id: number;
@@ -21,7 +21,7 @@ const FilterSection: React.FC<FilterSectionProps> = ({
 }) => {
   return (
     <div className="mt-2">
-      <h1>{sectionName}</h1>
+      <h3 className="text-lg font-semibold mb-1">{sectionName}</h3>
       <div className="flex overflow-x-auto">
         {tags.map((tag) => (
           <button

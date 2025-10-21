@@ -21,8 +21,8 @@ const FilterSection: React.FC<FilterSectionProps> = ({
 }) => {
   return (
     <div className="mt-2">
-      <h3 className="text-lg font-semibold mb-1">{sectionName}</h3>
-      <div className="flex overflow-x-auto">
+      <h3 className="font-semibold mb-1">{sectionName}</h3>
+      <div className="flex overflow-x-auto scrollbar-none">
         {tags.map((tag) => (
           <button
             key={tag.id}

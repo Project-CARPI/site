@@ -51,7 +51,7 @@ const FilterPanel: React.FC<FilterPanelProps> = ({
   }, []);
 
   return (
-    <>
+    <div className="w-full">
       <FilterSection
         sectionName="Subject"
         tags={subjects}
@@ -70,7 +70,7 @@ const FilterPanel: React.FC<FilterPanelProps> = ({
         selected={filters.Semesters}
         updateFilters={updateFilters}
       />
-    </>
+    </div>
   );
 };
 

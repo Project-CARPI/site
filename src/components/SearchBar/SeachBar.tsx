@@ -6,6 +6,7 @@ import ChosenTag from "./ChosenTag";
 import { Filters } from "../../types/Filters";
 import DepartmentFilters from "../Department-Filters";
 import { CourseType } from "../../types/interfaces/Course.interface.ts";
+import useIsDesktop from "../../hooks/useIsDesktop.ts";
 
 interface SearchBarProps {
   updateSearchResults: (results: CourseType[]) => void;
@@ -27,6 +28,8 @@ const SearchBar: React.FC<SearchBarProps> = ({
   filters,
   setFilters,
 }) => {
+  const isDesktop = useIsDesktop();
+
   const [showDeptFilter, setShowDeptFilter] = useState(true);
 
   const debounceTimeout = useRef<ReturnType<typeof setTimeout> | null>(null);
@@ -136,25 +139,24 @@ const SearchBar: React.FC<SearchBarProps> = ({
   }, [filters]);
 
   return (
-    <div className="p-4 pt-0 pb-0 w-full">
-      <div className="flex justify-between items-center border-b p-2 m-2">
-        <div className="flex items-center gap-2 w-full">
-          <IoSearchOutline />
-          <input
-            type="text"
-            aria-label="Search Courses"
-            aria-required="true"
-            placeholder="Find Courses Here"
-            className="flex-grow text-base placeholder-darkblue-40 focus:placeholder-transparent focus:outline-none focus:ring-0"
-            value={searchPrompt} // Uses prop
-            enterKeyHint="search"
-            onClick={() => setShowFilter(true)} // Uses prop
-            onChange={(e) => setSearchPrompt(e.target.value)} // Uses prop
-            onKeyDown={(e) => {
-              if (e.key === "Enter" || e.key === "Done") handleSearch(e);
-            }}
-          />
-        </div>
+    <div className="flex justify-between flex-col items-center m-4 gap-2">
+      <div className="flex items-center gap-2 w-full border-b boarder-darkblue pb-2">
+        <IoSearchOutline />
+        <input
+          type="text"
+          aria-label="Search Courses"
+          aria-required="true"
+          placeholder="Find Courses Here"
+          className="flex-grow text-base placeholder-darkblue-40 focus:placeholder-transparent focus:outline-none focus:ring-0"
+          value={searchPrompt} // Uses prop
+          enterKeyHint="search"
+          onClick={() => setShowFilter(true)} // Uses prop
+          onChange={(e) => setSearchPrompt(e.target.value)} // Uses prop
+          onKeyDown={(e) => {
+            if (e.key === "Enter" || e.key === "Done") handleSearch(e);
+          }}
+        />
+
         {showFilter && (
           <IoClose
             onClick={() => {
@@ -163,34 +165,34 @@ const SearchBar: React.FC<SearchBarProps> = ({
             }}
           />
         )}
+      </div>
 
-        <div className="flex items-start -mb-2">
-          <div className="flex flex-wrap w-full">
-            {allActiveFilters.map((tag) => (
-              <ChosenTag key={tag} name={tag} onRemove={removeFilter} />
-            ))}
-          </div>
-
-          <button
-            className="unset w-[150px] text-right text-sm cursor-pointer mr-2"
-            onClick={() => {
-              setShowFilter((prev) => !prev); // Uses prop
-            }}
-          >
-            {showFilter ? "Hide Options" : "Show Options"}
-          </button>
+      <div className="flex -mb-2 w-full">
+        <div className="flex flex-wrap w-auto flex-grow">
+          {allActiveFilters.map((tag) => (
+            <ChosenTag key={tag} name={tag} onRemove={removeFilter} />
+          ))}
         </div>
 
-        {showFilter && (
-          <FilterPanel filters={filters} updateFilters={updateFilters} />
-        )}
-
-        {showDeptFilter && (
-          <div className="md:h-[calc(100vh-17rem)] mt-4">
-            <DepartmentFilters updateFilters={updateFilters} />
-          </div>
-        )}
+        <button
+          className="text-right text-sm cursor-pointer w-auto"
+          onClick={() => {
+            setShowFilter((prev) => !prev); // Uses prop
+          }}
+        >
+          {showFilter ? "Hide Options" : "Show Options"}
+        </button>
       </div>
+
+      {showFilter && (
+        <FilterPanel filters={filters} updateFilters={updateFilters} />
+      )}
+
+      {showDeptFilter && (
+        <div className="md:h-[calc(100vh-17rem)] mt-2">
+          <DepartmentFilters updateFilters={updateFilters} />
+        </div>
+      )}
     </div>
   );
 };

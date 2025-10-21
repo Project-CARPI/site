@@ -176,23 +176,10 @@ const SearchBar: React.FC<SearchBarProps> = ({
         )}
       </div>
 
-      <div className="flex -mb-2 w-full">
-        <div className="flex flex-wrap w-auto flex-grow">
-          {allActiveFilters.map((tag) => (
-            <ChosenTag key={tag} name={tag} onRemove={removeFilter} />
-          ))}
-        </div>
-
-        {!isDesktop && (
-          <button
-            className="text-right text-sm cursor-pointer w-auto"
-            onClick={() => {
-              setShowFilter((prev) => !prev); // Uses prop
-            }}
-          >
-            {showFilter ? "Hide Options" : "Show Options"}
-          </button>
-        )}
+      <div className="flex flex-wrap w-full items-start ">
+        {allActiveFilters.map((tag) => (
+          <ChosenTag key={tag} name={tag} onRemove={removeFilter} />
+        ))}
       </div>
 
       {showFilter &&

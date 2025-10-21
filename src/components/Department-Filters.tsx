@@ -66,16 +66,15 @@ const DepartmentFilters: React.FC<DepartmentFiltersProps> = ({
         <button
           key={dept.code}
           className={`
-            flex-shrink-0
             px-3 
             py-2 
             rounded-xl 
             border 
-            border-black 
+            border-darkblue 
             text-xs
             transition-colors
-            text-[#09143C]
-            hover:bg-black hover:text-white
+            hover:bg-darkblue hover:text-white
+            h-fit
           `}
           onClick={() => updateFilters("Subject", dept.code)}
         >

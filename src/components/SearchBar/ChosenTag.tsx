@@ -8,14 +8,19 @@ interface ChosenTagProp {
 
 const ChosenTag: React.FC<ChosenTagProp> = ({ name, onRemove }) => {
   return (
-    <>
-      <div
-        className={`rounded-2xl text-white px-3 py-1 text-sm mr-1 mb-1 font-thin bg-darkblue inline`}
+    <div
+      className={`rounded-2xl text-white px-3 py-1 text-sm mr-1 mb-1 font-thin bg-darkblue inline-flex items-center`}
+    >
+      {name}
+      <button
+        type="button"
+        onClick={() => onRemove(name)}
+        aria-label={`Remove filter: ${name}`}
+        className="inline ml-1"
       >
-        {name}
-        <IoClose className="inline ml-1" onClick={() => onRemove(name)} />
-      </div>
-    </>
+        <IoClose />
+      </button>
+    </div>
   );
 };
 

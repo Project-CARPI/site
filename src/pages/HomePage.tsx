@@ -26,12 +26,12 @@ const HomePage = (props: HomePageProps) => {
   const isDesktop = useIsDesktop();
 
   return (
-    <div className={`p-2 md:max-h-dvh overflow-hidden `}>
+    <div className="m-4 md:max-h-dvh overflow-hidden">
       <header className="sticky top-0 flex h-20 items-center justify-center bg-carpipink">
         <img src="/carpi-black.png" alt="Carpi Logo" className="h-full" />
       </header>
 
-      <div className="flex flex-row">
+      <div className="flex flex-row gap-4">
         <div className={isDesktop ? "w-1/2" : "w-full"}>
           <Catalog
             isDragging={props.isDragging}

@@ -35,7 +35,7 @@ const Catalog: React.FC<CatalogProps> = ({
   setFilters,
 }) => {
   return (
-    <section className="m-4 flex flex-col gap-4">
+    <section className="flex flex-col gap-4 bg-amber-200">
       <div className={`sticky top-20 z-10`}>
         <h1 className="font-bold text-xl">Courses</h1>
         <SearchBar

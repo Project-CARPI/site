@@ -26,7 +26,7 @@ const Planner: React.FC<PlannerProps> = ({
   };
 
   return (
-    <div className="md:h-[calc(100vh-10rem)] p-2">
+    <div className="md:h-[calc(100vh-10rem)] bg-amber-100">
       <header className="md:hidden flex h-20 items-center justify-center bg-carpipink m-4">
         <img src="/carpi-black.png" alt="Carpi Logo" className="h-full" />
       </header>

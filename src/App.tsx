@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import Catalog from "./pages/Catalog";
 import Planner from "./pages/Planner";
@@ -10,8 +10,16 @@ import {
 } from "./types/interfaces/Course.interface.ts";
 import { DragDropContext } from "@hello-pangea/dnd";
 import { SemesterType } from "./types/interfaces/Semester.interface.ts";
-import { Filters } from "./types/Filters";
+import { Filters, FilterData } from "./types/Filters";
 import { usePlannerDragAndDrop } from "./hooks/usePlannerDragAndDrop";
+import api from "./axios.ts";
+
+const formatApiData = (data: string[]) => {
+  return data.map((item: string, index: number) => ({
+    id: index,
+    code: item,
+  }));
+};
 
 export default function App() {
   const [toolboxCourses, setToolboxCourses] = useState<CourseEntry[]>([]);
@@ -41,6 +49,32 @@ export default function App() {
     setIsDragging,
   });
 
+  // pre-fetch filter data
+  const [subjects, setSubjects] = useState<FilterData[]>([]);
+  const [attributes, setAttributes] = useState<FilterData[]>([]);
+  const [semesters, setSemesters] = useState<FilterData[]>([]);
+
+  useEffect(() => {
+    const fetchAllFilters = async () => {
+      try {
+        const [subjectsResponse, attributesResponse, semestersResponse] =
+          await Promise.all([
+            api.get("/course/filter/values/departments"),
+            api.get("/course/filter/values/attributes"),
+            api.get("/course/filter/values/semesters"),
+          ]);
+
+        setSubjects(formatApiData(subjectsResponse.data));
+        setAttributes(formatApiData(attributesResponse.data));
+        setSemesters(formatApiData(semestersResponse.data));
+      } catch (error) {
+        console.error("Failed to fetch filters:", error);
+      }
+    };
+
+    fetchAllFilters();
+  }, []);
+
   return (
     <DragDropContext onDragEnd={onDragEnd} onDragStart={onDragStart}>
       <Router>
@@ -62,6 +96,9 @@ export default function App() {
                 setShowFilter={setShowFilter}
                 filters={filters}
                 setFilters={setFilters}
+                subjects={subjects}
+                attributes={attributes}
+                semesters={semesters}
               />
             }
           />
@@ -80,6 +117,9 @@ export default function App() {
                 setShowFilter={setShowFilter}
                 filters={filters}
                 setFilters={setFilters}
+                subjects={subjects}
+                attributes={attributes}
+                semesters={semesters}
               />
             }
           />

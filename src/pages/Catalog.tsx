@@ -5,7 +5,7 @@ import {
   CourseType,
   CourseEntry,
 } from "../types/interfaces/Course.interface.ts";
-import { Filters } from "../types/Filters";
+import { FilterData, Filters } from "../types/Filters";
 
 interface CatalogProps {
   toolboxCourses: CourseEntry[];
@@ -20,6 +20,9 @@ interface CatalogProps {
   setShowFilter: React.Dispatch<React.SetStateAction<boolean>>;
   filters: Filters;
   setFilters: React.Dispatch<React.SetStateAction<Filters>>;
+  subjects: FilterData[];
+  attributes: FilterData[];
+  semesters: FilterData[];
 }
 
 const Catalog: React.FC<CatalogProps> = ({
@@ -33,6 +36,9 @@ const Catalog: React.FC<CatalogProps> = ({
   setShowFilter,
   filters,
   setFilters,
+  subjects,
+  attributes,
+  semesters,
 }) => {
   return (
     <section className="flex flex-col gap-4">
@@ -46,6 +52,9 @@ const Catalog: React.FC<CatalogProps> = ({
           setShowFilter={setShowFilter}
           filters={filters}
           setFilters={setFilters}
+          subjects={subjects}
+          attributes={attributes}
+          semesters={semesters}
         />
       </div>
 

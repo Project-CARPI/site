@@ -3,7 +3,7 @@ import { IoClose, IoSearchOutline, IoFilter } from "react-icons/io5";
 import api from "../../axios";
 import FilterPanel from "./FilterPanel/FilterPanel.tsx";
 import ChosenTag from "./ChosenTag";
-import { Filters } from "../../types/Filters";
+import { Filters, FilterData } from "../../types/Filters";
 import DepartmentFilters from "../Department-Filters";
 import { CourseType } from "../../types/interfaces/Course.interface.ts";
 import useIsDesktop from "../../hooks/useIsDesktop.ts";
@@ -18,6 +18,9 @@ interface SearchBarProps {
   setShowFilter: React.Dispatch<React.SetStateAction<boolean>>;
   filters: Filters;
   setFilters: React.Dispatch<React.SetStateAction<Filters>>;
+  subjects: FilterData[];
+  attributes: FilterData[];
+  semesters: FilterData[];
 }
 
 const SearchBar: React.FC<SearchBarProps> = ({
@@ -28,6 +31,9 @@ const SearchBar: React.FC<SearchBarProps> = ({
   setShowFilter,
   filters,
   setFilters,
+  subjects,
+  attributes,
+  semesters,
 }) => {
   const isDesktop = useIsDesktop();
 
@@ -187,10 +193,18 @@ const SearchBar: React.FC<SearchBarProps> = ({
           <FilterPanelPopup
             filters={filters}
             updateFilters={updateFilters}
-            setShowFilter={setShowFilter}
+            subjects={subjects}
+            attributes={attributes}
+            semesters={semesters}
           />
         ) : (
-          <FilterPanel filters={filters} updateFilters={updateFilters} />
+          <FilterPanel
+            filters={filters}
+            updateFilters={updateFilters}
+            subjects={subjects}
+            attributes={attributes}
+            semesters={semesters}
+          />
         ))}
 
       {showDeptFilter && (

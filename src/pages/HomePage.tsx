@@ -4,7 +4,7 @@ import Catalog from "./Catalog";
 import Planner from "./Planner";
 import { CourseEntry, CourseType } from "../types/interfaces/Course.interface";
 import { SemesterType } from "../types/interfaces/Semester.interface";
-import { Filters } from "../types/Filters";
+import { FilterData, Filters } from "../types/Filters";
 
 interface HomePageProps {
   isDragging: boolean;
@@ -20,6 +20,10 @@ interface HomePageProps {
   setShowFilter: React.Dispatch<React.SetStateAction<boolean>>;
   filters: Filters;
   setFilters: React.Dispatch<React.SetStateAction<Filters>>;
+
+  subjects: FilterData[];
+  attributes: FilterData[];
+  semesters: FilterData[];
 }
 
 const HomePage = (props: HomePageProps) => {
@@ -45,6 +49,9 @@ const HomePage = (props: HomePageProps) => {
             setShowFilter={props.setShowFilter}
             filters={props.filters}
             setFilters={props.setFilters}
+            subjects={props.subjects}
+            attributes={props.attributes}
+            semesters={props.semesters}
           />
         </div>
         {isDesktop && (

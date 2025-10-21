@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef, useMemo } from "react";
-import { IoClose, IoSearchOutline } from "react-icons/io5";
+import { IoClose, IoSearchOutline, IoFilter } from "react-icons/io5";
 import api from "../../axios";
 import FilterPanel from "./FilterPanel/FilterPanel.tsx";
 import ChosenTag from "./ChosenTag";
@@ -141,8 +141,8 @@ const SearchBar: React.FC<SearchBarProps> = ({
 
   return (
     <div className="flex justify-between flex-col items-center m-4 gap-2">
-      <div className="flex items-center gap-2 w-full border-b boarder-darkblue pb-2">
-        <IoSearchOutline />
+      <div className="flex items-center gap-4 w-full border-b boarder-darkblue p-2">
+        <IoSearchOutline className="w-5 h-5" />
         <input
           type="text"
           aria-label="Search Courses"
@@ -158,12 +158,20 @@ const SearchBar: React.FC<SearchBarProps> = ({
           }}
         />
 
-        {showFilter && (
+        {showFilter ? (
           <IoClose
             onClick={() => {
               setShowFilter(false); // Uses prop
               setSearchPrompt(""); // Uses prop
             }}
+            className="w-5 h-5"
+          />
+        ) : (
+          <IoFilter
+            onClick={() => {
+              setShowFilter(true); // Uses prop
+            }}
+            className="w-5 h-5"
           />
         )}
       </div>
@@ -175,14 +183,16 @@ const SearchBar: React.FC<SearchBarProps> = ({
           ))}
         </div>
 
-        <button
-          className="text-right text-sm cursor-pointer w-auto"
-          onClick={() => {
-            setShowFilter((prev) => !prev); // Uses prop
-          }}
-        >
-          {showFilter ? "Hide Options" : "Show Options"}
-        </button>
+        {!isDesktop && (
+          <button
+            className="text-right text-sm cursor-pointer w-auto"
+            onClick={() => {
+              setShowFilter((prev) => !prev); // Uses prop
+            }}
+          >
+            {showFilter ? "Hide Options" : "Show Options"}
+          </button>
+        )}
       </div>
 
       {showFilter &&

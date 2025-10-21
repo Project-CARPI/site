@@ -38,12 +38,12 @@ const Course: React.FC<CourseProps> = ({
 
     setToolboxCourses((prevCourses) => {
       const existingIndex = prevCourses.findIndex(
-        (c) => c.name === courseDisplay,
+        (c) => c.name === courseDisplay
       );
 
       if (existingIndex !== -1) {
         return prevCourses.map((c, i) =>
-          i === existingIndex ? { ...c, count: c.count + 1 } : c,
+          i === existingIndex ? { ...c, count: c.count + 1 } : c
         );
       } else {
         return [
@@ -57,56 +57,54 @@ const Course: React.FC<CourseProps> = ({
     toolboxCourses[toolboxCourses.findIndex((c) => c.name === courseDisplay)];
   const courseCount = toolboxCourse ? toolboxCourse.count : undefined;
   return (
-    <>
+    <div
+      className="relative bg-carpipink border-1 border-black rounded-xl w-full p-4"
+      onClick={toggleOpen}
+    >
       <div
-        className={`relative bg-[#F5CECE] border-[1px] border-black w-11/12 rounded-xl p-4 m-auto mt-4 
-          `}
-        onClick={toggleOpen}
+        className={`${
+          courseCount === undefined ? "hidden" : ""
+        } absolute right-[-10px] top-[-10px] rounded-full bg-[#78A1BB] w-8 h-8 flex justify-center items-center text-white`}
       >
-        <div
-          className={`${
-            courseCount === undefined ? "hidden" : ""
-          } absolute right-[-10px] top-[-10px] rounded-full bg-[#78A1BB] w-8 h-8 flex justify-center items-center text-white`}
-        >
-          <p>{courseCount}</p>
-        </div>
-        <div className={`flex items-center justify-between`}>
-          <div className={`w-11/12`}>
-            <div className={`text-lg ml-1`}>
-              <b>
-                {course.dept}
-                {course.code_num}
-              </b>
-              <p>{toTitleCase(course.title)}</p>
-            </div>
-            <div className={`flex flex-wrap mt-1`}>
-              <Tag name={course.dept} color={"4D5E87"} />
-              {course.attr_list?.split(",").map((attr, index) => {
-                return <Tag key={index} name={attr} color={"4D5E87"} />;
-              })}
-              {course.sem_list?.split(",").map((semester, index) => {
-                return <Tag key={index} name={semester} color={"4D5E87"} />;
-              })}
-            </div>
+        <p>{courseCount}</p>
+      </div>
+
+      <div className={`flex items-center justify-between`}>
+        <div>
+          <div className={`text-md`}>
+            <b>
+              {course.dept}
+              {course.code_num}
+            </b>
+            <p>{toTitleCase(course.title)}</p>
           </div>
-          <div id="add-button" className={``}>
-            <AddButton addCourse={addCourse} />
+          <div className={`flex flex-wrap mt-1`}>
+            <Tag name={course.dept} color={"4D5E87"} />
+            {course.attr_list?.split(",").map((attr, index) => {
+              return <Tag key={index} name={attr} color={"4D5E87"} />;
+            })}
+            {course.sem_list?.split(",").map((semester, index) => {
+              return <Tag key={index} name={semester} color={"4D5E87"} />;
+            })}
           </div>
         </div>
-        <div className={`${isOpen ? "" : "hidden"} mt-2`}>
-          <motion.p
-            initial={{ height: 0, opacity: 0 }}
-            animate={isOpen ? { height: "auto", opacity: 1 } : {}}
-            className={`text-sm`}
-            transition={{ duration: 0.05 }}
-          >
-            {course.desc_text.trim() === ""
-              ? "Empty Description"
-              : course.desc_text}
-          </motion.p>
+        <div id="add-button" className={``}>
+          <AddButton addCourse={addCourse} />
         </div>
       </div>
-    </>
+      <div className={`${isOpen ? "" : "hidden"} mt-2`}>
+        <motion.p
+          initial={{ height: 0, opacity: 0 }}
+          animate={isOpen ? { height: "auto", opacity: 1 } : {}}
+          className={`text-sm`}
+          transition={{ duration: 0.05 }}
+        >
+          {course.desc_text.trim() === ""
+            ? "Empty Description"
+            : course.desc_text}
+        </motion.p>
+      </div>
+    </div>
   );
 };
 

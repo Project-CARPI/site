@@ -30,31 +30,23 @@ const DraggableItem: React.FC<DraggableItemProps> = ({
   return (
     <Draggable draggableId={`${name}`} index={index}>
       {(provided, snapshot) => {
-        const isOverPlanner =
-          snapshot.isDragging && snapshot.draggingOver !== "toolbox";
+        // const isOverPlanner =
+        //   snapshot.isDragging && snapshot.draggingOver !== "toolbox";
 
-        // create a mutable copy of the style object provided by the library
         const style = {
           ...provided.draggableProps.style,
           cursor: "grab",
-          width: isOverPlanner ? "fixed" : "auto",
+          // background: snapshot.isDragging ? "#891726" : undefined,
         };
-
-        // unset top and let properties when dragging
-        if (snapshot.isDragging && location === "toolbox") {
-          (style as React.CSSProperties).top = undefined;
-          (style as React.CSSProperties).left = undefined;
-        }
 
         return (
           <div
             ref={provided.innerRef}
             {...provided.draggableProps}
             {...provided.dragHandleProps}
-            className="transition-all duration-200 ease-in-out"
             style={style}
           >
-            {isOverPlanner || location === "planner" ? (
+            {location !== "toolbox" ? (
               <PlannerCourse
                 course={course}
                 isDragging={snapshot.isDragging}
@@ -65,6 +57,7 @@ const DraggableItem: React.FC<DraggableItemProps> = ({
               />
             ) : (
               <ToolboxCourse
+                course={course}
                 index={index}
                 name={name}
                 count={count}

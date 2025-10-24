@@ -13,7 +13,7 @@ import * as RightClickContextMenu from "@radix-ui/react-context-menu";
 
 interface PlannerCourseProps {
   course: CourseType;
-  isDragging: boolean;
+  isDragging?: boolean;
   index: number;
   setPlannerCourses: Dispatch<SetStateAction<SemesterType[]>>;
   setToolboxCourses: Dispatch<SetStateAction<CourseEntry[]>>;
@@ -207,7 +207,7 @@ const PlannerCourse: React.FC<PlannerCourseProps> = ({
   return (
     <RightClickContextMenu.Root>
       <RightClickContextMenu.Trigger>
-        <div className="flex justify-between bg-[#283044] rounded-2xl text-[#F5CECE] gap-4 px-2 py-3">
+        <div className="relative z-200 flex justify-between bg-[#283044] rounded-2xl text-[#F5CECE] gap-4 px-2 py-3">
           <div className={`flex gap-2 items-center`}>
             <MdDragIndicator className="text-2xl" />
             <div className={`text-sm`}>

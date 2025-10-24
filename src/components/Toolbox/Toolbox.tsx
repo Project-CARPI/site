@@ -46,12 +46,12 @@ const Toolbox: React.FC<ToolboxProps> = ({ courses, isDragging }) => {
       )}
 
       <div
-        className={`w-full transform bg-[#283044] rounded-t-xl transition-transform duration-300 ease-in-out pointer-events-auto ${
+        className={`w-full bg-[#283044] rounded-t-xl transition-transform duration-300 ease-in-out pointer-events-auto ${
           isOpen
-            ? "translate-y-0"
+            ? ""
             : isDesktop
-              ? "translate-y-[calc(100%-52px)]"
-              : "translate-y-full"
+              ? "transform translate-y-[calc(100%-52px)]"
+              : "transform translate-y-full"
         }`}
       >
         <GarbageBin isDragging={isDragging} />

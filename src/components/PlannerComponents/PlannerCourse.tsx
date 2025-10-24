@@ -10,6 +10,8 @@ import { CourseType } from "../../types/interfaces/Course.interface";
 import { SemesterType } from "../../types/interfaces/Semester.interface";
 import { CourseEntry } from "../../types/interfaces/Course.interface";
 import * as RightClickContextMenu from "@radix-ui/react-context-menu";
+import { usePlannerCourse } from "../../hooks/usePlannerCourseOptions";
+import PlannerOptionsPopup from "./PlannerOptionsPopup";
 
 interface PlannerCourseProps {
   course: CourseType;
@@ -18,10 +20,12 @@ interface PlannerCourseProps {
   setPlannerCourses: Dispatch<SetStateAction<SemesterType[]>>;
   setToolboxCourses: Dispatch<SetStateAction<CourseEntry[]>>;
   semesterIndex: number;
+  count: number;
 }
 
 const PlannerCourse: React.FC<PlannerCourseProps> = ({
   course,
+  count,
   index,
   setPlannerCourses,
   setToolboxCourses,
@@ -35,179 +39,51 @@ const PlannerCourse: React.FC<PlannerCourseProps> = ({
     setOpenPopup((prev) => !prev);
   };
 
-  const handleClickOutside = (event: MouseEvent) => {
-    if (
-      componentRef.current &&
-      event.target instanceof Node &&
-      !componentRef.current.contains(event.target)
-    ) {
-      setOpenPopup(false);
-    }
+  const handleSelect = (action: () => void) => {
+    action();
+    setOpenPopup(false);
   };
 
-  const handleDuplicate = () => {
-    setPlannerCourses((prev) =>
-      prev.map((semester, i) =>
-        i === semesterIndex - 1
-          ? {
-              ...semester,
-              creditsTotal:
-                semester.creditsTotal +
-                semester.courseList[index].data.credit_max,
-              courseList: [
-                ...semester.courseList.slice(0, index + 1),
-                {
-                  name: getNextName(semester.courseList[index].name),
-                  count: semester.courseList[index].count,
-                  data: semester.courseList[index].data,
-                },
-                ...semester.courseList.slice(index + 1),
-              ],
-            }
-          : semester
-      )
-    );
-  };
-
-  const getNextName = (originalName: string): string => {
-    const [base, tag] = originalName.split("-");
-
-    if (!tag) {
-      return `${base}-A`;
-    }
-
-    const nextTag = incrementTag(tag);
-    return `${base}-${nextTag}`;
-  };
-
-  const incrementTag = (tag: string): string => {
-    const chars = tag.toUpperCase().split("");
-    let carry = true;
-
-    for (let i = chars.length - 1; i >= 0 && carry; i--) {
-      if (chars[i] === "Z") {
-        chars[i] = "A";
-      } else {
-        chars[i] = String.fromCharCode(chars[i].charCodeAt(0) + 1);
-        carry = false;
-      }
-    }
-
-    if (carry) {
-      chars.unshift("A");
-    }
-
-    return chars.join("");
-  };
-
-  const handleMoveNext = () => {
-    setPlannerCourses((prev) => {
-      const courseCopy = {
-        name: prev[semesterIndex - 1].courseList[index].name,
-        count: prev[semesterIndex - 1].courseList[index].count,
-        data: prev[semesterIndex - 1].courseList[index].data,
-      };
-
-      const updatedPlanner = prev.map((semester, i) =>
-        i === semesterIndex - 1
-          ? {
-              ...semester,
-              courseList: semester.courseList.filter((_, idx) => idx !== index),
-              creditsTotal:
-                semester.creditsTotal -
-                prev[semesterIndex - 1].courseList[index].data.credit_max,
-            }
-          : semester
-      );
-
-      return updatedPlanner.map((semester, i) =>
-        i === semesterIndex
-          ? {
-              ...semester,
-              courseList: [...semester.courseList, courseCopy],
-              creditsTotal: semester.creditsTotal + courseCopy.data.credit_max,
-            }
-          : semester
-      );
-    });
-  };
-
-  const handleMoveToolbox = () => {
-    setPlannerCourses((prev) => {
-      const courseToMove = prev[semesterIndex - 1].courseList[index];
-
-      const cleanedName = courseToMove.name.split("-")[0];
-
-      const cleanedCourse = {
-        ...courseToMove,
-        name: cleanedName,
-      };
-
-      const updatedPlanner = prev.map((semester, i) =>
-        i === semesterIndex - 1
-          ? {
-              ...semester,
-              courseList: semester.courseList.filter((_, idx) => idx !== index),
-              creditsTotal:
-                semester.creditsTotal - courseToMove.data.credit_max,
-            }
-          : semester
-      );
-
-      setToolboxCourses((toolboxPrev) => {
-        const existingIndex = toolboxPrev.findIndex(
-          (entry) => entry.name === cleanedName
-        );
-
-        if (existingIndex !== -1) {
-          const updated = [...toolboxPrev];
-          updated[existingIndex].count += cleanedCourse.count;
-          return updated;
-        } else {
-          return [...toolboxPrev, cleanedCourse];
-        }
-      });
-
-      return updatedPlanner;
-    });
-  };
-
-  const handleDelete = () => {
-    setPlannerCourses((prev) =>
-      prev.map((semester, i) =>
-        i === semesterIndex - 1
-          ? {
-              ...semester,
-              courseList: semester.courseList.filter((_, idx) => idx !== index),
-              creditsTotal:
-                semester.creditsTotal -
-                semester.courseList[index].data.credit_max,
-            }
-          : semester
-      )
-    );
-  };
+  const {
+    handleDuplicate,
+    handleMoveNext,
+    handleMoveToolbox,
+    handleDelete,
+    toTitleCase,
+  } = usePlannerCourse({
+    setPlannerCourses: setPlannerCourses,
+    setToolboxCourses: setToolboxCourses,
+    semesterIndex: semesterIndex,
+    courseIndex: index,
+    course: course,
+    name: course.title,
+    count: count,
+  });
 
   useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (
+        componentRef.current &&
+        !componentRef.current.contains(event.target as Node)
+      ) {
+        setOpenPopup(false);
+      }
+    };
+
     document.addEventListener("mousedown", handleClickOutside);
     return () => {
       document.removeEventListener("mousedown", handleClickOutside);
     };
   }, []);
 
-  const toTitleCase = (str: string) => {
-    return str
-      .toLowerCase()
-      .split(" ")
-      .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
-      .join(" ");
-  };
-
   /* Right-Click Context Menu */
   return (
     <RightClickContextMenu.Root>
       <RightClickContextMenu.Trigger>
-        <div className="relative flex justify-between bg-[#283044] rounded-2xl text-[#F5CECE] gap-4 px-2 py-3">
+        <div
+          ref={componentRef}
+          className="relative flex justify-between bg-[#283044] rounded-2xl text-[#F5CECE] gap-4 px-2 py-3"
+        >
           <div className={`flex gap-2 items-center`}>
             <MdDragIndicator className="text-2xl" />
             <div className={`text-sm`}>
@@ -230,6 +106,16 @@ const PlannerCourse: React.FC<PlannerCourseProps> = ({
               className="cursor-pointer text-2xl"
             />
           </div>
+
+          {openPopup && (
+            <PlannerOptionsPopup
+              handleSelect={handleSelect}
+              handleDuplicate={handleDuplicate}
+              handleMoveNext={handleMoveNext}
+              handleMoveToolbox={handleMoveToolbox}
+              handleDelete={handleDelete}
+            />
+          )}
         </div>
       </RightClickContextMenu.Trigger>
       <RightClickContextMenu.Portal>

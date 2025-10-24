@@ -1,6 +1,6 @@
 import React, { useState } from "react";
-import Tag from "./Tag";
-import AddButton from "./AddButton";
+import Tag from "./CatalogCourse/Tag";
+import AddButton from "./CatalogCourse/AddButton";
 import { motion } from "framer-motion";
 import { CourseType } from "../../types/interfaces/Course.interface";
 import { useCourseWorkspace } from "../../hooks/useCourseWorkspace";

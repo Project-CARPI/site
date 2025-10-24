@@ -3,8 +3,8 @@ import { Draggable } from "@hello-pangea/dnd";
 import { SemesterType } from "../types/interfaces/Semester.interface";
 import { CourseType, CourseEntry } from "../types/interfaces/Course.interface";
 
-import PlannerCourse from "./PlannerComponents/PlannerCourse";
-import ToolboxCourse from "./Toolbox/ToolboxCourse";
+import PlannerCourse from "./Course/PlannerCourse";
+import ToolboxCourse from "./Course/ToolboxCourse";
 
 interface DraggableItemProps {
   name: string;

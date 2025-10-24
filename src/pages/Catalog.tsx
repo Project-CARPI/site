@@ -1,5 +1,5 @@
 import React from "react";
-import Course from "../components/Course/Course";
+import Course from "../components/Course/CatalogCourse.tsx";
 import SearchBar from "../components/SearchBar/SeachBar";
 import { CourseType } from "../types/interfaces/Course.interface.ts";
 import { FilterData } from "../types/Filters";

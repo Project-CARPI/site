@@ -25,6 +25,7 @@ const cloneCourse = (course: CourseEntry): CourseEntry => {
 
 interface UsePlannerDragAndDropProps {
   toolboxCourses: CourseEntry[];
+  plannerCourses: SemesterType[];
   setToolboxCourses: Dispatch<SetStateAction<CourseEntry[]>>;
   setPlannerCourses: Dispatch<SetStateAction<SemesterType[]>>;
   setIsDragging: Dispatch<SetStateAction<boolean>>;
@@ -32,6 +33,7 @@ interface UsePlannerDragAndDropProps {
 
 export const usePlannerDragAndDrop = ({
   toolboxCourses,
+  plannerCourses,
   setToolboxCourses,
   setPlannerCourses,
   setIsDragging,
@@ -179,6 +181,57 @@ export const usePlannerDragAndDrop = ({
             sourceSemester.creditsTotal - removedCourse.data.credit_max,
         };
         return updated;
+      });
+      return;
+    }
+
+    // Move from planner to toolbox
+    if (sInd.startsWith("planner-") && dInd === "toolbox") {
+      const sourceSemesterIndex = parseInt(sInd.split("-")[1]) - 1;
+
+      if (sourceSemesterIndex >= plannerCourses.length) return;
+      const sourceSemester = plannerCourses[sourceSemesterIndex];
+      if (source.index >= sourceSemester.courseList.length) return;
+
+      const courseToMove = sourceSemester.courseList[source.index];
+      if (!courseToMove) return;
+
+      setPlannerCourses((prev) =>
+        prev.map((semester, idx) => {
+          if (idx !== sourceSemesterIndex) return semester;
+          return {
+            ...semester,
+            courseList: semester.courseList.filter(
+              (_, index) => index !== source.index
+            ),
+            creditsTotal: semester.creditsTotal - courseToMove.data.credit_max,
+          };
+        })
+      );
+
+      const cleanedName = courseToMove.name.split("-")[0];
+
+      setToolboxCourses((prev) => {
+        const existingIndex = prev.findIndex((c) => c.name === cleanedName);
+
+        const courseForToolbox: CourseEntry = {
+          ...courseToMove,
+          name: cleanedName,
+        };
+
+        if (existingIndex !== -1) {
+          const updated = [...prev];
+          updated[existingIndex] = {
+            ...updated[existingIndex],
+            count: updated[existingIndex].count + courseForToolbox.count,
+          };
+          return updated;
+        } else {
+          // It's a new course for the toolbox, add it
+          const newToolboxList = [...prev];
+          newToolboxList.splice(destination.index, 0, courseForToolbox);
+          return newToolboxList;
+        }
       });
       return;
     }

@@ -44,6 +44,7 @@ export default function App() {
   // The complex logic is now neatly contained in the hook
   const { onDragStart, onDragEnd } = usePlannerDragAndDrop({
     toolboxCourses,
+    plannerCourses,
     setToolboxCourses,
     setPlannerCourses,
     setIsDragging,

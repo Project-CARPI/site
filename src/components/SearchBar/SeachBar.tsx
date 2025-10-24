@@ -12,12 +12,6 @@ import FilterPanelPopup from "./FilterPanel/FilterPanelPopup.tsx";
 interface SearchBarProps {
   updateSearchResults: (results: CourseType[]) => void;
   // Props for lifted state
-  searchPrompt: string;
-  setSearchPrompt: React.Dispatch<React.SetStateAction<string>>;
-  showFilter: boolean;
-  setShowFilter: React.Dispatch<React.SetStateAction<boolean>>;
-  filters: Filters;
-  setFilters: React.Dispatch<React.SetStateAction<Filters>>;
   subjects: FilterData[];
   attributes: FilterData[];
   semesters: FilterData[];
@@ -25,12 +19,6 @@ interface SearchBarProps {
 
 const SearchBar: React.FC<SearchBarProps> = ({
   updateSearchResults,
-  searchPrompt,
-  setSearchPrompt,
-  showFilter,
-  setShowFilter,
-  filters,
-  setFilters,
   subjects,
   attributes,
   semesters,
@@ -38,6 +26,13 @@ const SearchBar: React.FC<SearchBarProps> = ({
   const isDesktop = useIsDesktop();
 
   const [showDeptFilter, setShowDeptFilter] = useState(true);
+  const [showFilter, setShowFilter] = useState(false);
+  const [searchPrompt, setSearchPrompt] = useState("");
+  const [filters, setFilters] = useState<Filters>({
+    Subject: [],
+    Attributes: [],
+    Semesters: [],
+  });
 
   const debounceTimeout = useRef<ReturnType<typeof setTimeout> | null>(null);
   const lastNoResultQuery = useRef<string | null>(null);
@@ -97,6 +92,12 @@ const SearchBar: React.FC<SearchBarProps> = ({
   const handleSearch = (e: React.KeyboardEvent) => {
     (e.currentTarget as HTMLInputElement).blur();
     setShowFilter(false);
+    setShowDeptFilter(false);
+  };
+
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setSearchPrompt(e.target.value);
+    if (e.target.value.length === 0) setShowDeptFilter(false);
   };
 
   const updateFilters = (category: keyof Filters, value: string) => {
@@ -158,7 +159,7 @@ const SearchBar: React.FC<SearchBarProps> = ({
           value={searchPrompt} // Uses prop
           enterKeyHint="search"
           onClick={() => setShowFilter(true)} // Uses prop
-          onChange={(e) => setSearchPrompt(e.target.value)} // Uses prop
+          onChange={handleInputChange} // Uses prop
           onKeyDown={(e) => {
             if (e.key === "Enter" || e.key === "Done") handleSearch(e);
           }}

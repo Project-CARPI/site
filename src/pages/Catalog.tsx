@@ -5,21 +5,13 @@ import {
   CourseType,
   CourseEntry,
 } from "../types/interfaces/Course.interface.ts";
-import { FilterData, Filters } from "../types/Filters";
+import { FilterData } from "../types/Filters";
 
 interface CatalogProps {
   toolboxCourses: CourseEntry[];
   setToolboxCourses: React.Dispatch<React.SetStateAction<CourseEntry[]>>;
   isDragging: boolean;
   // New props added from the moved state
-  searchResults: CourseType[];
-  setSearchResults: React.Dispatch<React.SetStateAction<CourseType[]>>;
-  searchPrompt: string;
-  setSearchPrompt: React.Dispatch<React.SetStateAction<string>>;
-  showFilter: boolean;
-  setShowFilter: React.Dispatch<React.SetStateAction<boolean>>;
-  filters: Filters;
-  setFilters: React.Dispatch<React.SetStateAction<Filters>>;
   subjects: FilterData[];
   attributes: FilterData[];
   semesters: FilterData[];
@@ -28,30 +20,18 @@ interface CatalogProps {
 const Catalog: React.FC<CatalogProps> = ({
   toolboxCourses,
   setToolboxCourses,
-  searchResults,
-  setSearchResults,
-  searchPrompt,
-  setSearchPrompt,
-  showFilter,
-  setShowFilter,
-  filters,
-  setFilters,
   subjects,
   attributes,
   semesters,
 }) => {
+  const [searchResults, setSearchResults] = React.useState<CourseType[]>([]);
+
   return (
     <section className="flex flex-col gap-4">
       <div className={`sticky top-20 z-10`}>
         <h1 className="font-bold text-xl">Courses</h1>
         <SearchBar
           updateSearchResults={setSearchResults}
-          searchPrompt={searchPrompt}
-          setSearchPrompt={setSearchPrompt}
-          showFilter={showFilter}
-          setShowFilter={setShowFilter}
-          filters={filters}
-          setFilters={setFilters}
           subjects={subjects}
           attributes={attributes}
           semesters={semesters}
@@ -60,7 +40,7 @@ const Catalog: React.FC<CatalogProps> = ({
 
       {searchResults.length > 0 && (
         <div className="md:h-[calc(100vh-17rem)] md:overflow-hidden">
-          <div className="h-full overflow-y-auto flex flex-wrap justify-center gap-4 pr-4">
+          <div className="h-full overflow-y-auto w-2/3 flex flex-wrap justify-center gap-4 pr-4">
             {searchResults?.map((course: CourseType, index: number) => (
               <Course
                 key={index}

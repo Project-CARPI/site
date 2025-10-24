@@ -2,9 +2,9 @@ import useIsDesktop from "../hooks/useIsDesktop";
 
 import Catalog from "./Catalog";
 import Planner from "./Planner";
-import { CourseEntry, CourseType } from "../types/interfaces/Course.interface";
+import { CourseEntry } from "../types/interfaces/Course.interface";
 import { SemesterType } from "../types/interfaces/Semester.interface";
-import { FilterData, Filters } from "../types/Filters";
+import { FilterData } from "../types/Filters";
 
 interface HomePageProps {
   isDragging: boolean;
@@ -12,14 +12,6 @@ interface HomePageProps {
   setToolboxCourses: React.Dispatch<React.SetStateAction<CourseEntry[]>>;
   plannerCourses: SemesterType[];
   setPlannerCourses: React.Dispatch<React.SetStateAction<SemesterType[]>>;
-  searchResults: CourseType[];
-  setSearchResults: React.Dispatch<React.SetStateAction<CourseType[]>>;
-  searchPrompt: string;
-  setSearchPrompt: React.Dispatch<React.SetStateAction<string>>;
-  showFilter: boolean;
-  setShowFilter: React.Dispatch<React.SetStateAction<boolean>>;
-  filters: Filters;
-  setFilters: React.Dispatch<React.SetStateAction<Filters>>;
 
   subjects: FilterData[];
   attributes: FilterData[];
@@ -41,14 +33,6 @@ const HomePage = (props: HomePageProps) => {
             isDragging={props.isDragging}
             toolboxCourses={props.toolboxCourses}
             setToolboxCourses={props.setToolboxCourses}
-            searchResults={props.searchResults}
-            setSearchResults={props.setSearchResults}
-            searchPrompt={props.searchPrompt}
-            setSearchPrompt={props.setSearchPrompt}
-            showFilter={props.showFilter}
-            setShowFilter={props.setShowFilter}
-            filters={props.filters}
-            setFilters={props.setFilters}
             subjects={props.subjects}
             attributes={props.attributes}
             semesters={props.semesters}

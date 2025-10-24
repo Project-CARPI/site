@@ -4,13 +4,10 @@ import Catalog from "./pages/Catalog";
 import Planner from "./pages/Planner";
 import Toolbox from "./components/Toolbox/Toolbox";
 import HomePage from "./pages/HomePage";
-import {
-  CourseEntry,
-  CourseType,
-} from "./types/interfaces/Course.interface.ts";
+import { CourseEntry } from "./types/interfaces/Course.interface.ts";
 import { DragDropContext } from "@hello-pangea/dnd";
 import { SemesterType } from "./types/interfaces/Semester.interface.ts";
-import { Filters, FilterData } from "./types/Filters";
+import { FilterData } from "./types/Filters";
 import { useDragAndDrop } from "./hooks/useDragAndDrop.ts";
 import api from "./axios.ts";
 
@@ -32,14 +29,6 @@ export default function App() {
     },
   ]);
   const [isDragging, setIsDragging] = useState<boolean>(false);
-  const [searchResults, setSearchResults] = useState<CourseType[]>([]);
-  const [searchPrompt, setSearchPrompt] = useState("");
-  const [showFilter, setShowFilter] = useState(false);
-  const [filters, setFilters] = useState<Filters>({
-    Subject: [],
-    Attributes: [],
-    Semesters: [],
-  });
 
   // The complex logic is now neatly contained in the hook
   const { onDragStart, onDragEnd } = useDragAndDrop({
@@ -89,14 +78,6 @@ export default function App() {
                 setToolboxCourses={setToolboxCourses}
                 plannerCourses={plannerCourses}
                 setPlannerCourses={setPlannerCourses}
-                searchResults={searchResults}
-                setSearchResults={setSearchResults}
-                searchPrompt={searchPrompt}
-                setSearchPrompt={setSearchPrompt}
-                showFilter={showFilter}
-                setShowFilter={setShowFilter}
-                filters={filters}
-                setFilters={setFilters}
                 subjects={subjects}
                 attributes={attributes}
                 semesters={semesters}
@@ -110,14 +91,6 @@ export default function App() {
                 isDragging={isDragging}
                 toolboxCourses={toolboxCourses}
                 setToolboxCourses={setToolboxCourses}
-                searchResults={searchResults}
-                setSearchResults={setSearchResults}
-                searchPrompt={searchPrompt}
-                setSearchPrompt={setSearchPrompt}
-                showFilter={showFilter}
-                setShowFilter={setShowFilter}
-                filters={filters}
-                setFilters={setFilters}
                 subjects={subjects}
                 attributes={attributes}
                 semesters={semesters}

@@ -5,23 +5,20 @@ import ToolboxButton from "./ToolboxButton";
 import NavButton from "./NavButton";
 import { Droppable } from "@hello-pangea/dnd";
 import { IoIosArrowDown } from "react-icons/io";
-import { CourseEntry } from "../../types/interfaces/Course.interface";
 import GarbageBin from "../GarbageBin";
 import DraggableItem from "../DraggableItem";
+import { useCourseWorkspace } from "../../hooks/useCourseWorkspace";
 
-interface ToolboxProps {
-  courses: CourseEntry[];
-  isDragging: boolean;
-}
-
-const Toolbox: React.FC<ToolboxProps> = ({ courses, isDragging }) => {
+const Toolbox: React.FC = () => {
   const isDesktop = useIsDesktop();
   const [isOpen, setIsOpen] = useState(isDesktop);
   const [count, setCount] = useState(0);
 
+  const { toolboxCourses, isDragging } = useCourseWorkspace();
+
   useEffect(() => {
-    setCount(courses.length);
-  }, [courses]);
+    setCount(toolboxCourses.length);
+  }, [toolboxCourses]);
 
   useEffect(() => {
     setIsOpen(isDesktop);
@@ -86,7 +83,7 @@ const Toolbox: React.FC<ToolboxProps> = ({ courses, isDragging }) => {
                 {...provided.droppableProps}
                 className={`courses gap-4 h-[75px] md:min-h-[50px] scrollbar-none flex justify-items-center w-full overflow-x-auto px-4 pb-2 transition-colors`}
               >
-                {courses.map((course, index) => (
+                {toolboxCourses.map((course, index) => (
                   <DraggableItem
                     key={course.name}
                     name={course.name}

@@ -2,22 +2,16 @@ import React, { useState } from "react";
 import Tag from "./Tag";
 import AddButton from "./AddButton";
 import { motion } from "framer-motion";
-import {
-  CourseType,
-  CourseEntry,
-} from "../../types/interfaces/Course.interface";
+import { CourseType } from "../../types/interfaces/Course.interface";
+import { useCourseWorkspace } from "../../hooks/useCourseWorkspace";
 
 interface CourseProps {
   course: CourseType;
-  toolboxCourses: CourseEntry[];
-  setToolboxCourses: React.Dispatch<React.SetStateAction<CourseEntry[]>>;
 }
 
-const Course: React.FC<CourseProps> = ({
-  course,
-  toolboxCourses,
-  setToolboxCourses,
-}) => {
+const Course: React.FC<CourseProps> = ({ course }) => {
+  const { toolboxCourses, setToolboxCourses } = useCourseWorkspace();
+
   const [isOpen, setIsOpen] = useState(false);
   const toggleOpen = (e: React.MouseEvent<HTMLDivElement>) => {
     const target = e.target as HTMLElement;

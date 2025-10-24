@@ -1,22 +1,13 @@
-import React, { Dispatch, SetStateAction } from "react";
+import React from "react";
 import SemesterBlock from "../components/PlannerComponents/SemesterBlocks/SemesterBlock";
-import { SemesterType } from "../types/interfaces/Semester.interface";
-import { CourseEntry } from "../types/interfaces/Course.interface";
 import AddSemester from "../components/PlannerComponents/AddSemester";
 import DeleteSemester from "../components/PlannerComponents/DeleteSemester";
+import { useCourseWorkspace } from "../hooks/useCourseWorkspace";
 
-interface PlannerProps {
-  isDragging: boolean;
-  plannerCourses: SemesterType[];
-  setPlannerCourses: Dispatch<SetStateAction<SemesterType[]>>;
-  setToolboxCourses: Dispatch<SetStateAction<CourseEntry[]>>;
-}
+const Planner: React.FC = () => {
+  const { plannerCourses, setPlannerCourses, setToolboxCourses } =
+    useCourseWorkspace();
 
-const Planner: React.FC<PlannerProps> = ({
-  plannerCourses,
-  setPlannerCourses,
-  setToolboxCourses,
-}) => {
   const handleDeleteSemester = (semesterNumber: number) => {
     setPlannerCourses((prev) =>
       prev

@@ -4,12 +4,11 @@ import Catalog from "./pages/Catalog";
 import Planner from "./pages/Planner";
 import Toolbox from "./components/Toolbox/Toolbox";
 import HomePage from "./pages/HomePage";
-import { CourseEntry } from "./types/interfaces/Course.interface.ts";
 import { DragDropContext } from "@hello-pangea/dnd";
-import { SemesterType } from "./types/interfaces/Semester.interface.ts";
 import { FilterData } from "./types/Filters";
-import { useDragAndDrop } from "./hooks/useDragAndDrop.ts";
 import api from "./axios.ts";
+import { CourseWorkspaceProvider } from "./context/CourseWorkspaceProvider.tsx";
+import { useCourseWorkspace } from "./hooks/useCourseWorkspace.ts";
 
 const formatApiData = (data: string[]) => {
   return data.map((item: string, index: number) => ({
@@ -18,27 +17,19 @@ const formatApiData = (data: string[]) => {
   }));
 };
 
+const AppDragDropContext: React.FC<{ children: React.ReactNode }> = ({
+  children,
+}) => {
+  // 2. Get the dnd functions from the hook
+  const { onDragStart, onDragEnd } = useCourseWorkspace();
+  return (
+    <DragDropContext onDragEnd={onDragEnd} onDragStart={onDragStart}>
+      {children}
+    </DragDropContext>
+  );
+};
+
 export default function App() {
-  const [toolboxCourses, setToolboxCourses] = useState<CourseEntry[]>([]);
-  const [plannerCourses, setPlannerCourses] = useState<SemesterType[]>([
-    {
-      semesterNumber: 1,
-      semesterSeason: "fall",
-      creditsTotal: 0,
-      courseList: [],
-    },
-  ]);
-  const [isDragging, setIsDragging] = useState<boolean>(false);
-
-  // The complex logic is now neatly contained in the hook
-  const { onDragStart, onDragEnd } = useDragAndDrop({
-    toolboxCourses,
-    plannerCourses,
-    setToolboxCourses,
-    setPlannerCourses,
-    setIsDragging,
-  });
-
   // pre-fetch filter data
   const [subjects, setSubjects] = useState<FilterData[]>([]);
   const [attributes, setAttributes] = useState<FilterData[]>([]);
@@ -66,51 +57,35 @@ export default function App() {
   }, []);
 
   return (
-    <DragDropContext onDragEnd={onDragEnd} onDragStart={onDragStart}>
-      <Router>
-        <Routes>
-          <Route
-            path="/"
-            element={
-              <HomePage
-                isDragging={isDragging}
-                toolboxCourses={toolboxCourses}
-                setToolboxCourses={setToolboxCourses}
-                plannerCourses={plannerCourses}
-                setPlannerCourses={setPlannerCourses}
-                subjects={subjects}
-                attributes={attributes}
-                semesters={semesters}
-              />
-            }
-          />
-          <Route
-            path="/catalog"
-            element={
-              <Catalog
-                isDragging={isDragging}
-                toolboxCourses={toolboxCourses}
-                setToolboxCourses={setToolboxCourses}
-                subjects={subjects}
-                attributes={attributes}
-                semesters={semesters}
-              />
-            }
-          />
-          <Route
-            path="/planner"
-            element={
-              <Planner
-                isDragging={isDragging}
-                plannerCourses={plannerCourses}
-                setPlannerCourses={setPlannerCourses}
-                setToolboxCourses={setToolboxCourses}
-              />
-            }
-          />
-        </Routes>
-        <Toolbox courses={toolboxCourses} isDragging={isDragging} />
-      </Router>
-    </DragDropContext>
+    <CourseWorkspaceProvider>
+      <AppDragDropContext>
+        <Router>
+          <Routes>
+            <Route
+              path="/"
+              element={
+                <HomePage
+                  subjects={subjects}
+                  attributes={attributes}
+                  semesters={semesters}
+                />
+              }
+            />
+            <Route
+              path="/catalog"
+              element={
+                <Catalog
+                  subjects={subjects}
+                  attributes={attributes}
+                  semesters={semesters}
+                />
+              }
+            />
+            <Route path="/planner" element={<Planner />} />
+          </Routes>
+          <Toolbox />
+        </Router>
+      </AppDragDropContext>
+    </CourseWorkspaceProvider>
   );
 }

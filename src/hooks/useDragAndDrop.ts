@@ -23,7 +23,7 @@ const cloneCourse = (course: CourseEntry): CourseEntry => {
 
 // --- Hook Definition ---
 
-interface UsePlannerDragAndDropProps {
+interface UseDragAndDropProps {
   toolboxCourses: CourseEntry[];
   plannerCourses: SemesterType[];
   setToolboxCourses: Dispatch<SetStateAction<CourseEntry[]>>;
@@ -31,13 +31,13 @@ interface UsePlannerDragAndDropProps {
   setIsDragging: Dispatch<SetStateAction<boolean>>;
 }
 
-export const usePlannerDragAndDrop = ({
+export const useDragAndDrop = ({
   toolboxCourses,
   plannerCourses,
   setToolboxCourses,
   setPlannerCourses,
   setIsDragging,
-}: UsePlannerDragAndDropProps) => {
+}: UseDragAndDropProps) => {
   const onDragStart = () => {
     document.body.classList.add("no-scroll-during-drag");
     setIsDragging(true);

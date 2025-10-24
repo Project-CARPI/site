@@ -11,7 +11,7 @@ import {
 import { DragDropContext } from "@hello-pangea/dnd";
 import { SemesterType } from "./types/interfaces/Semester.interface.ts";
 import { Filters, FilterData } from "./types/Filters";
-import { usePlannerDragAndDrop } from "./hooks/usePlannerDragAndDrop";
+import { useDragAndDrop } from "./hooks/useDragAndDrop.ts";
 import api from "./axios.ts";
 
 const formatApiData = (data: string[]) => {
@@ -42,7 +42,7 @@ export default function App() {
   });
 
   // The complex logic is now neatly contained in the hook
-  const { onDragStart, onDragEnd } = usePlannerDragAndDrop({
+  const { onDragStart, onDragEnd } = useDragAndDrop({
     toolboxCourses,
     plannerCourses,
     setToolboxCourses,

@@ -37,10 +37,12 @@ export const usePlannerDragAndDrop = ({
   setIsDragging,
 }: UsePlannerDragAndDropProps) => {
   const onDragStart = () => {
+    document.body.classList.add("no-scroll-during-drag");
     setIsDragging(true);
   };
 
   const onDragEnd = (result: DropResult) => {
+    document.body.classList.remove("no-scroll-during-drag");
     setIsDragging(false);
     const { source, destination, draggableId } = result;
     if (!destination) return;
@@ -51,7 +53,7 @@ export const usePlannerDragAndDrop = ({
     // Reorder in toolbox
     if (sInd === "toolbox" && dInd === "toolbox") {
       setToolboxCourses((prev) =>
-        reorder(prev, source.index, destination.index),
+        reorder(prev, source.index, destination.index)
       );
       return;
     }
@@ -59,7 +61,7 @@ export const usePlannerDragAndDrop = ({
     // Delete from toolbox
     if (dInd === "garbage" && sInd === "toolbox") {
       setToolboxCourses((prev) =>
-        prev.filter((_, index) => index !== source.index),
+        prev.filter((_, index) => index !== source.index)
       );
       return;
     }
@@ -75,11 +77,11 @@ export const usePlannerDragAndDrop = ({
                 courseList: reorder(
                   semester.courseList,
                   source.index,
-                  destination.index,
+                  destination.index
                 ),
               }
-            : semester,
-        ),
+            : semester
+        )
       );
       return;
     }
@@ -144,14 +146,14 @@ export const usePlannerDragAndDrop = ({
               };
             }
             return semester;
-          }),
+          })
         );
         setToolboxCourses((prev) =>
           prev
             .map((c) =>
-              c.name === courseToClone.name ? { ...c, count: c.count - 1 } : c,
+              c.name === courseToClone.name ? { ...c, count: c.count - 1 } : c
             )
-            .filter((c) => c.count > 0),
+            .filter((c) => c.count > 0)
         );
       }
       return;

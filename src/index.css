@@ -14,6 +14,14 @@ body {
   scrollbar-width: thin;
 }
 
+body.no-scroll-during-drag {
+  /* This prevents the entire page from scrolling */
+  overflow: hidden !important;
+
+  /* This can also help prevent other touch behaviors on some browsers */
+  touch-action: none !important;
+}
+
 /* scrollbar for webkit browsers */
 ::-webkit-scrollbar {
   width: 12px;

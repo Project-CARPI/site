@@ -30,7 +30,10 @@ const Planner: React.FC = () => {
 
         <div className="grid grid-cols-2 gap-8">
           {plannerCourses.map((semester, index) => (
-            <div key={semester.semesterNumber}>
+            <div
+              key={semester.semesterNumber}
+              className="h-full border-b-1 border-darkblue flex flex-col justify-between pb-4"
+            >
               <SemesterBlock
                 semester={semester}
                 index={index}
@@ -42,7 +45,6 @@ const Planner: React.FC = () => {
                 semesterNumber={semester.semesterNumber}
                 onDelete={handleDeleteSemester}
               />
-              <hr className="border-[calc(0.05px)] border-[#c3a9a9] w-full mt-4 text-[#c3a9a9] " />
             </div>
           ))}
         </div>

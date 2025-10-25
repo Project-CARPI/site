@@ -98,7 +98,8 @@ const SearchBar: React.FC<SearchBarProps> = ({
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setSearchPrompt(e.target.value);
-    if (e.target.value.length === 0) setShowDeptFilter(false);
+    setShowFilter(false);
+    if (e.target.value.length === 0) setShowDeptFilter(true);
   };
 
   const updateFilters = (category: keyof Filters, value: string) => {
@@ -176,10 +177,10 @@ const SearchBar: React.FC<SearchBarProps> = ({
           aria-required="true"
           placeholder="Find Courses Here"
           className="flex-grow text-base placeholder-darkblue-40 focus:placeholder-transparent focus:outline-none focus:ring-0"
-          value={searchPrompt} // Uses prop
+          value={searchPrompt}
           enterKeyHint="search"
-          onClick={() => setShowFilter(true)} // Uses prop
-          onChange={handleInputChange} // Uses prop
+          onClick={() => setShowFilter(false)}
+          onChange={handleInputChange}
           onKeyDown={(e) => {
             if (e.key === "Enter" || e.key === "Done") handleSearch(e);
           }}
@@ -201,6 +202,16 @@ const SearchBar: React.FC<SearchBarProps> = ({
             className="w-5 h-5"
           />
         )}
+
+        {showFilter && isDesktop && (
+          <FilterPanelPopup
+            filters={filters}
+            updateFilters={updateFilters}
+            subjects={subjects}
+            attributes={attributes}
+            semesters={semesters}
+          />
+        )}
       </div>
 
       <div className="flex flex-wrap w-full items-start ">
@@ -209,24 +220,15 @@ const SearchBar: React.FC<SearchBarProps> = ({
         ))}
       </div>
 
-      {showFilter &&
-        (isDesktop ? (
-          <FilterPanelPopup
-            filters={filters}
-            updateFilters={updateFilters}
-            subjects={subjects}
-            attributes={attributes}
-            semesters={semesters}
-          />
-        ) : (
-          <FilterPanel
-            filters={filters}
-            updateFilters={updateFilters}
-            subjects={subjects}
-            attributes={attributes}
-            semesters={semesters}
-          />
-        ))}
+      {showFilter && !isDesktop && (
+        <FilterPanel
+          filters={filters}
+          updateFilters={updateFilters}
+          subjects={subjects}
+          attributes={attributes}
+          semesters={semesters}
+        />
+      )}
 
       {showDeptFilter && (
         <div className="md:h-[calc(100vh-17rem)] mt-2">

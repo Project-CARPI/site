@@ -20,7 +20,7 @@ const HomePage = (props: HomePageProps) => {
       </header>
 
       <div className="flex flex-row gap-8">
-        <div className={isDesktop ? "w-1/2" : "w-full"}>
+        <div className={isDesktop ? "w-1/3" : "w-full"}>
           <Catalog
             subjects={props.subjects}
             attributes={props.attributes}
@@ -28,7 +28,7 @@ const HomePage = (props: HomePageProps) => {
           />
         </div>
         {isDesktop && (
-          <div className="w-1/2">
+          <div className="w-2/3">
             <Planner />
           </div>
         )}

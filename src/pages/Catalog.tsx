@@ -31,7 +31,7 @@ const Catalog: React.FC<CatalogProps> = ({
 
       {searchResults.length > 0 && (
         <div className="md:h-[calc(100vh-17rem)] md:overflow-hidden">
-          <div className="h-full overflow-y-auto w-2/3 flex flex-wrap justify-center gap-4 pr-4">
+          <div className="h-full overflow-y-auto flex flex-wrap justify-center gap-4 pr-4">
             {searchResults?.map((course: CourseType, index: number) => (
               <Course key={index} course={course} />
             ))}

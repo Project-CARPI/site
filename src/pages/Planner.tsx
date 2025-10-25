@@ -23,27 +23,29 @@ const Planner: React.FC = () => {
       </header>
 
       <section className="h-full w-full overflow-y-auto scrollbar-hide pr-4 flex flex-col gap-4">
-        <div className="flex justify-between">
+        <div className="flex justify-between sticky top-0 z-10 bg-carpipink pt-4">
           <h1 className="font-bold text-xl">Planner</h1>
           <AddSemester setPlannerCourses={setPlannerCourses} />
         </div>
 
-        {plannerCourses.map((semester, index) => (
-          <div key={semester.semesterNumber}>
-            <SemesterBlock
-              semester={semester}
-              index={index}
-              key={semester.semesterNumber}
-              setPlannerCourses={setPlannerCourses}
-              setToolboxCourses={setToolboxCourses}
-            />
-            <DeleteSemester
-              semesterNumber={semester.semesterNumber}
-              onDelete={handleDeleteSemester}
-            />
-            <hr className="border-[calc(0.05px)] border-[#c3a9a9] w-full mt-4 text-[#c3a9a9] " />
-          </div>
-        ))}
+        <div className="grid grid-cols-2 gap-8">
+          {plannerCourses.map((semester, index) => (
+            <div key={semester.semesterNumber}>
+              <SemesterBlock
+                semester={semester}
+                index={index}
+                key={semester.semesterNumber}
+                setPlannerCourses={setPlannerCourses}
+                setToolboxCourses={setToolboxCourses}
+              />
+              <DeleteSemester
+                semesterNumber={semester.semesterNumber}
+                onDelete={handleDeleteSemester}
+              />
+              <hr className="border-[calc(0.05px)] border-[#c3a9a9] w-full mt-4 text-[#c3a9a9] " />
+            </div>
+          ))}
+        </div>
       </section>
     </div>
   );

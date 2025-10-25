@@ -11,7 +11,7 @@ import { SemesterType } from "../../types/interfaces/Semester.interface";
 import { CourseEntry } from "../../types/interfaces/Course.interface";
 import * as RightClickContextMenu from "@radix-ui/react-context-menu";
 import { usePlannerCourse } from "../../hooks/usePlannerCourseOptions";
-import PlannerOptionsPopup from "./PlannerOptionsPopup";
+import PlannerOptionsPopup from "../PlannerComponents/PlannerOptionsPopup";
 
 interface PlannerCourseProps {
   course: CourseType;

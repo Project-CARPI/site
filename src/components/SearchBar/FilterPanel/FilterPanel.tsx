@@ -3,7 +3,7 @@ import FilterSection from "./FilterSection";
 
 interface FilterPanelProps {
   filters: { [key: string]: string[] };
-  updateFilters: (category: keyof Filters, value: string) => void;
+  updateFilters: React.Dispatch<React.SetStateAction<Filters>>;
 
   subjects: FilterData[];
   attributes: FilterData[];

@@ -3,7 +3,7 @@ import FilterPanel from "./FilterPanel";
 
 interface FilterPanelPopupProps {
   filters: { [key: string]: string[] };
-  updateFilters: (category: keyof Filters, value: string) => void;
+  updateFilters: React.Dispatch<React.SetStateAction<Filters>>;
 
   subjects: FilterData[];
   attributes: FilterData[];

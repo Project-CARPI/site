@@ -54,7 +54,7 @@ const departments: Department[] = [
 ];
 
 interface DepartmentFiltersProps {
-  updateFilters: (category: keyof Filters, value: string) => void;
+  updateFilters: React.Dispatch<React.SetStateAction<Filters>>;
 }
 
 const DepartmentFilters: React.FC<DepartmentFiltersProps> = ({
@@ -76,7 +76,14 @@ const DepartmentFilters: React.FC<DepartmentFiltersProps> = ({
             hover:bg-darkblue hover:text-white
             h-fit
           `}
-          onClick={() => updateFilters("Subject", dept.code)}
+          onClick={() =>
+            updateFilters((prev) => ({
+              ...prev,
+              Subject: prev.Subject.includes(dept.code)
+                ? prev.Subject.filter((code) => code !== dept.code)
+                : [...prev.Subject, dept.code],
+            }))
+          }
         >
           <div className="flex items-center gap-2 whitespace-nowrap">
             <span className="font-bold">{dept.code}</span>

@@ -1,11 +1,10 @@
-import React, { useState, useRef, useMemo, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import api from "../axios.ts";
 import Course from "../components/Course/CatalogCourse.tsx";
 import SearchBar from "../components/SearchBar/SeachBar";
 import { Filters, FilterData } from "../types/Filters";
 import { CourseType } from "../types/interfaces/Course.interface.ts";
 import DepartmentFilters from "../components/Department-Filters.tsx";
-import ChosenTag from "../components/SearchBar/ChosenTag";
 
 interface CatalogProps {
   subjects: FilterData[];
@@ -81,22 +80,6 @@ const Catalog: React.FC<CatalogProps> = ({
     };
   }, [filters, searchPrompt, setSearchResults]);
 
-  const allActiveFilters = useMemo(() => {
-    return Object.values(filters).flat();
-  }, [filters]);
-
-  const removeFilter = (value: string) => {
-    setFilters((prev) => {
-      const newFilters: Filters = { ...prev };
-      for (const category of Object.keys(prev) as (keyof Filters)[]) {
-        newFilters[category] = newFilters[category].filter(
-          (tag) => tag !== value
-        );
-      }
-      return newFilters;
-    });
-  };
-
   return (
     <section className="flex flex-col gap-4">
       <div className={`sticky top-20 z-10`}>
@@ -110,27 +93,21 @@ const Catalog: React.FC<CatalogProps> = ({
           attributes={attributes}
           semesters={semesters}
         />
-
-        <div className="flex flex-wrap w-full items-start ">
-          {allActiveFilters.map((tag) => (
-            <ChosenTag key={tag} name={tag} onRemove={removeFilter} />
-          ))}
-        </div>
       </div>
 
-      <div className="md:h-[calc(100vh-17rem)] md:overflow-hidden">
-        {searchResults.length > 0 ? (
+      {searchResults.length > 0 ? (
+        <div className="md:h-[calc(100vh-17rem)] md:overflow-hidden">
           <div className="h-full overflow-y-auto flex flex-wrap justify-center gap-4 pr-4">
             {searchResults?.map((course: CourseType, index: number) => (
               <Course key={index} course={course} />
             ))}
           </div>
-        ) : (
-          allActiveFilters.length == 0 && (
-            <DepartmentFilters updateFilters={setFilters} />
-          )
-        )}
-      </div>
+        </div>
+      ) : (
+        <div className="md:h-[calc(100vh-17rem)] mt-2">
+          <DepartmentFilters updateFilters={setFilters} />
+        </div>
+      )}
     </section>
   );
 };

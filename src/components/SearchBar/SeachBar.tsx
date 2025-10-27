@@ -1,16 +1,15 @@
-import React, { useState, useEffect, useRef, useMemo } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { IoClose, IoSearchOutline, IoFilter } from "react-icons/io5";
-import api from "../../axios";
 import FilterPanel from "./FilterPanel/FilterPanel.tsx";
-import ChosenTag from "./ChosenTag";
 import { Filters, FilterData } from "../../types/Filters";
-import DepartmentFilters from "../Department-Filters";
-import { CourseType } from "../../types/interfaces/Course.interface.ts";
 import useIsDesktop from "../../hooks/useIsDesktop.ts";
 import FilterPanelPopup from "./FilterPanel/FilterPanelPopup.tsx";
 
 interface SearchBarProps {
-  updateSearchResults: (results: CourseType[]) => void;
+  setSearchPrompt: React.Dispatch<React.SetStateAction<string>>;
+  setFilters: React.Dispatch<React.SetStateAction<Filters>>;
+  selectedFilters: { [key: string]: string[] };
+  searchPrompt: string;
   // Props for lifted state
   subjects: FilterData[];
   attributes: FilterData[];
@@ -18,7 +17,10 @@ interface SearchBarProps {
 }
 
 const SearchBar: React.FC<SearchBarProps> = ({
-  updateSearchResults,
+  setSearchPrompt,
+  setFilters,
+  selectedFilters,
+  searchPrompt,
   subjects,
   attributes,
   semesters,
@@ -26,127 +28,17 @@ const SearchBar: React.FC<SearchBarProps> = ({
   const isDesktop = useIsDesktop();
   const componentRef = useRef<HTMLDivElement>(null);
 
-  const [showDeptFilter, setShowDeptFilter] = useState(true);
   const [showFilter, setShowFilter] = useState(false);
-  const [searchPrompt, setSearchPrompt] = useState("");
-  const [filters, setFilters] = useState<Filters>({
-    Subject: [],
-    Attributes: [],
-    Semesters: [],
-  });
-
-  const debounceTimeout = useRef<ReturnType<typeof setTimeout> | null>(null);
-  const lastNoResultQuery = useRef<string | null>(null);
-
-  useEffect(() => {
-    if (debounceTimeout.current) {
-      clearTimeout(debounceTimeout.current);
-    }
-
-    debounceTimeout.current = setTimeout(async () => {
-      const deptFilters = filters.Subject.join(",");
-      const attrFilters = filters.Attributes.join(",");
-      const semFilters = filters.Semesters.join(",");
-
-      if (searchPrompt.length < 3) {
-        lastNoResultQuery.current = null;
-      }
-
-      if (
-        lastNoResultQuery.current &&
-        searchPrompt.startsWith(lastNoResultQuery.current)
-      ) {
-        console.log("Skipping redundant no-result query");
-        return;
-      }
-
-      try {
-        const response = await api.get(
-          "course/search?searchPrompt=" +
-            searchPrompt +
-            "&deptFilters=" +
-            deptFilters +
-            "&attrFilters=" +
-            attrFilters +
-            "&semFilters=" +
-            semFilters
-        );
-
-        const data = response.data;
-        updateSearchResults(data);
-
-        if (data.length === 0 && searchPrompt.length >= 3) {
-          lastNoResultQuery.current = searchPrompt;
-        } else {
-          lastNoResultQuery.current = null;
-        }
-      } catch (error) {
-        console.error("Search error:", error);
-      }
-    }, 300);
-
-    return () => {
-      if (debounceTimeout.current) clearTimeout(debounceTimeout.current);
-    };
-  }, [filters, searchPrompt, updateSearchResults]);
 
   const handleSearch = (e: React.KeyboardEvent) => {
     (e.currentTarget as HTMLInputElement).blur();
     setShowFilter(false);
-    setShowDeptFilter(false);
   };
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setSearchPrompt(e.target.value);
     setShowFilter(false);
-    if (e.target.value.length === 0) setShowDeptFilter(true);
   };
-
-  const updateFilters = (category: keyof Filters, value: string) => {
-    if (showDeptFilter) {
-      setShowDeptFilter(false);
-      window.scrollTo(0, 0);
-    }
-
-    setFilters((prev) => {
-      if (prev[category].includes(value)) {
-        const newFilters: Filters = { ...prev };
-        newFilters[category] = newFilters[category].filter(
-          (tag) => tag !== value
-        );
-        return newFilters;
-      }
-      return {
-        ...prev,
-        [category]: [...prev[category], value],
-      };
-    });
-  };
-
-  const removeFilter = (value: string) => {
-    setFilters((prev) => {
-      const newFilters: Filters = { ...prev };
-      for (const category of Object.keys(prev) as (keyof Filters)[]) {
-        newFilters[category] = newFilters[category].filter(
-          (tag) => tag !== value
-        );
-      }
-
-      if (
-        newFilters.Subject.length === 0 &&
-        newFilters.Attributes.length === 0 &&
-        newFilters.Semesters.length === 0
-      ) {
-        setShowDeptFilter(true);
-        setShowFilter(false);
-      }
-      return newFilters;
-    });
-  };
-
-  const allActiveFilters = useMemo(() => {
-    return Object.values(filters).flat();
-  }, [filters]);
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -205,8 +97,8 @@ const SearchBar: React.FC<SearchBarProps> = ({
 
         {showFilter && isDesktop && (
           <FilterPanelPopup
-            filters={filters}
-            updateFilters={updateFilters}
+            filters={selectedFilters}
+            updateFilters={setFilters}
             subjects={subjects}
             attributes={attributes}
             semesters={semesters}
@@ -214,26 +106,14 @@ const SearchBar: React.FC<SearchBarProps> = ({
         )}
       </div>
 
-      <div className="flex flex-wrap w-full items-start ">
-        {allActiveFilters.map((tag) => (
-          <ChosenTag key={tag} name={tag} onRemove={removeFilter} />
-        ))}
-      </div>
-
       {showFilter && !isDesktop && (
         <FilterPanel
-          filters={filters}
-          updateFilters={updateFilters}
+          filters={selectedFilters}
+          updateFilters={setFilters}
           subjects={subjects}
           attributes={attributes}
           semesters={semesters}
         />
-      )}
-
-      {showDeptFilter && (
-        <div className="md:h-[calc(100vh-17rem)] mt-2">
-          <DepartmentFilters updateFilters={updateFilters} />
-        </div>
       )}
     </div>
   );

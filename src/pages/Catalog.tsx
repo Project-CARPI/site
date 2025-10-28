@@ -89,8 +89,8 @@ const Catalog: React.FC = () => {
   }, [selectedFilters, searchPrompt, setSearchResults]);
 
   return (
-    <section className="flex flex-col gap-4">
-      <div className={`sticky top-20 z-10`}>
+    <section className="flex flex-col gap-2">
+      <div className={`sticky top-20 z-10 flex flex-col gap-2`}>
         <h1 className="font-bold text-xl">Courses</h1>
         <SearchBar
           setSearchPrompt={setSearchPrompt}

@@ -30,13 +30,9 @@ const DraggableItem: React.FC<DraggableItemProps> = ({
   return (
     <Draggable draggableId={`${name}`} index={index}>
       {(provided, snapshot) => {
-        // const isOverPlanner =
-        //   snapshot.isDragging && snapshot.draggingOver !== "toolbox";
-
         const style = {
           ...provided.draggableProps.style,
           cursor: "grab",
-          // background: snapshot.isDragging ? "#891726" : undefined,
         };
 
         return (

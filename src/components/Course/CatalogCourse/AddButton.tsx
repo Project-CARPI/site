@@ -6,14 +6,12 @@ interface AddButtonProps {
 }
 const AddButton: React.FC<AddButtonProps> = ({ addCourse }) => {
   return (
-    <>
-      <button
-        className={`border-2 border-black rounded-full p-1 text-4xl`}
-        onClick={addCourse}
-      >
-        <IoAdd />
-      </button>
-    </>
+    <button
+      className={`hover:cursor-pointer hover:bg-darkblue hover:text-carpipink border-2 border-darkblue rounded-full p-1 text-4xl`}
+      onClick={addCourse}
+    >
+      <IoAdd />
+    </button>
   );
 };
 

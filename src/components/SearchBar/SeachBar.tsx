@@ -64,14 +64,14 @@ const SearchBar: React.FC<SearchBarProps> = ({
               setShowFilter(false); // Uses prop
               setSearchPrompt(""); // Uses prop
             }}
-            className="w-5 h-5"
+            className="w-5 h-5 hover:cursor-pointer"
           />
         ) : (
           <IoFilter
             onClick={() => {
               setShowFilter(true); // Uses prop
             }}
-            className="w-5 h-5"
+            className="w-5 h-5 hover:cursor-pointer"
           />
         )}
 

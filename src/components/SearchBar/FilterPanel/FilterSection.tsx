@@ -26,8 +26,8 @@ const FilterSection: React.FC<FilterSectionProps> = ({
         {tags.map((tag) => (
           <button
             key={tag.id}
-            className={`rounded-2xl px-3 py-1 text-sm mr-1 mb-1 flex-none
-              ${selected.includes(tag.code) ? "bg-darkblue text-carpipink font-thin" : "border border-darkblue text-darkblue"}`}
+            className={`hover:bg-darkblue/10 hover:cursor-pointer rounded-2xl px-3 py-1 text-sm mr-1 mb-1 flex-none
+              ${selected.includes(tag.code) ? "bg-darkblue text-carpipink border border-darkblue hover:text-darkblue" : "border border-darkblue text-darkblue"}`}
             onClick={() =>
               toggleFilter({
                 id: tag.id,

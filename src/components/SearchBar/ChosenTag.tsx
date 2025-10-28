@@ -20,7 +20,7 @@ const ChosenTag: React.FC<ChosenTagProp> = ({ filter }) => {
         aria-label={`Remove filter: ${filter.code}`}
         className="inline ml-1"
       >
-        <IoClose />
+        <IoClose className="w-4 h-4 hover:cursor-pointer" />
       </button>
     </div>
   );

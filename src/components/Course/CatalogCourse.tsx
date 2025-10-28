@@ -52,7 +52,7 @@ const Course: React.FC<CourseProps> = ({ course }) => {
   const courseCount = toolboxCourse ? toolboxCourse.count : undefined;
   return (
     <div
-      className="relative bg-carpipink border-1 border-black rounded-xl w-full p-4"
+      className="relative bg-carpipink hover:cursor-pointer hover:bg-darkblue/10 border-1 border-black rounded-xl w-full p-4"
       onClick={toggleOpen}
     >
       <div

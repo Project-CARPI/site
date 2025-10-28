@@ -31,10 +31,10 @@ const Catalog: React.FC = () => {
       return;
     }
 
-    debounceTimeout.current = setTimeout(async () => {
-      setIsLoading(true);
-      setHasSearched(true);
+    setIsLoading(true);
+    setHasSearched(true);
 
+    debounceTimeout.current = setTimeout(async () => {
       const deptFilters = selectedFilters
         .filter((filter) => filter.type === "Subject")
         .map((filter) => filter.code);
@@ -110,9 +110,32 @@ const Catalog: React.FC = () => {
             {searchResults?.map((course: CourseType, index: number) => (
               <Course key={index} course={course} />
             ))}
+
+            <div className="h-15" />
           </div>
         ) : isLoading ? (
-          <div>Loading...</div>
+          Array.from({ length: 6 }).map((_, i) => (
+            <div
+              key={i}
+              className="mb-4 animate-pulse h-30 border-1 border-darkblue/20 rounded-xl p-4 flex items-center gap-4 justify-between"
+            >
+              <div className="flex gap-2 flex-col justify-between">
+                <div className="h-5 w-25 bg-darkblue/20 rounded-sm"></div>
+                <div className="h-5 w-50 bg-darkblue/20 rounded-sm"></div>
+
+                <div className="flex flex-wrap gap-2">
+                  {Array.from({ length: 5 }).map((_, j) => (
+                    <div
+                      key={j}
+                      className="h-6 w-15 bg-darkblue/20 rounded-full"
+                    ></div>
+                  ))}
+                </div>
+              </div>
+
+              <div className="h-15 w-15 bg-darkblue/20 rounded-full"></div>
+            </div>
+          ))
         ) : hasSearched ? (
           <div>No results found.</div>
         ) : (

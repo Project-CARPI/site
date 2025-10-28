@@ -86,6 +86,8 @@ const DepartmentFilters: React.FC = () => {
           </div>
         </button>
       ))}
+
+      <div className="h-15" />
     </div>
   );
 };

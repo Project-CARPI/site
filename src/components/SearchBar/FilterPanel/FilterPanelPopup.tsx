@@ -1,3 +1,4 @@
+import React from "react";
 import FilterPanel from "./FilterPanel";
 
 const FilterPanelPopup: React.FC = () => {

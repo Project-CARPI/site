@@ -43,7 +43,7 @@ const SearchBar: React.FC<SearchBarProps> = ({
     <div className="flex justify-between flex-col items-center gap-2">
       <div
         ref={componentRef}
-        className="flex items-center gap-4 w-full border-b boarder-darkblue p-2"
+        className="flex items-center gap-4 w-full border-b border-darkblue p-2"
       >
         <IoSearchOutline className="w-5 h-5" />
         <input

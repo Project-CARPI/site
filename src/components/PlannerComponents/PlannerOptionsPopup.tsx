@@ -1,3 +1,5 @@
+import React from "react";
+
 interface PlannerOptionsPopupProps {
   handleSelect: (action: () => void) => void;
   handleDuplicate: () => void;

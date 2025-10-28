@@ -1,5 +1,5 @@
 import React from "react";
-import { Filters } from "../../../types/Filters";
+import { FilterData } from "../../../types/Filters";
 
 interface TagProp {
   id: number;
@@ -7,17 +7,17 @@ interface TagProp {
 }
 
 interface FilterSectionProps {
-  sectionName: keyof Filters;
+  sectionName: "Subject" | "Attributes" | "Semesters";
   tags: TagProp[];
   selected: string[];
-  updateFilters: React.Dispatch<React.SetStateAction<Filters>>;
+  toggleFilter: (filter: FilterData) => void;
 }
 
 const FilterSection: React.FC<FilterSectionProps> = ({
   sectionName,
   tags,
   selected,
-  updateFilters,
+  toggleFilter,
 }) => {
   return (
     <div className="mt-2">
@@ -29,12 +29,11 @@ const FilterSection: React.FC<FilterSectionProps> = ({
             className={`rounded-2xl px-3 py-1 text-sm mr-1 mb-1 flex-none
               ${selected.includes(tag.code) ? "bg-darkblue text-carpipink font-thin" : "border border-darkblue text-darkblue"}`}
             onClick={() =>
-              updateFilters((prev) => ({
-                ...prev,
-                [sectionName]: selected.includes(tag.code)
-                  ? prev[sectionName].filter((code) => code !== tag.code)
-                  : [...prev[sectionName], tag.code],
-              }))
+              toggleFilter({
+                id: tag.id,
+                code: tag.code,
+                type: sectionName,
+              })
             }
           >
             {tag.code}

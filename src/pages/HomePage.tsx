@@ -2,15 +2,8 @@ import useIsDesktop from "../hooks/useIsDesktop";
 
 import Catalog from "./Catalog";
 import Planner from "./Planner";
-import { FilterData } from "../types/Filters";
 
-interface HomePageProps {
-  subjects: FilterData[];
-  attributes: FilterData[];
-  semesters: FilterData[];
-}
-
-const HomePage = (props: HomePageProps) => {
+const HomePage = () => {
   const isDesktop = useIsDesktop();
 
   return (
@@ -21,11 +14,7 @@ const HomePage = (props: HomePageProps) => {
 
       <div className="flex flex-row gap-8">
         <div className={isDesktop ? "w-1/3" : "w-full"}>
-          <Catalog
-            subjects={props.subjects}
-            attributes={props.attributes}
-            semesters={props.semesters}
-          />
+          <Catalog />
         </div>
         {isDesktop && (
           <div className="w-2/3">

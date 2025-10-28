@@ -1,41 +1,39 @@
-import { Filters, FilterData } from "../../../types/Filters";
+import { useFilterData } from "../../../hooks/useFilters";
 import FilterSection from "./FilterSection";
 
-interface FilterPanelProps {
-  filters: { [key: string]: string[] };
-  updateFilters: React.Dispatch<React.SetStateAction<Filters>>;
+const FilterPanel: React.FC = () => {
+  const { selectedFilters, toggleFilter, subjects, attributes, semesters } =
+    useFilterData();
 
-  subjects: FilterData[];
-  attributes: FilterData[];
-  semesters: FilterData[];
-}
+  const selectedSubjects = selectedFilters
+    .filter((f) => f.type === "Subject")
+    .map((f) => f.code);
+  const selectedAttributes = selectedFilters
+    .filter((f) => f.type === "Attributes")
+    .map((f) => f.code);
+  const selectedSemesters = selectedFilters
+    .filter((f) => f.type === "Semesters")
+    .map((f) => f.code);
 
-const FilterPanel: React.FC<FilterPanelProps> = ({
-  filters,
-  updateFilters,
-  subjects,
-  attributes,
-  semesters,
-}) => {
   return (
     <div className="w-full">
       <FilterSection
         sectionName="Subject"
         tags={subjects}
-        selected={filters.Subject}
-        updateFilters={updateFilters}
+        selected={selectedSubjects}
+        toggleFilter={toggleFilter}
       />
       <FilterSection
         sectionName="Attributes"
         tags={attributes}
-        selected={filters.Attributes}
-        updateFilters={updateFilters}
+        selected={selectedAttributes}
+        toggleFilter={toggleFilter}
       />
       <FilterSection
         sectionName="Semesters"
         tags={semesters}
-        selected={filters.Semesters}
-        updateFilters={updateFilters}
+        selected={selectedSemesters}
+        toggleFilter={toggleFilter}
       />
     </div>
   );

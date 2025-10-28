@@ -1,21 +1,23 @@
 import React from "react";
 import { IoClose } from "react-icons/io5";
+import { useFilterData } from "../../hooks/useFilters";
+import { FilterData } from "../../types/Filters";
 
 interface ChosenTagProp {
-  name: string;
-  onRemove: (name: string) => void;
+  filter: FilterData;
 }
 
-const ChosenTag: React.FC<ChosenTagProp> = ({ name, onRemove }) => {
+const ChosenTag: React.FC<ChosenTagProp> = ({ filter }) => {
+  const { toggleFilter } = useFilterData();
   return (
     <div
       className={`rounded-2xl text-white px-3 py-1 text-sm mr-1 mb-1 font-thin bg-darkblue inline-flex items-center`}
     >
-      {name}
+      {filter.code}
       <button
         type="button"
-        onClick={() => onRemove(name)}
-        aria-label={`Remove filter: ${name}`}
+        onClick={() => toggleFilter(filter)}
+        aria-label={`Remove filter: ${filter.code}`}
         className="inline ml-1"
       >
         <IoClose />

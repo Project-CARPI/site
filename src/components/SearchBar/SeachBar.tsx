@@ -1,39 +1,22 @@
 import React, { useState, useEffect, useRef } from "react";
 import { IoClose, IoSearchOutline, IoFilter } from "react-icons/io5";
 import FilterPanel from "./FilterPanel/FilterPanel.tsx";
-import { Filters, FilterData } from "../../types/Filters";
 import useIsDesktop from "../../hooks/useIsDesktop.ts";
 import FilterPanelPopup from "./FilterPanel/FilterPanelPopup.tsx";
 
 interface SearchBarProps {
-  setSearchPrompt: React.Dispatch<React.SetStateAction<string>>;
-  setFilters: React.Dispatch<React.SetStateAction<Filters>>;
-  selectedFilters: { [key: string]: string[] };
   searchPrompt: string;
-  // Props for lifted state
-  subjects: FilterData[];
-  attributes: FilterData[];
-  semesters: FilterData[];
+  setSearchPrompt: React.Dispatch<React.SetStateAction<string>>;
 }
 
 const SearchBar: React.FC<SearchBarProps> = ({
-  setSearchPrompt,
-  setFilters,
-  selectedFilters,
   searchPrompt,
-  subjects,
-  attributes,
-  semesters,
+  setSearchPrompt,
 }) => {
   const isDesktop = useIsDesktop();
   const componentRef = useRef<HTMLDivElement>(null);
 
   const [showFilter, setShowFilter] = useState(false);
-
-  const handleSearch = (e: React.KeyboardEvent) => {
-    (e.currentTarget as HTMLInputElement).blur();
-    setShowFilter(false);
-  };
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setSearchPrompt(e.target.value);
@@ -73,9 +56,6 @@ const SearchBar: React.FC<SearchBarProps> = ({
           enterKeyHint="search"
           onClick={() => setShowFilter(false)}
           onChange={handleInputChange}
-          onKeyDown={(e) => {
-            if (e.key === "Enter" || e.key === "Done") handleSearch(e);
-          }}
         />
 
         {showFilter ? (
@@ -95,26 +75,10 @@ const SearchBar: React.FC<SearchBarProps> = ({
           />
         )}
 
-        {showFilter && isDesktop && (
-          <FilterPanelPopup
-            filters={selectedFilters}
-            updateFilters={setFilters}
-            subjects={subjects}
-            attributes={attributes}
-            semesters={semesters}
-          />
-        )}
+        {showFilter && isDesktop && <FilterPanelPopup />}
       </div>
 
-      {showFilter && !isDesktop && (
-        <FilterPanel
-          filters={selectedFilters}
-          updateFilters={setFilters}
-          subjects={subjects}
-          attributes={attributes}
-          semesters={semesters}
-        />
-      )}
+      {showFilter && !isDesktop && <FilterPanel />}
     </div>
   );
 };

@@ -1,5 +1,5 @@
 import React from "react";
-import { Filters } from "../types/Filters";
+import { useFilterData } from "../hooks/useFilters";
 
 // Department type
 interface Department {
@@ -53,13 +53,9 @@ const departments: Department[] = [
   { code: "WRIT", name: "Writing" },
 ];
 
-interface DepartmentFiltersProps {
-  updateFilters: React.Dispatch<React.SetStateAction<Filters>>;
-}
+const DepartmentFilters: React.FC = () => {
+  const { toggleFilter } = useFilterData();
 
-const DepartmentFilters: React.FC<DepartmentFiltersProps> = ({
-  updateFilters,
-}) => {
   return (
     <div className="md:h-full md:w-full md:overflow-y-auto flex flex-wrap justify-center gap-2">
       {departments.map((dept) => (
@@ -77,12 +73,11 @@ const DepartmentFilters: React.FC<DepartmentFiltersProps> = ({
             h-fit
           `}
           onClick={() =>
-            updateFilters((prev) => ({
-              ...prev,
-              Subject: prev.Subject.includes(dept.code)
-                ? prev.Subject.filter((code) => code !== dept.code)
-                : [...prev.Subject, dept.code],
-            }))
+            toggleFilter({
+              id: 1,
+              code: dept.code,
+              type: "Subject",
+            })
           }
         >
           <div className="flex items-center gap-2 whitespace-nowrap">

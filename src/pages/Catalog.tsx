@@ -1,30 +1,19 @@
-import React, { useState, useRef, useMemo, useEffect } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import api from "../axios.ts";
 import Course from "../components/Course/CatalogCourse.tsx";
 import SearchBar from "../components/SearchBar/SeachBar";
-import { Filters, FilterData } from "../types/Filters";
 import { CourseType } from "../types/interfaces/Course.interface.ts";
 import DepartmentFilters from "../components/Department-Filters.tsx";
 import ChosenTag from "../components/SearchBar/ChosenTag";
+import { useFilterData } from "../hooks/useFilters.ts";
 
-interface CatalogProps {
-  subjects: FilterData[];
-  attributes: FilterData[];
-  semesters: FilterData[];
-}
+const Catalog: React.FC = () => {
+  const { selectedFilters } = useFilterData();
 
-const Catalog: React.FC<CatalogProps> = ({
-  subjects,
-  attributes,
-  semesters,
-}) => {
   const [searchResults, setSearchResults] = React.useState<CourseType[]>([]);
   const [searchPrompt, setSearchPrompt] = useState("");
-  const [filters, setFilters] = useState<Filters>({
-    Subject: [],
-    Attributes: [],
-    Semesters: [],
-  });
+  const [isLoading, setIsLoading] = useState(false);
+  const [hasSearched, setHasSearched] = useState(false);
 
   const debounceTimeout = useRef<ReturnType<typeof setTimeout> | null>(null);
   const lastNoResultQuery = useRef<string | null>(null);
@@ -34,10 +23,27 @@ const Catalog: React.FC<CatalogProps> = ({
       clearTimeout(debounceTimeout.current);
     }
 
+    if (searchPrompt.length === 0 && selectedFilters.length === 0) {
+      setHasSearched(false);
+      setSearchResults([]);
+      setIsLoading(false);
+      lastNoResultQuery.current = null;
+      return;
+    }
+
     debounceTimeout.current = setTimeout(async () => {
-      const deptFilters = filters.Subject.join(",");
-      const attrFilters = filters.Attributes.join(",");
-      const semFilters = filters.Semesters.join(",");
+      setIsLoading(true);
+      setHasSearched(true);
+
+      const deptFilters = selectedFilters
+        .filter((filter) => filter.type === "Subject")
+        .map((filter) => filter.code);
+      const attrFilters = selectedFilters
+        .filter((filter) => filter.type === "Attributes")
+        .map((filter) => filter.code);
+      const semFilters = selectedFilters
+        .filter((filter) => filter.type === "Semesters")
+        .map((filter) => filter.code);
 
       if (searchPrompt.length < 3) {
         lastNoResultQuery.current = null;
@@ -65,6 +71,7 @@ const Catalog: React.FC<CatalogProps> = ({
 
         const data = response.data;
         setSearchResults(data);
+        setIsLoading(false);
 
         if (data.length === 0 && searchPrompt.length >= 3) {
           lastNoResultQuery.current = searchPrompt;
@@ -79,23 +86,7 @@ const Catalog: React.FC<CatalogProps> = ({
     return () => {
       if (debounceTimeout.current) clearTimeout(debounceTimeout.current);
     };
-  }, [filters, searchPrompt, setSearchResults]);
-
-  const allActiveFilters = useMemo(() => {
-    return Object.values(filters).flat();
-  }, [filters]);
-
-  const removeFilter = (value: string) => {
-    setFilters((prev) => {
-      const newFilters: Filters = { ...prev };
-      for (const category of Object.keys(prev) as (keyof Filters)[]) {
-        newFilters[category] = newFilters[category].filter(
-          (tag) => tag !== value
-        );
-      }
-      return newFilters;
-    });
-  };
+  }, [selectedFilters, searchPrompt, setSearchResults]);
 
   return (
     <section className="flex flex-col gap-4">
@@ -103,17 +94,12 @@ const Catalog: React.FC<CatalogProps> = ({
         <h1 className="font-bold text-xl">Courses</h1>
         <SearchBar
           setSearchPrompt={setSearchPrompt}
-          setFilters={setFilters}
-          selectedFilters={filters}
           searchPrompt={searchPrompt}
-          subjects={subjects}
-          attributes={attributes}
-          semesters={semesters}
         />
 
         <div className="flex flex-wrap w-full items-start ">
-          {allActiveFilters.map((tag) => (
-            <ChosenTag key={tag} name={tag} onRemove={removeFilter} />
+          {selectedFilters.map((filter) => (
+            <ChosenTag key={filter.id} filter={filter} />
           ))}
         </div>
       </div>
@@ -125,10 +111,12 @@ const Catalog: React.FC<CatalogProps> = ({
               <Course key={index} course={course} />
             ))}
           </div>
+        ) : isLoading ? (
+          <div>Loading...</div>
+        ) : hasSearched ? (
+          <div>No results found.</div>
         ) : (
-          allActiveFilters.length == 0 && (
-            <DepartmentFilters updateFilters={setFilters} />
-          )
+          selectedFilters.length === 0 && <DepartmentFilters />
         )}
       </div>
     </section>

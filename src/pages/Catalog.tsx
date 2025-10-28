@@ -137,7 +137,16 @@ const Catalog: React.FC = () => {
             </div>
           ))
         ) : hasSearched ? (
-          <div>No results found.</div>
+          <div className="flex text-darkblue/70 text-center gap-2 items-center flex-col justify-center h-50">
+            <h3 className="text-[75px] font-bold">D:</h3>
+            <p className="ml-2 text-xl">
+              No courses found for "{searchPrompt}"
+            </p>
+            <p className="text-sm">
+              Try searching for another course. <br />
+              Maybe "CSCI 1100" or "Computer Science I"
+            </p>
+          </div>
         ) : (
           selectedFilters.length === 0 && <DepartmentFilters />
         )}

@@ -44,7 +44,7 @@ const SemesterBlock: React.FC<SemesterBlockProps> = ({
               <div
                 ref={provided.innerRef}
                 {...provided.droppableProps}
-                className="flex flex-col space-y-2 w-full"
+                className="flex flex-col space-y-2 h-full w-full"
               >
                 {isEmpty && !isHovering && (
                   <PlannerCourseHolder isHover={false} />
@@ -52,27 +52,28 @@ const SemesterBlock: React.FC<SemesterBlockProps> = ({
                 {isEmpty && isHovering && (
                   <PlannerCourseHolder isHover={true} />
                 )}
-                {!isEmpty &&
-                  semester.courseList.map((course, courseIndex) => (
-                    <DraggableItem
-                      key={course.name}
-                      name={course.name}
-                      course={course.data}
-                      count={course.count}
-                      index={courseIndex}
-                      semesterIndex={index}
-                      setPlannerCourses={setPlannerCourses}
-                      setToolboxCourses={setToolboxCourses}
-                      location="planner"
-                    />
-                  ))}
-                {provided.placeholder}
+                {!isEmpty && (
+                  <>
+                    {semester.courseList.map((course, courseIndex) => (
+                      <DraggableItem
+                        key={course.name}
+                        name={course.name}
+                        course={course.data}
+                        count={course.count}
+                        index={courseIndex}
+                        semesterIndex={index}
+                        setPlannerCourses={setPlannerCourses}
+                        setToolboxCourses={setToolboxCourses}
+                        location="planner"
+                      />
+                    ))}
+                    {provided.placeholder}
+                  </>
+                )}
               </div>
             );
           }}
         </Droppable>
-
-        <hr className="border-[calc(0.05px)] border-[#c3a9a9] w-full mt-4 text-[#c3a9a9] " />
       </div>
     </div>
   );

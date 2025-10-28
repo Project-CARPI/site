@@ -106,7 +106,7 @@ const Catalog: React.FC = () => {
 
       <div className="md:h-[calc(100vh-17rem)] md:overflow-hidden">
         {searchResults.length > 0 ? (
-          <div className="h-full overflow-y-auto flex flex-wrap justify-center gap-4 pr-4">
+          <div className="h-full overflow-y-auto flex flex-wrap justify-center gap-4 pr-3 pt-3">
             {searchResults?.map((course: CourseType, index: number) => (
               <Course key={index} course={course} />
             ))}

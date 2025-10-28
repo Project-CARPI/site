@@ -83,7 +83,7 @@ const Toolbox: React.FC = () => {
               <div
                 ref={provided.innerRef}
                 {...provided.droppableProps}
-                className={`courses gap-4 h-[75px] md:min-h-[50px] scrollbar-none flex justify-items-center w-full overflow-x-auto px-4 pb-2 transition-colors`}
+                className={`courses gap-4 pt-3 h-[75px] md:min-h-[50px] scrollbar-none flex justify-items-center w-full overflow-x-auto px-4 pb-2 transition-colors`}
               >
                 {toolboxCourses.map((course, index) => (
                   <DraggableItem

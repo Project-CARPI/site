@@ -17,7 +17,9 @@ const Toolbox: React.FC = () => {
   const { toolboxCourses, isDragging } = useCourseWorkspace();
 
   useEffect(() => {
-    setCount(toolboxCourses.length);
+    setCount(
+      toolboxCourses.reduce((total, course) => total + (course.count || 0), 0)
+    );
   }, [toolboxCourses]);
 
   useEffect(() => {

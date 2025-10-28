@@ -69,7 +69,7 @@ const DepartmentFilters: React.FC = () => {
             border-darkblue 
             text-xs
             transition-colors
-            hover:bg-darkblue hover:text-white
+            hover:bg-darkblue hover:text-carpipink
             h-fit
           `}
           onClick={() =>

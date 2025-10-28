@@ -11,7 +11,7 @@ const ChosenTag: React.FC<ChosenTagProp> = ({ filter }) => {
   const { toggleFilter } = useFilterData();
   return (
     <div
-      className={`rounded-2xl text-white px-3 py-1 text-sm mr-1 mb-1 font-thin bg-darkblue inline-flex items-center`}
+      className={`rounded-2xl text-carpipink px-3 py-1 text-sm mr-1 mb-1 bg-darkblue inline-flex items-center`}
     >
       {filter.code}
       <button

@@ -4,6 +4,7 @@ import { Droppable } from "@hello-pangea/dnd";
 import PlannerCourseHolder from "./PlannerCourseHolder";
 import DraggableItem from "../DraggableItem";
 import { CourseEntry } from "../../types/interfaces/Course.interface";
+
 interface SemesterBlockProps {
   semester: SemesterType;
   index: number;
@@ -11,12 +12,25 @@ interface SemesterBlockProps {
   setToolboxCourses: Dispatch<SetStateAction<CourseEntry[]>>;
 }
 
+const seasons: string[] = ["fall", "spring", "summer", "misc"];
+
 const SemesterBlock: React.FC<SemesterBlockProps> = ({
   semester,
   index,
   setPlannerCourses,
   setToolboxCourses,
 }) => {
+  const seasonDropdown = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    const newSeason = e.target.value;
+    setPlannerCourses((prevCourses) =>
+      prevCourses.map((sem) =>
+        sem.semesterID === semester.semesterID
+          ? { ...sem, semesterSeason: newSeason }
+          : sem
+      )
+    );
+  };
+
   return (
     <>
       <div className="flex mt-4">
@@ -33,9 +47,17 @@ const SemesterBlock: React.FC<SemesterBlockProps> = ({
 
         <div className="w-full items-end flex flex-col mt-2 *:pl-6">
           <div className="flex justify-between w-full mb-2 items-center">
-            <button className="border-1 border-black rounded-full px-3 py-0 h-fit font-medium text-sm ">
-              {semester.semesterSeason}
-            </button>
+            <select
+              value={semester.semesterSeason}
+              onChange={seasonDropdown}
+              className="border-1 border-black rounded-full px-3 py-0 h-fit w-auto font-medium text-sm "
+            >
+              {seasons.map((season) => (
+                <option key={season} value={season}>
+                  {season}
+                </option>
+              ))}
+            </select>
 
             <div className="text-lg ">
               <span className="font-bold">credits:</span>{" "}

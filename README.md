@@ -1,16 +1,22 @@
 <p align="center">
-<img src="./public/carpi-black.svg" width="50%"> <br>
+<img src="./public/carpi-black.svg" width="30%"> <br>
 </p>
 <div align="center">
-<h1>Project Carpi</h1>
+<h1>Project CARPI - Frontend</h1>
   <div align="center">
   <a href="https://opensource.org/license/mit">
     <img alt="License: MIT" src="https://img.shields.io/badge/License_MIT-F5CECE"> 
+
+<!-- TO-DO: Add badge that links to the site -->
+
   </a>
 </div>
-<h3>Built for RPI Students!<h3>
+<!-- <h3>Cool Academic RPI</h3> -->
+<h4>Built for RPI Students!</h4>
 
-<h5>Plan each semester with our academic calendar menu, easy search of the course catalog, and customizable planner.</h5>
+Project CARPI, standing for Cool Academic RPI, allows you to plan each semester with our academic calendar menu, easy search of the course catalog, and customizable planner.
+
+
 </div>
 
 <!-- <p align="center">
@@ -18,9 +24,11 @@
 </p>
 
 
-## Getting Started
+## Getting Started with Frontend
 
-These instructions will get you a copy of the project up and running on your local machine for development and testing purposes. See deployment for notes on how to deploy the project on a live system.
+These instructions will get you a copy of the project's frontend up and running on your local machine for development and testing purposes. 
+
+
 
 ### Prerequisites
 
@@ -48,47 +56,28 @@ until finished
 
 End with an example of getting some data out of the system or using it for a little demo
 
-## Running the tests
+## Connecting Frontend with Backend
 
-Explain how to run the automated tests for this system
 
-### Break down into end to end tests
-
-Explain what these tests test and why
-
-```
-Give an example
-```
-
-### And coding style tests
-
-Explain what these tests test and why
-
-```
-Give an example
-```
 
 ## Deployment
 
-Add additional notes about how to deploy this on a live system
+
 
 ## Built With
 
-* [Dropwizard](http://www.dropwizard.io/1.0.2/docs/) - The web framework used
-* [Maven](https://maven.apache.org/) - Dependency Management
-* [ROME](https://rometools.github.io/rome/) - Used to generate RSS Feeds
+* 
+* 
+* 
 
 ## Contributing
 
-Please read [CONTRIBUTING.md](https://gist.github.com/PurpleBooth/b24679402957c63ec426) for details on our code of conduct, and the process for submitting pull requests to us.
+Add potential Contributing.md file
 
-## Versioning
-
-We use [SemVer](http://semver.org/) for versioning. For the versions available, see the [tags on this repository](https://github.com/your/project/tags). 
 
 ## Authors
 
-* **Billie Thompson** - *Initial work* - [PurpleBooth](https://github.com/PurpleBooth)
+* Celine Cheung, Fall 2025
 
 See also the list of [contributors](https://github.com/your/project/contributors) who participated in this project.
 

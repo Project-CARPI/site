@@ -1,5 +1,22 @@
-# Project-CARPI
-description
+<p align="center">
+<img src="./public/carpi-black.svg" width="50%"> <br>
+</p>
+<div align="center">
+<h1>Project Carpi</h1>
+  <div align="center">
+  <a href="https://opensource.org/license/mit">
+    <img alt="License: MIT" src="https://img.shields.io/badge/License_MIT-F5CECE"> 
+  </a>
+</div>
+<h3>Built for RPI Students!<h3>
+
+<h5>Plan each semester with our academic calendar menu, easy search of the course catalog, and customizable planner.</h5>
+</div>
+
+<!-- <p align="center">
+<img width="100%" alt="image" src="./assets/intro.png">     -->
+</p>
+
 
 ## Getting Started
 

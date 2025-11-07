@@ -1,5 +1,5 @@
 <p align="center">
-<img src="./public/carpi-black.svg" width="30%"> <br>
+<img src="./public/carpi-black.svg" width="20%"> <br>
 </p>
 <div align="center">
 <h1>Project CARPI - Frontend</h1>

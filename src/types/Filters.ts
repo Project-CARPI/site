@@ -3,3 +3,9 @@ export type Filters = {
   Attributes: string[];
   Semesters: string[];
 };
+
+export type FilterData = {
+  id: number;
+  code: string;
+  type: "Subject" | "Attributes" | "Semesters";
+};

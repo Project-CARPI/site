@@ -1,4 +1,5 @@
 @import "tailwindcss";
+@plugin 'tailwind-scrollbar';
 
 @theme {
   --color-carpipink: oklch(88.46% 0.0441 18.02);
@@ -8,9 +9,36 @@
 }
 
 body {
-  @apply bg-carpipink;
+  background-color: var(--color-carpipink);
+  scrollbar-color: var(--color-darkblue) var(--color-carpipink);
+  scrollbar-width: thin;
 }
 
+body.no-scroll-during-drag {
+  /* This prevents the entire page from scrolling */
+  overflow: hidden !important;
+
+  /* This can also help prevent other touch behaviors on some browsers */
+  touch-action: none !important;
+}
+
+/* scrollbar for webkit browsers */
+::-webkit-scrollbar {
+  width: 12px;
+  height: 12px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--color-carpipink);
+}
+
+::-webkit-scrollbar-thumb {
+  background-color: var(--color-darkblue);
+  border-radius: 9999px;
+  border: 3px solid var(--color-carpipink);
+}
+
+/* prevent blurriness of images */
 img {
   image-rendering: crisp-edges;
   image-rendering: -webkit-optimize-contrast;

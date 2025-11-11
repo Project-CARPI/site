@@ -1,70 +1,157 @@
-import React from "react";
-import Course from "../components/Course/Course";
+import React, { useState, useRef, useEffect } from "react";
+import api from "../axios.ts";
+import Course from "../components/Course/CatalogCourse.tsx";
 import SearchBar from "../components/SearchBar/SeachBar";
-import {
-  CourseType,
-  CourseEntry,
-} from "../types/interfaces/Course.interface.ts";
-import { Filters } from "../types/Filters";
+import { CourseType } from "../types/interfaces/Course.interface.ts";
+import DepartmentFilters from "../components/Department-Filters.tsx";
+import ChosenTag from "../components/SearchBar/ChosenTag";
+import { useFilterData } from "../hooks/useFilters.ts";
 
-interface CatalogProps {
-  toolboxCourses: CourseEntry[];
-  setToolboxCourses: React.Dispatch<React.SetStateAction<CourseEntry[]>>;
-  isDragging: boolean;
-  // New props added from the moved state
-  searchResults: CourseType[];
-  setSearchResults: React.Dispatch<React.SetStateAction<CourseType[]>>;
-  searchPrompt: string;
-  setSearchPrompt: React.Dispatch<React.SetStateAction<string>>;
-  showFilter: boolean;
-  setShowFilter: React.Dispatch<React.SetStateAction<boolean>>;
-  filters: Filters;
-  setFilters: React.Dispatch<React.SetStateAction<Filters>>;
-}
+const Catalog: React.FC = () => {
+  const { selectedFilters } = useFilterData();
 
-const Catalog: React.FC<CatalogProps> = ({
-  toolboxCourses,
-  setToolboxCourses,
-  isDragging,
-  searchResults,
-  setSearchResults,
-  searchPrompt,
-  setSearchPrompt,
-  showFilter,
-  setShowFilter,
-  filters,
-  setFilters,
-}) => {
+  const [searchResults, setSearchResults] = React.useState<CourseType[]>([]);
+  const [searchPrompt, setSearchPrompt] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
+  const [hasSearched, setHasSearched] = useState(false);
+
+  const debounceTimeout = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const lastNoResultQuery = useRef<string | null>(null);
+
+  useEffect(() => {
+    if (debounceTimeout.current) {
+      clearTimeout(debounceTimeout.current);
+    }
+
+    if (searchPrompt.length === 0 && selectedFilters.length === 0) {
+      setHasSearched(false);
+      setSearchResults([]);
+      setIsLoading(false);
+      lastNoResultQuery.current = null;
+      return;
+    }
+
+    setIsLoading(true);
+    setHasSearched(true);
+
+    debounceTimeout.current = setTimeout(async () => {
+      const deptFilters = selectedFilters
+        .filter((filter) => filter.type === "Subject")
+        .map((filter) => filter.code);
+      const attrFilters = selectedFilters
+        .filter((filter) => filter.type === "Attributes")
+        .map((filter) => filter.code);
+      const semFilters = selectedFilters
+        .filter((filter) => filter.type === "Semesters")
+        .map((filter) => filter.code);
+
+      if (searchPrompt.length < 3) {
+        lastNoResultQuery.current = null;
+      }
+
+      if (
+        lastNoResultQuery.current &&
+        searchPrompt.startsWith(lastNoResultQuery.current)
+      ) {
+        console.log("Skipping redundant no-result query");
+        return;
+      }
+
+      try {
+        const response = await api.get(
+          "course/search?searchPrompt=" +
+            searchPrompt +
+            "&deptFilters=" +
+            deptFilters +
+            "&attrFilters=" +
+            attrFilters +
+            "&semFilters=" +
+            semFilters
+        );
+
+        const data = response.data;
+        setSearchResults(data);
+        setIsLoading(false);
+
+        if (data.length === 0 && searchPrompt.length >= 3) {
+          lastNoResultQuery.current = searchPrompt;
+        } else {
+          lastNoResultQuery.current = null;
+        }
+      } catch (error) {
+        console.error("Search error:", error);
+      }
+    }, 300);
+
+    return () => {
+      if (debounceTimeout.current) clearTimeout(debounceTimeout.current);
+    };
+  }, [selectedFilters, searchPrompt, setSearchResults]);
+
   return (
-    <>
-      <div className={`${isDragging ? "brightness-50" : ""}`}>
+    <section className="flex flex-col gap-2">
+      <div className={`sticky top-20 z-10 flex flex-col gap-2`}>
+        <h1 className="font-bold text-xl">Courses</h1>
         <SearchBar
-          updateSearchResults={setSearchResults}
-          searchPrompt={searchPrompt}
           setSearchPrompt={setSearchPrompt}
-          showFilter={showFilter}
-          setShowFilter={setShowFilter}
-          filters={filters}
-          setFilters={setFilters}
+          searchPrompt={searchPrompt}
         />
-      </div>
-      <div
-        className={`flex flex-wrap justify-center pb-38 z-0 relative ${isDragging ? "brightness-50" : ""}`}
-      >
-        {searchResults?.map((course: CourseType, index: number) => (
-          <Course
-            key={index}
-            course={course}
-            toolboxCourses={toolboxCourses}
-            setToolboxCourses={setToolboxCourses}
-          />
-        ))}
+
+        <div className="flex flex-wrap w-full items-start ">
+          {selectedFilters.map((filter) => (
+            <ChosenTag key={filter.id} filter={filter} />
+          ))}
+        </div>
       </div>
 
-      <button className="border-1 border-black rounded-full h-fit font-medium text-sm">
-        {" "}
-      </button>
-    </>
+      <div className="md:h-[calc(100vh-17rem)] md:overflow-hidden">
+        {searchResults.length > 0 ? (
+          <div className="h-full overflow-y-auto flex flex-wrap justify-center gap-4 pr-3 pt-3">
+            {searchResults?.map((course: CourseType, index: number) => (
+              <Course key={index} course={course} />
+            ))}
+
+            <div className="h-15" />
+          </div>
+        ) : isLoading ? (
+          Array.from({ length: 6 }).map((_, i) => (
+            <div
+              key={i}
+              className="mb-4 animate-pulse h-fit border-1 border-darkblue/20 rounded-xl p-4 flex items-center gap-2 justify-between"
+            >
+              <div className="flex gap-2 flex-col justify-between">
+                <div className="h-5 w-25 bg-darkblue/20 rounded-sm"></div>
+                <div className="h-5 w-50 bg-darkblue/20 rounded-sm"></div>
+
+                <div className="flex flex-wrap gap-2">
+                  {Array.from({ length: 4 }).map((_, j) => (
+                    <div
+                      key={j}
+                      className="h-6 w-15 bg-darkblue/20 rounded-full"
+                    ></div>
+                  ))}
+                </div>
+              </div>
+
+              <div className="h-15 w-15 bg-darkblue/20 rounded-full"></div>
+            </div>
+          ))
+        ) : hasSearched ? (
+          <div className="flex text-darkblue/70 text-center gap-2 items-center flex-col justify-center h-50">
+            <h3 className="text-[75px] font-bold">D:</h3>
+            <p className="ml-2 text-xl">
+              No courses found for "{searchPrompt}"
+            </p>
+            <p className="text-sm">
+              Try searching for another course. <br />
+              Maybe "CSCI 1100" or "Computer Science I"
+            </p>
+          </div>
+        ) : (
+          selectedFilters.length === 0 && <DepartmentFilters />
+        )}
+      </div>
+    </section>
   );
 };
 

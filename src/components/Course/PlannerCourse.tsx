@@ -91,16 +91,28 @@ const PlannerCourse: React.FC<PlannerCourseProps> = ({
                 {course.dept}
                 {course.code_num}
               </b>
+              <i>
+                {course.credit_min !== course.credit_max ? (
+                  <span className="ml-2 text-gray-500">
+                    {course.credit_min}–{course.credit_max} credits
+                  </span>
+                ) : (
+                  <span className="ml-2 text-gray-500">
+                    {course.credit_max} credits
+                  </span>
+                )}
+              </i>
+
               <p>{toTitleCase(course.title)}</p>
             </div>
           </div>
 
           <div className={`flex gap-1 items-center`}>
-            <div
+            {/* <div
               className={`rounded-full bg-[#F5CECE] text-[#283044] w-5 h-5 flex items-center justify-center text-sm`}
             >
               <p>{course.credit_max}</p>
-            </div>
+            </div> */}
             <MdOutlineMoreHoriz
               onClick={togglePopup}
               className="cursor-pointer text-2xl"

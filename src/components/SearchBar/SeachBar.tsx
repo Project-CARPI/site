@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useEffect, useRef } from "react";
 import { IoClose, IoSearchOutline, IoFilter } from "react-icons/io5";
 import FilterPanel from "./FilterPanel/FilterPanel.tsx";
 import useIsDesktop from "../../hooks/useIsDesktop.ts";
@@ -7,16 +7,18 @@ import FilterPanelPopup from "./FilterPanel/FilterPanelPopup.tsx";
 interface SearchBarProps {
   searchPrompt: string;
   setSearchPrompt: React.Dispatch<React.SetStateAction<string>>;
+  showFilter: boolean;
+  setShowFilter: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
 const SearchBar: React.FC<SearchBarProps> = ({
   searchPrompt,
   setSearchPrompt,
+  showFilter,
+  setShowFilter,
 }) => {
   const isDesktop = useIsDesktop();
   const componentRef = useRef<HTMLDivElement>(null);
-
-  const [showFilter, setShowFilter] = useState(false);
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setSearchPrompt(e.target.value);

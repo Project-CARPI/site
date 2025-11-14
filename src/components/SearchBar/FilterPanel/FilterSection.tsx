@@ -1,5 +1,6 @@
 import React from "react";
 import { FilterData } from "../../../types/interfaces/Filters.interface";
+import useIsDesktop from "../../../hooks/useIsDesktop.ts";
 
 interface FilterSectionProps {
   sectionName: "Subject" | "Attributes" | "Semesters";
@@ -14,10 +15,14 @@ const FilterSection: React.FC<FilterSectionProps> = ({
   selected,
   toggleFilter,
 }) => {
+  const isDesktop = useIsDesktop();
+
   return (
     <div className="mt-2">
       <h3 className="font-semibold mb-1">{sectionName}</h3>
-      <div className="flex overflow-x-auto scrollbar-none">
+      <div
+        className={`flex ${isDesktop ? "overflow-x-auto scrollbar-none" : "flex-wrap"} `}
+      >
         {tags.map((tag) => (
           <button
             key={tag.id}

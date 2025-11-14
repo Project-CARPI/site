@@ -6,22 +6,44 @@ import DraggableItem from "../../DraggableItem";
 
 import { SemesterBlockProps } from "./SemesterBlock";
 
+const seasons: string[] = ["fall", "spring", "summer", "misc"];
+
 const DesktopSemesterBlock: React.FC<SemesterBlockProps> = ({
   semester,
   index,
   setPlannerCourses,
   setToolboxCourses,
 }) => {
+  const seasonDropdown = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    const newSeason = e.target.value;
+    setPlannerCourses((prevCourses) =>
+      prevCourses.map((sem) =>
+        sem.semesterID === semester.semesterID
+          ? { ...sem, semesterSeason: newSeason }
+          : sem
+      )
+    );
+  };
   return (
     <div className="flex flex-grow flex-col space-y-2">
       <div className="flex justify-between">
         <span className="text-md font-bold">
           Semester {semester.semesterNumber}
         </span>
+
         <div className="flex space-x-2 items-center">
-          <button className="border-1 border-black rounded-full px-3 py-0 h-fit font-medium text-sm ">
-            {semester.semesterSeason}
-          </button>
+          <select
+            value={semester.semesterSeason}
+            onChange={seasonDropdown}
+            className="border-1 border-black rounded-full px-2 py-0 h-fit w-fit min-w-0 font-medium text-sm"
+          >
+            {seasons.map((season) => (
+              <option key={season} value={season}>
+                {season}
+              </option>
+            ))}
+          </select>
+
           <div className="">{semester.creditsTotal} credits</div>
         </div>
       </div>

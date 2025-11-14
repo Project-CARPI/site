@@ -5,7 +5,7 @@
 <h1>Project CARPI - Frontend</h1>
   <div align="center">
   <a href="https://opensource.org/license/mit">
-    <img alt="License: MIT" src="https://img.shields.io/badge/License_MIT-F5CECE"> 
+    <img alt="License: MIT" src="https://img.shields.io/badge/License_MIT-F5CECE">
 
 <!-- TO-DO: Add badge that links to the site -->
 
@@ -16,19 +16,15 @@
 
 Project CARPI, standing for Cool Academic RPI, allows you to plan each semester with our academic calendar menu, easy search of the course catalog, and customizable planner.
 
-
 </div>
 
 <!-- <p align="center">
 <img width="100%" alt="image" src="./assets/intro.png">     -->
 </p>
 
-
 ## Getting Started with Frontend
 
-These instructions will get you a copy of the project's frontend up and running on your local machine for development and testing purposes. 
-
-
+These instructions will get you a copy of the project's frontend up and running on your local machine for development and testing purposes.
 
 ### Prerequisites
 
@@ -58,26 +54,21 @@ End with an example of getting some data out of the system or using it for a lit
 
 ## Connecting Frontend with Backend
 
-
-
 ## Deployment
-
-
 
 ## Built With
 
-* 
-* 
-* 
+-
+-
+-
 
 ## Contributing
 
 Add potential Contributing.md file
 
-
 ## Authors
 
-* Celine Cheung, Fall 2025
+- Celine Cheung, Fall 2025
 
 See also the list of [contributors](https://github.com/your/project/contributors) who participated in this project.
 
@@ -87,6 +78,6 @@ This project is licensed under the MIT License - see the [LICENSE.md](LICENSE.md
 
 ## Acknowledgments
 
-* Hat tip to anyone whose code was used
-* Inspiration
-* etc
+- Hat tip to anyone whose code was used
+- Inspiration
+- etc

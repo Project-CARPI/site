@@ -12,7 +12,7 @@ const Planner: React.FC = () => {
     setPlannerCourses((prev) =>
       prev
         .filter((s) => s.semesterNumber !== semesterNumber)
-        .map((s, idx) => ({ ...s, semesterNumber: idx + 1 }))
+        .map((s, idx) => ({ ...s, semesterNumber: idx + 1 })),
     );
   };
 

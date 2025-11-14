@@ -77,8 +77,8 @@ export const usePlannerCourse = ({
                 ...semester.courseList.slice(courseIndex + 1),
               ],
             }
-          : semester
-      )
+          : semester,
+      ),
     );
   };
 
@@ -91,11 +91,11 @@ export const usePlannerCourse = ({
           ? {
               ...semester,
               courseList: semester.courseList.filter(
-                (_, idx) => idx !== courseIndex
+                (_, idx) => idx !== courseIndex,
               ),
               creditsTotal: semester.creditsTotal - course.credit_max,
             }
-          : semester
+          : semester,
       );
 
       // Add to next semester
@@ -107,7 +107,7 @@ export const usePlannerCourse = ({
               courseList: [...semester.courseList, courseCopy],
               creditsTotal: semester.creditsTotal + courseCopy.data.credit_max,
             }
-          : semester
+          : semester,
       );
     });
   };
@@ -126,17 +126,17 @@ export const usePlannerCourse = ({
           ? {
               ...semester,
               courseList: semester.courseList.filter(
-                (_, idx) => idx !== courseIndex
+                (_, idx) => idx !== courseIndex,
               ),
               creditsTotal:
                 semester.creditsTotal - courseToMove.data.credit_max,
             }
-          : semester
+          : semester,
       );
 
       setToolboxCourses((toolboxPrev) => {
         const existingIndex = toolboxPrev.findIndex(
-          (entry) => entry.name === cleanedName
+          (entry) => entry.name === cleanedName,
         );
 
         if (existingIndex !== -1) {
@@ -159,12 +159,12 @@ export const usePlannerCourse = ({
           ? {
               ...semester,
               courseList: semester.courseList.filter(
-                (_, idx) => idx !== courseIndex
+                (_, idx) => idx !== courseIndex,
               ),
               creditsTotal: semester.creditsTotal - course.credit_max,
             }
-          : semester
-      )
+          : semester,
+      ),
     );
   };
 

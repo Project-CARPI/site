@@ -102,11 +102,13 @@ const Catalog: React.FC = () => {
           setShowFilter={setShowFilter}
         />
 
-        <div className="flex flex-wrap w-full items-start ">
-          {selectedFilters.map((filter) => (
-            <ChosenTag key={filter.id} filter={filter} />
-          ))}
-        </div>
+        {isDesktop && (
+          <div className="flex flex-wrap w-full items-start ">
+            {selectedFilters.map((filter) => (
+              <ChosenTag key={filter.id} filter={filter} />
+            ))}
+          </div>
+        )}
       </div>
 
       {(isDesktop || !showFilter) && (

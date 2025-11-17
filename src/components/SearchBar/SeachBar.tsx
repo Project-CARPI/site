@@ -3,6 +3,8 @@ import { IoClose, IoSearchOutline, IoFilter } from "react-icons/io5";
 import FilterPanel from "./FilterPanel/FilterPanel.tsx";
 import useIsDesktop from "../../hooks/useIsDesktop.ts";
 import FilterPanelPopup from "./FilterPanel/FilterPanelPopup.tsx";
+import ChosenTag from "./ChosenTag.tsx";
+import { useFilterData } from "../../hooks/useFilters.ts";
 
 interface SearchBarProps {
   searchPrompt: string;
@@ -17,6 +19,7 @@ const SearchBar: React.FC<SearchBarProps> = ({
   showFilter,
   setShowFilter,
 }) => {
+  const { selectedFilters } = useFilterData();
   const isDesktop = useIsDesktop();
   const componentRef = useRef<HTMLDivElement>(null);
 
@@ -80,6 +83,13 @@ const SearchBar: React.FC<SearchBarProps> = ({
         {showFilter && isDesktop && <FilterPanelPopup />}
       </div>
 
+      {!isDesktop && (
+        <div className="flex flex-wrap w-full items-start ">
+          {selectedFilters.map((filter) => (
+            <ChosenTag key={filter.id} filter={filter} />
+          ))}
+        </div>
+      )}
       {showFilter && !isDesktop && <FilterPanel />}
     </div>
   );

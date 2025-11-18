@@ -34,7 +34,6 @@ const PlannerCourse: React.FC<PlannerCourseProps> = ({
               courseList: [
                 ...semester.courseList.slice(0, index + 1),
                 {
-                  id: `${semester.courseList[index].id}-${Math.random().toString(36).substring(2, 7)}`,
                   name: getNextName(semester.courseList[index].name),
                   count: semester.courseList[index].count,
                   data: semester.courseList[index].data,
@@ -48,7 +47,6 @@ const PlannerCourse: React.FC<PlannerCourseProps> = ({
   };
 
   const getNextName = (originalName: string): string => {
-    console.log("Original Name:", originalName);
     const [base, tag] = originalName.split("-");
     if (!tag) return `${base}-A`;
     return `${base}-${incrementTag(tag)}`;
@@ -95,7 +93,6 @@ const PlannerCourse: React.FC<PlannerCourseProps> = ({
   const handleMoveToolbox = () => {
     setPlannerCourses((prev) => {
       const courseToMove = prev[semesterIndex - 1].courseList[index];
-      console.log("Course to move to toolbox:", courseToMove);
       const cleanedName = courseToMove.name.split("-")[0];
       const cleanedCourse = { ...courseToMove, name: cleanedName };
 

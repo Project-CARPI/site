@@ -16,7 +16,6 @@ export interface CourseType {
 }
 
 export type CourseEntry = {
-  id: string;
   name: string;
   count: number;
   data: CourseType;

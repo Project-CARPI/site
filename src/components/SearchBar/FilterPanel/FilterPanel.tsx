@@ -16,7 +16,7 @@ const FilterPanel: React.FC = () => {
     .map((f) => f.code);
 
   return (
-    <div className="w-full">
+    <div className="md:max-h-96 md:overflow-y-auto">
       <FilterSection
         sectionName="Subject"
         tags={subjects}

@@ -195,7 +195,6 @@ export const useDragAndDrop = ({
       if (source.index >= sourceSemester.courseList.length) return;
 
       const courseToMove = sourceSemester.courseList[source.index];
-      console.log("Course to move:", courseToMove);
       if (!courseToMove) return;
 
       setPlannerCourses((prev) =>
@@ -211,14 +210,12 @@ export const useDragAndDrop = ({
         })
       );
 
-      const cleanedName = courseToMove.name;
-
       setToolboxCourses((prev) => {
-        const existingIndex = prev.findIndex((c) => c.name === cleanedName);
+        const existingIndex = prev.findIndex((c) => c.id === courseToMove.id);
 
         const courseForToolbox: CourseEntry = {
           ...courseToMove,
-          name: cleanedName,
+          name: courseToMove.name,
         };
 
         if (existingIndex !== -1) {

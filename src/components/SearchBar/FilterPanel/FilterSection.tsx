@@ -17,8 +17,9 @@ const FilterSection: React.FC<FilterSectionProps> = ({
 }) => {
   const [isExpanded, setIsExpanded] = useState(false);
 
-  const shouldTruncate = tags.length > 12;
   const COLLAPSED_HEIGHT = "6rem";
+  const TAG_THRESHOLD = 12;
+  const shouldTruncate = tags.length > TAG_THRESHOLD;
 
   return (
     <div className="mt-2">

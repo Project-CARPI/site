@@ -77,8 +77,8 @@ const Course: React.FC<CourseProps> = ({ course }) => {
                 <Tag
                   key={index}
                   name={attr}
-                  bgcolor={"#565E87"}
-                  color={"#F5CECE"}
+                  bgcolor={"#99C1B9"}
+                  color={"#283044"}
                 />
               );
             })}
@@ -87,8 +87,8 @@ const Course: React.FC<CourseProps> = ({ course }) => {
                 <Tag
                   key={index}
                   name={semester}
-                  bgcolor={"#99C1B9"}
-                  color={"#283044"}
+                  bgcolor={"#565E87"}
+                  color={"#F5CECE"}
                 />
               );
             })}

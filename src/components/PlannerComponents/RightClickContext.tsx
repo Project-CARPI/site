@@ -48,6 +48,7 @@ const PlannerCourse: React.FC<PlannerCourseProps> = ({
   };
 
   const getNextName = (originalName: string): string => {
+    console.log("Original Name:", originalName);
     const [base, tag] = originalName.split("-");
     if (!tag) return `${base}-A`;
     return `${base}-${incrementTag(tag)}`;
@@ -94,6 +95,9 @@ const PlannerCourse: React.FC<PlannerCourseProps> = ({
   const handleMoveToolbox = () => {
     setPlannerCourses((prev) => {
       const courseToMove = prev[semesterIndex - 1].courseList[index];
+      console.log("Course to move to toolbox:", courseToMove);
+      const cleanedName = courseToMove.name.split("-")[0];
+      const cleanedCourse = { ...courseToMove, name: cleanedName };
 
       const updated = prev.map((s, i) =>
         i === semesterIndex - 1
@@ -107,14 +111,14 @@ const PlannerCourse: React.FC<PlannerCourseProps> = ({
 
       setToolboxCourses((toolboxPrev) => {
         const existingIndex = toolboxPrev.findIndex(
-          (entry) => entry.id === courseToMove.id
+          (entry) => entry.name === cleanedName
         );
         if (existingIndex !== -1) {
           const updatedToolbox = [...toolboxPrev];
-          updatedToolbox[existingIndex].count += courseToMove.count;
+          updatedToolbox[existingIndex].count += cleanedCourse.count;
           return updatedToolbox;
         }
-        return [...toolboxPrev, courseToMove];
+        return [...toolboxPrev, cleanedCourse];
       });
 
       return updated;

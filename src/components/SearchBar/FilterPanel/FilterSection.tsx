@@ -57,6 +57,7 @@ const FilterSection: React.FC<FilterSectionProps> = ({
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
               transition={{ duration: 0.2 }}
+              aria-hidden="true"
               className="absolute bottom-0 left-0 w-full h-12 bg-gradient-to-t from-carpipink to-transparent pointer-events-none"
             />
           )}
@@ -67,6 +68,8 @@ const FilterSection: React.FC<FilterSectionProps> = ({
       {shouldTruncate && (
         <button
           onClick={() => setIsExpanded(!isExpanded)}
+          aria-expanded={isExpanded}
+          aria-controls={`${sectionName}-tags`}
           className="text-xs font-bold text-darkblue mt-1 hover:underline focus:outline-none"
         >
           {isExpanded ? "Show Less" : "Show All"}

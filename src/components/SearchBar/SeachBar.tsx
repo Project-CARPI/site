@@ -83,7 +83,7 @@ const SearchBar: React.FC<SearchBarProps> = ({
         {showFilter && isDesktop && <FilterPanelPopup />}
       </div>
 
-      {!isDesktop && (
+      {!isDesktop && selectedFilters.length > 0 && (
         <div className="flex flex-wrap w-full items-start ">
           {selectedFilters.map((filter) => (
             <ChosenTag key={filter.id} filter={filter} />

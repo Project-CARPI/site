@@ -72,12 +72,25 @@ const Course: React.FC<CourseProps> = ({ course }) => {
             <p>{toTitleCase(course.title)}</p>
           </div>
           <div className={`flex flex-wrap mt-1`}>
-            {/* <Tag name={course.subj_code} color={"4D5E87"} /> */}
             {course.attr_list?.map((attr, index) => {
-              return <Tag key={index} name={attr} color={"4D5E87"} />;
+              return (
+                <Tag
+                  key={index}
+                  name={attr}
+                  bgcolor={"#565E87"}
+                  color={"#F5CECE"}
+                />
+              );
             })}
             {course.sem_list?.map((semester, index) => {
-              return <Tag key={index} name={semester} color={"4D5E87"} />;
+              return (
+                <Tag
+                  key={index}
+                  name={semester}
+                  bgcolor={"#99C1B9"}
+                  color={"#283044"}
+                />
+              );
             })}
           </div>
         </div>

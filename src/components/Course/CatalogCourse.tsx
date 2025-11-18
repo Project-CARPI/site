@@ -42,7 +42,12 @@ const Course: React.FC<CourseProps> = ({ course }) => {
       } else {
         return [
           ...prevCourses,
-          { name: courseDisplay, count: 1, data: course },
+          {
+            id: `${courseDisplay}-${Math.random().toString(36).substring(2, 7)}`,
+            name: courseDisplay,
+            count: 1,
+            data: course,
+          },
         ];
       }
     });

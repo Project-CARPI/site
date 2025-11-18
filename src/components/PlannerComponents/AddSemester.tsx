@@ -1,6 +1,5 @@
 import React, { useRef } from "react";
 import { SemesterType } from "../../types/interfaces/Semester.interface";
-import { v4 as uuidv4 } from "uuid";
 
 interface AddSemesterProps {
   setPlannerCourses: React.Dispatch<React.SetStateAction<SemesterType[]>>;

@@ -55,6 +55,7 @@ const PlannerCourse: React.FC<PlannerCourseProps> = ({
     setToolboxCourses: setToolboxCourses,
     semesterIndex: semesterIndex,
     courseIndex: index,
+    id: `${course.subj_code}-${course.code_num}-${Math.random().toString(36).substring(2, 7)}`,
     course: course,
     name: course.title,
     count: count,

@@ -15,7 +15,8 @@ const reorder = <T>(list: T[], startIndex: number, endIndex: number): T[] => {
 const cloneCourse = (course: CourseEntry): CourseEntry => {
   return {
     ...course,
-    name: `${course.name}-${Math.random().toString(36).substring(2, 7)}`,
+    id: `${course.name}-${Math.random().toString(36).substring(2, 7)}`,
+    name: course.name,
     data: { ...course.data },
     count: 1,
   };
@@ -55,7 +56,7 @@ export const useDragAndDrop = ({
     // Reorder in toolbox
     if (sInd === "toolbox" && dInd === "toolbox") {
       setToolboxCourses((prev) =>
-        reorder(prev, source.index, destination.index),
+        reorder(prev, source.index, destination.index)
       );
       return;
     }
@@ -63,7 +64,7 @@ export const useDragAndDrop = ({
     // Delete from toolbox
     if (dInd === "garbage" && sInd === "toolbox") {
       setToolboxCourses((prev) =>
-        prev.filter((_, index) => index !== source.index),
+        prev.filter((_, index) => index !== source.index)
       );
       return;
     }
@@ -79,11 +80,11 @@ export const useDragAndDrop = ({
                 courseList: reorder(
                   semester.courseList,
                   source.index,
-                  destination.index,
+                  destination.index
                 ),
               }
-            : semester,
-        ),
+            : semester
+        )
       );
       return;
     }
@@ -148,14 +149,14 @@ export const useDragAndDrop = ({
               };
             }
             return semester;
-          }),
+          })
         );
         setToolboxCourses((prev) =>
           prev
             .map((c) =>
-              c.name === courseToClone.name ? { ...c, count: c.count - 1 } : c,
+              c.name === courseToClone.name ? { ...c, count: c.count - 1 } : c
             )
-            .filter((c) => c.count > 0),
+            .filter((c) => c.count > 0)
         );
       }
       return;
@@ -194,6 +195,7 @@ export const useDragAndDrop = ({
       if (source.index >= sourceSemester.courseList.length) return;
 
       const courseToMove = sourceSemester.courseList[source.index];
+      console.log("Course to move:", courseToMove);
       if (!courseToMove) return;
 
       setPlannerCourses((prev) =>
@@ -202,14 +204,14 @@ export const useDragAndDrop = ({
           return {
             ...semester,
             courseList: semester.courseList.filter(
-              (_, index) => index !== source.index,
+              (_, index) => index !== source.index
             ),
             creditsTotal: semester.creditsTotal - courseToMove.data.credit_max,
           };
-        }),
+        })
       );
 
-      const cleanedName = courseToMove.name.split("-")[0];
+      const cleanedName = courseToMove.name;
 
       setToolboxCourses((prev) => {
         const existingIndex = prev.findIndex((c) => c.name === cleanedName);

@@ -8,6 +8,7 @@ interface UsePlannerCourseProps {
   semesterIndex: number; // 1-based index
   courseIndex: number; // 0-based index
   course: CourseType;
+  id: string;
   name: string;
   count: number;
 }
@@ -18,6 +19,7 @@ export const usePlannerCourse = ({
   semesterIndex,
   courseIndex,
   course,
+  id,
   name,
   count,
 }: UsePlannerCourseProps) => {
@@ -70,6 +72,7 @@ export const usePlannerCourse = ({
               courseList: [
                 ...semester.courseList.slice(0, courseIndex + 1),
                 {
+                  id: `${name}-${Math.random().toString(36).substring(2, 7)}`,
                   name: getNextName(name), // Use prop
                   count: count, // Use prop
                   data: course, // Use prop
@@ -77,25 +80,25 @@ export const usePlannerCourse = ({
                 ...semester.courseList.slice(courseIndex + 1),
               ],
             }
-          : semester,
-      ),
+          : semester
+      )
     );
   };
 
   const handleMoveNext = () => {
     setPlannerCourses((prev) => {
-      const courseCopy = { name, count, data: course };
+      const courseCopy = { id, name, count, data: course };
 
       const updatedPlanner = prev.map((semester, i) =>
         i === semesterIndex - 1
           ? {
               ...semester,
               courseList: semester.courseList.filter(
-                (_, idx) => idx !== courseIndex,
+                (_, idx) => idx !== courseIndex
               ),
               creditsTotal: semester.creditsTotal - course.credit_max,
             }
-          : semester,
+          : semester
       );
 
       // Add to next semester
@@ -107,44 +110,37 @@ export const usePlannerCourse = ({
               courseList: [...semester.courseList, courseCopy],
               creditsTotal: semester.creditsTotal + courseCopy.data.credit_max,
             }
-          : semester,
+          : semester
       );
     });
   };
 
   const handleMoveToolbox = () => {
     setPlannerCourses((prev) => {
-      const courseToMove = { name, count, data: course };
-      const cleanedName = courseToMove.name.split("-")[0];
-      const cleanedCourse = {
-        ...courseToMove,
-        name: cleanedName,
-      };
+      const courseToMove = { id, name, count, data: course };
 
       const updatedPlanner = prev.map((semester, i) =>
         i === semesterIndex - 1
           ? {
               ...semester,
               courseList: semester.courseList.filter(
-                (_, idx) => idx !== courseIndex,
+                (_, idx) => idx !== courseIndex
               ),
               creditsTotal:
                 semester.creditsTotal - courseToMove.data.credit_max,
             }
-          : semester,
+          : semester
       );
 
       setToolboxCourses((toolboxPrev) => {
-        const existingIndex = toolboxPrev.findIndex(
-          (entry) => entry.name === cleanedName,
-        );
+        const existingIndex = toolboxPrev.findIndex((entry) => entry.id === id);
 
         if (existingIndex !== -1) {
           const updated = [...toolboxPrev];
-          updated[existingIndex].count += cleanedCourse.count;
+          updated[existingIndex].count += courseToMove.count;
           return updated;
         } else {
-          return [...toolboxPrev, cleanedCourse];
+          return [...toolboxPrev, courseToMove];
         }
       });
 
@@ -159,12 +155,12 @@ export const usePlannerCourse = ({
           ? {
               ...semester,
               courseList: semester.courseList.filter(
-                (_, idx) => idx !== courseIndex,
+                (_, idx) => idx !== courseIndex
               ),
               creditsTotal: semester.creditsTotal - course.credit_max,
             }
-          : semester,
-      ),
+          : semester
+      )
     );
   };
 

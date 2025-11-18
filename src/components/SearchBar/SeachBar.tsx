@@ -42,7 +42,7 @@ const SearchBar: React.FC<SearchBarProps> = ({
     return () => {
       document.removeEventListener("mousedown", handleClickOutside);
     };
-  }, []);
+  }, [setShowFilter]);
 
   return (
     <div

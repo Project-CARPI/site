@@ -93,7 +93,8 @@ const PlannerCourse: React.FC<PlannerCourseProps> = ({
   const handleMoveToolbox = () => {
     setPlannerCourses((prev) => {
       const courseToMove = prev[semesterIndex - 1].courseList[index];
-      const cleanedName = courseToMove.name.split("-")[0];
+      const nameParts = courseToMove.name.split("-");
+      const cleanedName = nameParts.slice(0, 2).join("-");
       const cleanedCourse = { ...courseToMove, name: cleanedName };
 
       const updated = prev.map((s, i) =>

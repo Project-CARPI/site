@@ -41,8 +41,8 @@ const PlannerCourse: React.FC<PlannerCourseProps> = ({
                 ...semester.courseList.slice(index + 1),
               ],
             }
-          : semester,
-      ),
+          : semester
+      )
     );
   };
 
@@ -76,7 +76,7 @@ const PlannerCourse: React.FC<PlannerCourseProps> = ({
               courseList: s.courseList.filter((_, idx) => idx !== index),
               creditsTotal: s.creditsTotal - courseCopy.data.credit_max,
             }
-          : s,
+          : s
       );
       return updated.map((s, i) =>
         i === semesterIndex
@@ -85,7 +85,7 @@ const PlannerCourse: React.FC<PlannerCourseProps> = ({
               courseList: [...s.courseList, courseCopy],
               creditsTotal: s.creditsTotal + courseCopy.data.credit_max,
             }
-          : s,
+          : s
       );
     });
   };
@@ -103,12 +103,12 @@ const PlannerCourse: React.FC<PlannerCourseProps> = ({
               courseList: s.courseList.filter((_, idx) => idx !== index),
               creditsTotal: s.creditsTotal - courseToMove.data.credit_max,
             }
-          : s,
+          : s
       );
 
       setToolboxCourses((toolboxPrev) => {
         const existingIndex = toolboxPrev.findIndex(
-          (entry) => entry.name === cleanedName,
+          (entry) => entry.name === cleanedName
         );
         if (existingIndex !== -1) {
           const updatedToolbox = [...toolboxPrev];
@@ -132,8 +132,8 @@ const PlannerCourse: React.FC<PlannerCourseProps> = ({
               creditsTotal:
                 s.creditsTotal - s.courseList[index].data.credit_max,
             }
-          : s,
-      ),
+          : s
+      )
     );
   };
 
@@ -156,8 +156,7 @@ const PlannerCourse: React.FC<PlannerCourseProps> = ({
                 <MdDragIndicator />
                 <div className="text-sm ml-1">
                   <b>
-                    {course.dept}
-                    {course.code_num}
+                    {course.subj_code}-{course.code_num}
                   </b>
                   <p>{toTitleCase(course.title)}</p>
                 </div>

@@ -26,18 +26,18 @@ const Course: React.FC<CourseProps> = ({ course }) => {
       .join(" ");
   };
 
-  const courseDisplay: string = `${course.dept + course.code_num} ${toTitleCase(course.title)}`;
+  const courseDisplay: string = `${course.subj_code}-${course.code_num} ${toTitleCase(course.title)}`;
   const addCourse = (e: React.MouseEvent<HTMLButtonElement>) => {
     e.stopPropagation();
 
     setToolboxCourses((prevCourses) => {
       const existingIndex = prevCourses.findIndex(
-        (c) => c.name === courseDisplay,
+        (c) => c.name === courseDisplay
       );
 
       if (existingIndex !== -1) {
         return prevCourses.map((c, i) =>
-          i === existingIndex ? { ...c, count: c.count + 1 } : c,
+          i === existingIndex ? { ...c, count: c.count + 1 } : c
         );
       } else {
         return [
@@ -67,17 +67,16 @@ const Course: React.FC<CourseProps> = ({ course }) => {
         <div>
           <div className={`text-md`}>
             <b>
-              {course.dept}
-              {course.code_num}
+              {course.subj_code}-{course.code_num}
             </b>
             <p>{toTitleCase(course.title)}</p>
           </div>
           <div className={`flex flex-wrap mt-1`}>
-            <Tag name={course.dept} color={"4D5E87"} />
-            {course.attr_list?.split(",").map((attr, index) => {
+            {/* <Tag name={course.subj_code} color={"4D5E87"} /> */}
+            {course.attr_list?.map((attr, index) => {
               return <Tag key={index} name={attr} color={"4D5E87"} />;
             })}
-            {course.sem_list?.split(",").map((semester, index) => {
+            {course.sem_list?.map((semester, index) => {
               return <Tag key={index} name={semester} color={"4D5E87"} />;
             })}
           </div>

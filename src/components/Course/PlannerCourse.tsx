@@ -88,8 +88,7 @@ const PlannerCourse: React.FC<PlannerCourseProps> = ({
             <MdDragIndicator className="text-2xl" />
             <div className={`text-sm`}>
               <b>
-                {course.dept}
-                {course.code_num}
+                {course.subj_code}-{course.code_num}
               </b>
               <i>
                 {course.credit_min !== course.credit_max ? (

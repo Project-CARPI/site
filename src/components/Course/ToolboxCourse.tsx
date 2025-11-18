@@ -31,8 +31,7 @@ const ToolboxCourse: React.FC<ToolboxCourseProps> = ({
           <MdDragIndicator className="text-2xl" />
           <div className={`text-sm`}>
             <b>
-              {course.dept}
-              {course.code_num}
+              {course.subj_code}-{course.code_num}
             </b>
             <p>{toTitleCase(course.title)}</p>
           </div>

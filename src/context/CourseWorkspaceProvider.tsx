@@ -12,6 +12,7 @@ export const CourseWorkspaceProvider: React.FC<{ children: ReactNode }> = ({
   const [plannerCourses, setPlannerCourses] = useState<SemesterType[]>([
     {
       semesterNumber: 1,
+      semesterID: "semester-1",
       semesterSeason: "fall",
       creditsTotal: 0,
       courseList: [],

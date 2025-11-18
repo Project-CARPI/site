@@ -114,7 +114,8 @@ export const usePlannerCourse = ({
 
   const handleMoveToolbox = () => {
     setPlannerCourses((prev) => {
-      const courseToMove = { name, count, data: course };
+      const formattedCourseName = `${course.subj_code}-${course.code_num} ${toTitleCase(course.title)}`;
+      const courseToMove = { name: formattedCourseName, count, data: course };
       const nameParts = courseToMove.name.split("-");
       const cleanedName = nameParts.slice(0, 2).join("-");
       const cleanedCourse = {

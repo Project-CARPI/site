@@ -41,6 +41,7 @@ const Planner: React.FC = () => {
                 setPlannerCourses={setPlannerCourses}
                 setToolboxCourses={setToolboxCourses}
               />
+
               <DeleteSemester
                 semesterNumber={semester.semesterNumber}
                 onDelete={handleDeleteSemester}

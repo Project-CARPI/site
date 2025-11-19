@@ -1,4 +1,4 @@
-type FilterCategory = "Subject" | "Attributes" | "Semesters";
+export type FilterCategory = "Subject" | "Attributes" | "Semesters";
 
 export interface Filters {
   Subject: string[];

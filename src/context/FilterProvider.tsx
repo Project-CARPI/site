@@ -1,12 +1,12 @@
 import React, { useState, useEffect, ReactNode } from "react";
 import api from "../axios.ts";
-import { FilterData } from "../types/interfaces/Filters.interface.ts";
+import {
+  FilterData,
+  FilterCategory,
+} from "../types/interfaces/Filters.interface.ts";
 import FilterContext from "./FilterContext.tsx";
 
-const formatApiData = (
-  type: "Subject" | "Attributes" | "Semesters",
-  data: Record<string, string>
-) => {
+const formatApiData = (type: FilterCategory, data: Record<string, string>) => {
   return Object.entries(data).map(([code, value], index) => ({
     id: index,
     code,

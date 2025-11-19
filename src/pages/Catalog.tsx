@@ -35,7 +35,7 @@ const Catalog: React.FC = () => {
     setHasSearched(true);
 
     debounceTimeout.current = setTimeout(async () => {
-      const deptFilters = selectedFilters
+      const subjFilters = selectedFilters
         .filter((filter) => filter.type === "Subject")
         .map((filter) => filter.code);
       const attrFilters = selectedFilters
@@ -61,12 +61,12 @@ const Catalog: React.FC = () => {
         const response = await api.get(
           "course/search?searchPrompt=" +
             searchPrompt +
-            "&deptFilters=" +
-            deptFilters +
+            "&subjFilters=" +
+            subjFilters +
             "&attrFilters=" +
             attrFilters +
             "&semFilters=" +
-            semFilters,
+            semFilters
         );
 
         const data = response.data;

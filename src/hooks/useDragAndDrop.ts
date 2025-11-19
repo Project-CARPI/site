@@ -1,6 +1,6 @@
 import { Dispatch, SetStateAction } from "react";
 import { DropResult } from "@hello-pangea/dnd";
-import { CourseEntry } from "../types/interfaces/Course.interface";
+import { UserCourse } from "../types/interfaces/Course.interface";
 import { SemesterType } from "../types/interfaces/Semester.interface";
 
 // --- Helper Functions ---
@@ -12,7 +12,7 @@ const reorder = <T>(list: T[], startIndex: number, endIndex: number): T[] => {
   return result;
 };
 
-const cloneCourse = (course: CourseEntry): CourseEntry => {
+const cloneCourse = (course: UserCourse): UserCourse => {
   return {
     ...course,
     name: `${course.name}-${Math.random().toString(36).substring(2, 7)}`,
@@ -24,9 +24,9 @@ const cloneCourse = (course: CourseEntry): CourseEntry => {
 // --- Hook Definition ---
 
 interface UseDragAndDropProps {
-  toolboxCourses: CourseEntry[];
+  toolboxCourses: UserCourse[];
   plannerCourses: SemesterType[];
-  setToolboxCourses: Dispatch<SetStateAction<CourseEntry[]>>;
+  setToolboxCourses: Dispatch<SetStateAction<UserCourse[]>>;
   setPlannerCourses: Dispatch<SetStateAction<SemesterType[]>>;
   setIsDragging: Dispatch<SetStateAction<boolean>>;
 }
@@ -215,7 +215,7 @@ export const useDragAndDrop = ({
       setToolboxCourses((prev) => {
         const existingIndex = prev.findIndex((c) => c.name === cleanedName);
 
-        const courseForToolbox: CourseEntry = {
+        const courseForToolbox: UserCourse = {
           ...courseToMove,
           name: cleanedName,
         };

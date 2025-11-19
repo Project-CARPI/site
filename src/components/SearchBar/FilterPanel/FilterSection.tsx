@@ -1,5 +1,5 @@
 import React from "react";
-import { FilterData } from "../../../types/Filters";
+import { FilterData } from "../../../types/interfaces/Filters.interface";
 
 interface FilterSectionProps {
   sectionName: "Subject" | "Attributes" | "Semesters";

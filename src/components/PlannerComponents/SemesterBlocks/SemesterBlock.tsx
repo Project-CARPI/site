@@ -2,7 +2,7 @@ import React, { Dispatch, SetStateAction } from "react";
 import useIsDesktop from "../../../hooks/useIsDesktop";
 
 import { SemesterType } from "../../../types/interfaces/Semester.interface";
-import { CourseEntry } from "../../../types/interfaces/Course.interface";
+import { UserCourse } from "../../../types/interfaces/Course.interface";
 import MobileSemesterBlock from "./MobileSemesterBlock";
 import DesktopSemesterBlock from "./DesktopSemesterBlock";
 
@@ -10,7 +10,7 @@ export interface SemesterBlockProps {
   semester: SemesterType;
   index: number;
   setPlannerCourses: Dispatch<SetStateAction<SemesterType[]>>;
-  setToolboxCourses: Dispatch<SetStateAction<CourseEntry[]>>;
+  setToolboxCourses: Dispatch<SetStateAction<UserCourse[]>>;
 }
 
 const SemesterBlock: React.FC<SemesterBlockProps> = ({

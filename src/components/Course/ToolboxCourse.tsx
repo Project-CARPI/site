@@ -1,5 +1,5 @@
 import React from "react";
-import { CourseType } from "../../types/interfaces/Course.interface";
+import { APICourse } from "../../types/interfaces/Course.interface";
 import { MdDragIndicator } from "react-icons/md";
 
 interface ToolboxCourseProps {
@@ -7,7 +7,7 @@ interface ToolboxCourseProps {
   count: number;
   index: number;
   isDragging: boolean;
-  course: CourseType;
+  course: APICourse;
 }
 
 const ToolboxCourse: React.FC<ToolboxCourseProps> = ({

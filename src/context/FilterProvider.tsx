@@ -1,6 +1,6 @@
 import React, { useState, useEffect, ReactNode } from "react";
 import api from "../axios.ts";
-import { FilterData } from "../types/Filters.ts";
+import { FilterData } from "../types/interfaces/Filters.interface.ts";
 import FilterContext from "./FilterContext.tsx";
 
 const formatApiData = (

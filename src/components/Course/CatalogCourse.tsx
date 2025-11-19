@@ -2,11 +2,11 @@ import React, { useState } from "react";
 import Tag from "./CatalogCourse/Tag";
 import AddButton from "./CatalogCourse/AddButton";
 import { motion } from "framer-motion";
-import { CourseType } from "../../types/interfaces/Course.interface";
+import { APICourse } from "../../types/interfaces/Course.interface";
 import { useCourseWorkspace } from "../../hooks/useCourseWorkspace";
 
 interface CourseProps {
-  course: CourseType;
+  course: APICourse;
 }
 
 const Course: React.FC<CourseProps> = ({ course }) => {

@@ -1,16 +1,16 @@
 import React, { Dispatch, SetStateAction } from "react";
 import * as ContextMenu from "@radix-ui/react-context-menu";
 import { MdDragIndicator } from "react-icons/md";
-import { CourseType } from "../../types/interfaces/Course.interface";
+import { APICourse } from "../../types/interfaces/Course.interface";
 import { SemesterType } from "../../types/interfaces/Semester.interface";
-import { CourseEntry } from "../../types/interfaces/Course.interface";
+import { UserCourse } from "../../types/interfaces/Course.interface";
 
 interface PlannerCourseProps {
-  course: CourseType;
+  course: APICourse;
   isDragging: boolean;
   index: number;
   setPlannerCourses: Dispatch<SetStateAction<SemesterType[]>>;
-  setToolboxCourses: Dispatch<SetStateAction<CourseEntry[]>>;
+  setToolboxCourses: Dispatch<SetStateAction<UserCourse[]>>;
   semesterIndex: number;
 }
 

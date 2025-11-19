@@ -1,5 +1,5 @@
 import React, { useState, ReactNode } from "react";
-import { CourseEntry } from "../types/interfaces/Course.interface.ts";
+import { UserCourse } from "../types/interfaces/Course.interface.ts";
 import { SemesterType } from "../types/interfaces/Semester.interface.ts";
 import { useDragAndDrop } from "../hooks/useDragAndDrop.ts";
 import CourseWorkspaceContext from "./CourseWorkspaceContext.tsx";
@@ -8,7 +8,7 @@ export const CourseWorkspaceProvider: React.FC<{ children: ReactNode }> = ({
   children,
 }) => {
   // all states
-  const [toolboxCourses, setToolboxCourses] = useState<CourseEntry[]>([]);
+  const [toolboxCourses, setToolboxCourses] = useState<UserCourse[]>([]);
   const [plannerCourses, setPlannerCourses] = useState<SemesterType[]>([
     {
       semesterNumber: 1,

@@ -1,7 +1,7 @@
 import React from "react";
 import { IoClose } from "react-icons/io5";
 import { useFilterData } from "../../hooks/useFilters";
-import { FilterData } from "../../types/Filters";
+import { FilterData } from "../../types/interfaces/Filters.interface";
 
 interface ChosenTagProp {
   filter: FilterData;

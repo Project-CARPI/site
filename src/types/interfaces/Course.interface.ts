@@ -1,4 +1,4 @@
-export interface CourseType {
+export interface APICourse {
   subj_code: string;
   code_num: number;
   title: string;
@@ -15,8 +15,8 @@ export interface CourseType {
   title_abbrev: number;
 }
 
-export type CourseEntry = {
+export interface UserCourse {
   name: string;
   count: number;
-  data: CourseType;
-};
+  data: APICourse;
+}

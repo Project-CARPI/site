@@ -2,7 +2,7 @@ import React, { useState, useRef, useEffect } from "react";
 import api from "../axios.ts";
 import Course from "../components/Course/CatalogCourse.tsx";
 import SearchBar from "../components/SearchBar/SeachBar";
-import { CourseType } from "../types/interfaces/Course.interface.ts";
+import { APICourse } from "../types/interfaces/Course.interface.ts";
 import DepartmentFilters from "../components/Department-Filters.tsx";
 import ChosenTag from "../components/SearchBar/ChosenTag";
 import { useFilterData } from "../hooks/useFilters.ts";
@@ -10,7 +10,7 @@ import { useFilterData } from "../hooks/useFilters.ts";
 const Catalog: React.FC = () => {
   const { selectedFilters } = useFilterData();
 
-  const [searchResults, setSearchResults] = React.useState<CourseType[]>([]);
+  const [searchResults, setSearchResults] = React.useState<APICourse[]>([]);
   const [searchPrompt, setSearchPrompt] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [hasSearched, setHasSearched] = useState(false);
@@ -107,7 +107,7 @@ const Catalog: React.FC = () => {
       <div className="md:h-[calc(100vh-17rem)] md:overflow-hidden">
         {searchResults.length > 0 ? (
           <div className="h-full overflow-y-auto flex flex-wrap justify-center gap-4 pr-3 pt-3">
-            {searchResults?.map((course: CourseType, index: number) => (
+            {searchResults?.map((course: APICourse, index: number) => (
               <Course key={index} course={course} />
             ))}
 

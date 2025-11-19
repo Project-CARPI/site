@@ -3,13 +3,13 @@ import { SemesterType } from "../../types/interfaces/Semester.interface";
 import { Droppable } from "@hello-pangea/dnd";
 import PlannerCourseHolder from "./PlannerCourseHolder";
 import DraggableItem from "../DraggableItem";
-import { CourseEntry } from "../../types/interfaces/Course.interface";
+import { UserCourse } from "../../types/interfaces/Course.interface";
 
 interface SemesterBlockProps {
   semester: SemesterType;
   index: number;
   setPlannerCourses: Dispatch<SetStateAction<SemesterType[]>>;
-  setToolboxCourses: Dispatch<SetStateAction<CourseEntry[]>>;
+  setToolboxCourses: Dispatch<SetStateAction<UserCourse[]>>;
 }
 
 const seasons: string[] = ["fall", "spring", "summer", "misc"];
@@ -26,8 +26,8 @@ const SemesterBlock: React.FC<SemesterBlockProps> = ({
       prevCourses.map((sem) =>
         sem.semesterID === semester.semesterID
           ? { ...sem, semesterSeason: newSeason }
-          : sem,
-      ),
+          : sem
+      )
     );
   };
 

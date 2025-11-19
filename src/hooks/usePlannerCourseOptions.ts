@@ -1,13 +1,13 @@
 import { Dispatch, SetStateAction } from "react";
 import { SemesterType } from "../types/interfaces/Semester.interface";
-import { CourseEntry, CourseType } from "../types/interfaces/Course.interface";
+import { UserCourse, APICourse } from "../types/interfaces/Course.interface";
 
 interface UsePlannerCourseProps {
   setPlannerCourses: Dispatch<SetStateAction<SemesterType[]>>;
-  setToolboxCourses: Dispatch<SetStateAction<CourseEntry[]>>;
+  setToolboxCourses: Dispatch<SetStateAction<UserCourse[]>>;
   semesterIndex: number; // 1-based index
   courseIndex: number; // 0-based index
-  course: CourseType;
+  course: APICourse;
   name: string;
   count: number;
 }

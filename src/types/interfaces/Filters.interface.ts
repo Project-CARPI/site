@@ -1,12 +1,14 @@
-export type Filters = {
+type FilterCategory = "Subject" | "Attributes" | "Semesters";
+
+export interface Filters {
   Subject: string[];
   Attributes: string[];
   Semesters: string[];
-};
+}
 
-export type FilterData = {
+export interface FilterData {
   id: number;
   code: string;
   value: string;
-  type: "Subject" | "Attributes" | "Semesters";
-};
+  type: FilterCategory;
+}

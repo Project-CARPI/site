@@ -7,5 +7,6 @@ export type Filters = {
 export type FilterData = {
   id: number;
   code: string;
+  value: string;
   type: "Subject" | "Attributes" | "Semesters";
 };

@@ -3,11 +3,15 @@ import api from "../axios.ts";
 import { FilterData } from "../types/Filters.ts";
 import FilterContext from "./FilterContext.tsx";
 
-const formatApiData = (type: string, data: string[]) => {
-  return data.map((item: string, index: number) => ({
+const formatApiData = (
+  type: "Subject" | "Attributes" | "Semesters",
+  data: Record<string, string>
+) => {
+  return Object.entries(data).map(([code, value], index) => ({
     id: index,
-    code: item,
-    type: type as "Subject" | "Attributes" | "Semesters",
+    code,
+    value,
+    type,
   }));
 };
 

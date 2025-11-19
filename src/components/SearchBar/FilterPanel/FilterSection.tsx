@@ -1,14 +1,9 @@
 import React from "react";
 import { FilterData } from "../../../types/Filters";
 
-interface TagProp {
-  id: number;
-  code: string;
-}
-
 interface FilterSectionProps {
   sectionName: "Subject" | "Attributes" | "Semesters";
-  tags: TagProp[];
+  tags: FilterData[];
   selected: string[];
   toggleFilter: (filter: FilterData) => void;
 }
@@ -28,15 +23,9 @@ const FilterSection: React.FC<FilterSectionProps> = ({
             key={tag.id}
             className={`hover:bg-darkblue/10 hover:cursor-pointer rounded-2xl px-3 py-1 text-sm mr-1 mb-1 flex-none
               ${selected.includes(tag.code) ? "bg-darkblue text-carpipink hover:bg-darkblue/70 border border-darkblue" : "border border-darkblue text-darkblue"}`}
-            onClick={() =>
-              toggleFilter({
-                id: tag.id,
-                code: tag.code,
-                type: sectionName,
-              })
-            }
+            onClick={() => toggleFilter(tag)}
           >
-            {tag.code}
+            {tag.value}
           </button>
         ))}
       </div>

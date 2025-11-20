@@ -92,8 +92,8 @@ const Catalog: React.FC = () => {
   }, [selectedFilters, searchPrompt, setSearchResults]);
 
   return (
-    <section className="flex flex-col gap-2">
-      <div className={`sticky top-20 z-10 flex flex-col gap-2`}>
+    <section className="flex flex-col gap-2 md:h-[calc(100vh-10rem)] md:overflow-hidden">
+      <div className="sticky z-10 flex flex-col gap-2">
         <h1 className="font-bold text-xl">Courses</h1>
         <SearchBar
           setSearchPrompt={setSearchPrompt}
@@ -112,7 +112,7 @@ const Catalog: React.FC = () => {
       </div>
 
       {(isDesktop || !showFilter) && (
-        <div className={`md:h-[calc(100vh-17rem)] md:overflow-hidden`}>
+        <div className="overflow-y-auto flex-grow">
           {searchResults.length > 0 ? (
             <div className="h-full overflow-y-auto flex flex-wrap justify-center gap-4 pr-3 pt-3">
               {searchResults?.map((course: APICourse, index: number) => (

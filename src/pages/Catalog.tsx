@@ -42,10 +42,10 @@ const Catalog: React.FC = () => {
         .filter((filter) => filter.type === "Subject")
         .map((filter) => filter.code);
       const attrFilters = selectedFilters
-        .filter((filter) => filter.type === "Attributes")
+        .filter((filter) => filter.type === "Attribute")
         .map((filter) => filter.code);
       const semFilters = selectedFilters
-        .filter((filter) => filter.type === "Semesters")
+        .filter((filter) => filter.type === "Semester")
         .map((filter) => filter.code);
 
       if (searchPrompt.length < 3) {

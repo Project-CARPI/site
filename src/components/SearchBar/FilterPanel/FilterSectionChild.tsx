@@ -1,8 +1,11 @@
 import React, { useState } from "react";
-import { FilterData } from "../../../types/interfaces/Filters.interface";
+import {
+  FilterCategory,
+  FilterData,
+} from "../../../types/interfaces/Filters.interface";
 
 interface FilterSectionProps {
-  sectionName: "Subject" | "Attributes" | "Semesters";
+  sectionName: FilterCategory;
   tags: FilterData[];
   selected: string[];
   toggleFilter: (filter: FilterData) => void;

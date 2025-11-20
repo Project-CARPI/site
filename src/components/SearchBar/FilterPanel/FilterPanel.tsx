@@ -10,10 +10,10 @@ const FilterPanel: React.FC = () => {
     .filter((f) => f.type === "Subject")
     .map((f) => f.code);
   const selectedAttributes = selectedFilters
-    .filter((f) => f.type === "Attributes")
+    .filter((f) => f.type === "Attribute")
     .map((f) => f.code);
   const selectedSemesters = selectedFilters
-    .filter((f) => f.type === "Semesters")
+    .filter((f) => f.type === "Semester")
     .map((f) => f.code);
 
   return (
@@ -27,13 +27,13 @@ const FilterPanel: React.FC = () => {
         showCode
       />
       <FilterSection
-        sectionName="Attributes"
+        sectionName="Attribute"
         tags={attributes}
         selected={selectedAttributes}
         toggleFilter={toggleFilter}
       />
       <FilterSection
-        sectionName="Semesters"
+        sectionName="Semester"
         tags={semesters}
         selected={selectedSemesters}
         toggleFilter={toggleFilter}

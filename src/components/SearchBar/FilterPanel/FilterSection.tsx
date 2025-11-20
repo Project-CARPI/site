@@ -1,10 +1,13 @@
 import React, { useState } from "react";
 import { motion } from "framer-motion";
-import { FilterData } from "../../../types/interfaces/Filters.interface";
+import {
+  FilterCategory,
+  FilterData,
+} from "../../../types/interfaces/Filters.interface";
 import useIsDesktop from "../../../hooks/useIsDesktop";
 
 interface FilterSectionProps {
-  sectionName: "Subject" | "Attributes" | "Semesters";
+  sectionName: FilterCategory;
   tags: FilterData[];
   selected: string[];
   toggleFilter: (filter: FilterData) => void;

@@ -1,10 +1,21 @@
-import React from "react";
+import React, { useEffect } from "react";
 import SemesterBlock from "../components/PlannerComponents/SemesterBlocks/SemesterBlock";
 import AddSemester from "../components/PlannerComponents/AddSemester";
 import DeleteSemester from "../components/PlannerComponents/DeleteSemester";
 import { useCourseWorkspace } from "../hooks/useCourseWorkspace";
+import { useNavigate } from "react-router-dom";
+import useIsDesktop from "../hooks/useIsDesktop";
 
 const Planner: React.FC = () => {
+  const navigate = useNavigate();
+  const isDesktop = useIsDesktop();
+
+  useEffect(() => {
+    if (isDesktop) {
+      navigate("/");
+    }
+  }, [isDesktop, navigate]);
+
   const { plannerCourses, setPlannerCourses, setToolboxCourses } =
     useCourseWorkspace();
 
@@ -41,6 +52,7 @@ const Planner: React.FC = () => {
                 setPlannerCourses={setPlannerCourses}
                 setToolboxCourses={setToolboxCourses}
               />
+
               <DeleteSemester
                 semesterNumber={semester.semesterNumber}
                 onDelete={handleDeleteSemester}

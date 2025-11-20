@@ -1,5 +1,6 @@
 import { useFilterData } from "../../../hooks/useFilters";
 import FilterSection from "./FilterSection";
+// import FilterSectionChild from "./FilterSectionChild";
 
 const FilterPanel: React.FC = () => {
   const { selectedFilters, toggleFilter, subjects, attributes, semesters } =
@@ -16,12 +17,14 @@ const FilterPanel: React.FC = () => {
     .map((f) => f.code);
 
   return (
-    <div className="md:max-h-96 md:overflow-y-auto">
+    <div className="md:max-h-96 md:overflow-y-auto scrollbar-thin scrollbar-thumb-darkblue scrollbar-track-dustygrape/50">
+      <h1 className="font-bold">Filter By</h1>
       <FilterSection
         sectionName="Subject"
         tags={subjects}
         selected={selectedSubjects}
         toggleFilter={toggleFilter}
+        showCode
       />
       <FilterSection
         sectionName="Attributes"

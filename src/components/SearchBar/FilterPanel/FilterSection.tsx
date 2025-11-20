@@ -1,12 +1,14 @@
 import React, { useState } from "react";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion } from "framer-motion";
 import { FilterData } from "../../../types/interfaces/Filters.interface";
+import useIsDesktop from "../../../hooks/useIsDesktop";
 
 interface FilterSectionProps {
   sectionName: "Subject" | "Attributes" | "Semesters";
   tags: FilterData[];
   selected: string[];
   toggleFilter: (filter: FilterData) => void;
+  showCode?: boolean;
 }
 
 const FilterSection: React.FC<FilterSectionProps> = ({
@@ -14,54 +16,61 @@ const FilterSection: React.FC<FilterSectionProps> = ({
   tags,
   selected,
   toggleFilter,
+  showCode = false,
 }) => {
+  const isDesktop = useIsDesktop();
   const [isExpanded, setIsExpanded] = useState(false);
 
   const COLLAPSED_HEIGHT = "6rem";
-  const TAG_THRESHOLD = 12;
+  const TAG_THRESHOLD = 6;
   const shouldTruncate = tags.length > TAG_THRESHOLD;
+
+  const tagStyle = ({ selected }: { selected: boolean }) => {
+    return selected
+      ? "bg-darkblue text-carpipink hover:bg-black/70"
+      : isDesktop
+        ? "text-carpipink border border-carpipink hover:bg-darkblue/30"
+        : "text-darkblue border border-darkblue hover:bg-darkblue/30";
+  };
 
   return (
     <div className="mt-2">
-      <h3 className="font-semibold mb-1">{sectionName}</h3>
+      <h3 className="font-medium mb-1">{sectionName}</h3>
 
       <div className="relative">
         <motion.div
           initial={false}
           animate={{
-            height: isExpanded || !shouldTruncate ? "auto" : COLLAPSED_HEIGHT,
+            height:
+              isExpanded || !shouldTruncate || !isDesktop
+                ? "auto"
+                : COLLAPSED_HEIGHT,
           }}
           transition={{ duration: 0.3, ease: "easeInOut" }}
-          className="flex flex-wrap overflow-hidden"
+          className="flex flex-wrap overflow-hidden gap-1"
         >
           {tags.map((tag) => (
             <button
               key={tag.id}
-              className={`hover:bg-darkblue/10 hover:cursor-pointer rounded-2xl px-3 py-1 text-sm mr-1 mb-1 flex-none transition-colors
-                ${
-                  selected.includes(tag.code)
-                    ? "bg-darkblue text-carpipink hover:bg-darkblue/70 border border-darkblue"
-                    : "border border-darkblue text-darkblue"
-                }`}
+              className={`hover:cursor-pointer rounded-2xl px-3 py-1 text-sm mr-1 mb-1 flex-none transition-colors
+                ${tagStyle({ selected: selected.includes(tag.code) })}`}
               onClick={() => toggleFilter(tag)}
             >
-              {tag.code}
+              {showCode ? tag.code : tag.value}
             </button>
           ))}
         </motion.div>
 
-        <AnimatePresence>
-          {!isExpanded && shouldTruncate && (
-            <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              transition={{ duration: 0.2 }}
-              aria-hidden="true"
-              className="absolute bottom-0 left-0 w-full h-12 bg-gradient-to-t from-carpipink to-transparent pointer-events-none"
-            />
-          )}
-        </AnimatePresence>
+        {isDesktop && !isExpanded && shouldTruncate && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.2 }}
+            aria-hidden="true"
+            className="absolute bottom-0 left-0 w-full h-12 bg-gradient-to-t from-dustygrape to-transparent pointer-events-none"
+          />
+        )}
       </div>
 
       {/* Toggle Button */}
@@ -70,7 +79,7 @@ const FilterSection: React.FC<FilterSectionProps> = ({
           onClick={() => setIsExpanded(!isExpanded)}
           aria-expanded={isExpanded}
           aria-controls={`${sectionName}-tags`}
-          className="text-xs font-bold text-darkblue mt-1 hover:underline focus:outline-none"
+          className="text-xs text-carpipink mt-1 hover:underline focus:outline-none"
         >
           {isExpanded ? "Show Less" : "Show All"}
         </button>

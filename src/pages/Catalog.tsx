@@ -1,7 +1,7 @@
 import React, { useState, useRef, useEffect } from "react";
 import api from "../axios.ts";
 import Course from "../components/Course/CatalogCourse.tsx";
-import SearchBar from "../components/SearchBar/SeachBar";
+import SearchBar from "../components/SearchBar/SearchBar";
 import { APICourse } from "../types/interfaces/Course.interface.ts";
 import DepartmentFilters from "../components/Department-Filters.tsx";
 import ChosenTag from "../components/SearchBar/ChosenTag";

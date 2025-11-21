@@ -1,5 +1,5 @@
 import React from "react";
-import { CourseType } from "../../types/interfaces/Course.interface";
+import { APICourse } from "../../types/interfaces/Course.interface";
 import { MdDragIndicator } from "react-icons/md";
 
 interface ToolboxCourseProps {
@@ -7,7 +7,7 @@ interface ToolboxCourseProps {
   count: number;
   index: number;
   isDragging: boolean;
-  course: CourseType;
+  course: APICourse;
 }
 
 const ToolboxCourse: React.FC<ToolboxCourseProps> = ({
@@ -31,8 +31,7 @@ const ToolboxCourse: React.FC<ToolboxCourseProps> = ({
           <MdDragIndicator className="text-2xl" />
           <div className={`text-sm`}>
             <b>
-              {course.dept}
-              {course.code_num}
+              {course.subj_code}-{course.code_num}
             </b>
             <p>{toTitleCase(course.title)}</p>
           </div>

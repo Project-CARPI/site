@@ -1,5 +1,5 @@
 import { createContext } from "react";
-import { FilterData } from "../types/Filters";
+import { FilterData } from "../types/interfaces/Filters.interface";
 
 export interface FilterContextType {
   // available filter options

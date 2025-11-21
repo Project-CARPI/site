@@ -1,22 +1,22 @@
-export interface CourseType {
-  attr_list: string;
-  code_match: number;
-  code_num: string;
-  credit_max: number;
-  credit_min: number;
-  dept: string;
-  desc_text: string;
-  sem_list: string;
+export interface APICourse {
+  subj_code: string;
+  code_num: number;
   title: string;
-  title_abbrev: number;
-  title_acronym: number;
+  desc_text: string;
+  credit_min: number;
+  credit_max: number;
+  sem_list: string[];
+  attr_list: string[];
+  code_match: number;
   title_exact_match: number;
-  title_match: number;
   title_start_match: number;
+  title_match: number;
+  title_acronym: number;
+  title_abbrev: number;
 }
 
-export type CourseEntry = {
+export interface UserCourse {
   name: string;
   count: number;
-  data: CourseType;
-};
+  data: APICourse;
+}

@@ -1,7 +1,7 @@
 import { Dispatch, SetStateAction } from "react";
 import { Draggable } from "@hello-pangea/dnd";
 import { SemesterType } from "../types/interfaces/Semester.interface";
-import { CourseType, CourseEntry } from "../types/interfaces/Course.interface";
+import { APICourse, UserCourse } from "../types/interfaces/Course.interface";
 
 import PlannerCourse from "./Course/PlannerCourse";
 import ToolboxCourse from "./Course/ToolboxCourse";
@@ -10,10 +10,10 @@ interface DraggableItemProps {
   name: string;
   count: number;
   index: number;
-  course: CourseType;
+  course: APICourse;
   location: string;
   setPlannerCourses: Dispatch<SetStateAction<SemesterType[]>> | null;
-  setToolboxCourses: Dispatch<SetStateAction<CourseEntry[]>> | null;
+  setToolboxCourses: Dispatch<SetStateAction<UserCourse[]>> | null;
   semesterIndex: number | null;
 }
 

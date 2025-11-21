@@ -4,6 +4,16 @@ import AddButton from "./CatalogCourse/AddButton";
 import { motion } from "framer-motion";
 import { APICourse } from "../../types/interfaces/Course.interface";
 import { useCourseWorkspace } from "../../hooks/useCourseWorkspace";
+import { useFilterData } from "../../hooks/useFilters";
+import { FilterData } from "../../types/interfaces/Filters.interface";
+
+const findFiltersForCourse = (
+  api_list: string[],
+  filterDataType: FilterData[]
+) => {
+  console.log("API List:", api_list);
+  return filterDataType.filter((attr) => api_list.includes(attr.code));
+};
 
 interface CourseProps {
   course: APICourse;
@@ -11,6 +21,12 @@ interface CourseProps {
 
 const Course: React.FC<CourseProps> = ({ course }) => {
   const { toolboxCourses, setToolboxCourses } = useCourseWorkspace();
+  const { attributes, semesters } = useFilterData();
+
+  const attrFilters = findFiltersForCourse(course.attr_list || [], attributes);
+  const semFilters = findFiltersForCourse(course.sem_list || [], semesters);
+
+  console.log("Attribute Filters:", attrFilters);
 
   const [isOpen, setIsOpen] = useState(false);
   const toggleOpen = (e: React.MouseEvent<HTMLDivElement>) => {
@@ -72,21 +88,21 @@ const Course: React.FC<CourseProps> = ({ course }) => {
             <p>{toTitleCase(course.title)}</p>
           </div>
           <div className={`flex flex-wrap mt-1`}>
-            {course.attr_list?.map((attr, index) => {
+            {attrFilters.map((attr, index) => {
               return (
                 <Tag
                   key={index}
-                  name={attr}
+                  tag={attr}
                   bgcolor={"#99C1B9"}
                   color={"#283044"}
                 />
               );
             })}
-            {course.sem_list?.map((semester, index) => {
+            {semFilters?.map((semester, index) => {
               return (
                 <Tag
                   key={index}
-                  name={semester}
+                  tag={semester}
                   bgcolor={"#565E87"}
                   color={"#F5CECE"}
                 />

@@ -6,19 +6,19 @@ import React, {
   SetStateAction,
 } from "react";
 import { MdDragIndicator, MdOutlineMoreHoriz } from "react-icons/md";
-import { CourseType } from "../../types/interfaces/Course.interface";
+import { APICourse } from "../../types/interfaces/Course.interface";
 import { SemesterType } from "../../types/interfaces/Semester.interface";
-import { CourseEntry } from "../../types/interfaces/Course.interface";
+import { UserCourse } from "../../types/interfaces/Course.interface";
 import * as RightClickContextMenu from "@radix-ui/react-context-menu";
 import { usePlannerCourse } from "../../hooks/usePlannerCourseOptions";
 import PlannerOptionsPopup from "../PlannerComponents/PlannerOptionsPopup";
 
 interface PlannerCourseProps {
-  course: CourseType;
+  course: APICourse;
   isDragging?: boolean;
   index: number;
   setPlannerCourses: Dispatch<SetStateAction<SemesterType[]>>;
-  setToolboxCourses: Dispatch<SetStateAction<CourseEntry[]>>;
+  setToolboxCourses: Dispatch<SetStateAction<UserCourse[]>>;
   semesterIndex: number;
   count: number;
 }
@@ -88,8 +88,7 @@ const PlannerCourse: React.FC<PlannerCourseProps> = ({
             <MdDragIndicator className="text-2xl" />
             <div className={`text-sm`}>
               <b>
-                {course.dept}
-                {course.code_num}
+                {course.subj_code}-{course.code_num}
               </b>
               <i>
                 {course.credit_min !== course.credit_max ? (

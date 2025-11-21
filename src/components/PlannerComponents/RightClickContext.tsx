@@ -1,16 +1,16 @@
 import React, { Dispatch, SetStateAction } from "react";
 import * as ContextMenu from "@radix-ui/react-context-menu";
 import { MdDragIndicator } from "react-icons/md";
-import { CourseType } from "../../types/interfaces/Course.interface";
+import { APICourse } from "../../types/interfaces/Course.interface";
 import { SemesterType } from "../../types/interfaces/Semester.interface";
-import { CourseEntry } from "../../types/interfaces/Course.interface";
+import { UserCourse } from "../../types/interfaces/Course.interface";
 
 interface PlannerCourseProps {
-  course: CourseType;
+  course: APICourse;
   isDragging: boolean;
   index: number;
   setPlannerCourses: Dispatch<SetStateAction<SemesterType[]>>;
-  setToolboxCourses: Dispatch<SetStateAction<CourseEntry[]>>;
+  setToolboxCourses: Dispatch<SetStateAction<UserCourse[]>>;
   semesterIndex: number;
 }
 
@@ -41,8 +41,8 @@ const PlannerCourse: React.FC<PlannerCourseProps> = ({
                 ...semester.courseList.slice(index + 1),
               ],
             }
-          : semester,
-      ),
+          : semester
+      )
     );
   };
 
@@ -76,7 +76,7 @@ const PlannerCourse: React.FC<PlannerCourseProps> = ({
               courseList: s.courseList.filter((_, idx) => idx !== index),
               creditsTotal: s.creditsTotal - courseCopy.data.credit_max,
             }
-          : s,
+          : s
       );
       return updated.map((s, i) =>
         i === semesterIndex
@@ -85,7 +85,7 @@ const PlannerCourse: React.FC<PlannerCourseProps> = ({
               courseList: [...s.courseList, courseCopy],
               creditsTotal: s.creditsTotal + courseCopy.data.credit_max,
             }
-          : s,
+          : s
       );
     });
   };
@@ -93,7 +93,8 @@ const PlannerCourse: React.FC<PlannerCourseProps> = ({
   const handleMoveToolbox = () => {
     setPlannerCourses((prev) => {
       const courseToMove = prev[semesterIndex - 1].courseList[index];
-      const cleanedName = courseToMove.name.split("-")[0];
+      const nameParts = courseToMove.name.split("-");
+      const cleanedName = nameParts.slice(0, 2).join("-");
       const cleanedCourse = { ...courseToMove, name: cleanedName };
 
       const updated = prev.map((s, i) =>
@@ -103,12 +104,12 @@ const PlannerCourse: React.FC<PlannerCourseProps> = ({
               courseList: s.courseList.filter((_, idx) => idx !== index),
               creditsTotal: s.creditsTotal - courseToMove.data.credit_max,
             }
-          : s,
+          : s
       );
 
       setToolboxCourses((toolboxPrev) => {
         const existingIndex = toolboxPrev.findIndex(
-          (entry) => entry.name === cleanedName,
+          (entry) => entry.name === cleanedName
         );
         if (existingIndex !== -1) {
           const updatedToolbox = [...toolboxPrev];
@@ -132,8 +133,8 @@ const PlannerCourse: React.FC<PlannerCourseProps> = ({
               creditsTotal:
                 s.creditsTotal - s.courseList[index].data.credit_max,
             }
-          : s,
-      ),
+          : s
+      )
     );
   };
 
@@ -156,8 +157,7 @@ const PlannerCourse: React.FC<PlannerCourseProps> = ({
                 <MdDragIndicator />
                 <div className="text-sm ml-1">
                   <b>
-                    {course.dept}
-                    {course.code_num}
+                    {course.subj_code}-{course.code_num}
                   </b>
                   <p>{toTitleCase(course.title)}</p>
                 </div>

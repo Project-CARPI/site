@@ -1,13 +1,13 @@
 import { Dispatch, SetStateAction } from "react";
 import { SemesterType } from "../types/interfaces/Semester.interface";
-import { CourseEntry, CourseType } from "../types/interfaces/Course.interface";
+import { UserCourse, APICourse } from "../types/interfaces/Course.interface";
 
 interface UsePlannerCourseProps {
   setPlannerCourses: Dispatch<SetStateAction<SemesterType[]>>;
-  setToolboxCourses: Dispatch<SetStateAction<CourseEntry[]>>;
+  setToolboxCourses: Dispatch<SetStateAction<UserCourse[]>>;
   semesterIndex: number; // 1-based index
   courseIndex: number; // 0-based index
-  course: CourseType;
+  course: APICourse;
   name: string;
   count: number;
 }
@@ -77,8 +77,8 @@ export const usePlannerCourse = ({
                 ...semester.courseList.slice(courseIndex + 1),
               ],
             }
-          : semester,
-      ),
+          : semester
+      )
     );
   };
 
@@ -91,11 +91,11 @@ export const usePlannerCourse = ({
           ? {
               ...semester,
               courseList: semester.courseList.filter(
-                (_, idx) => idx !== courseIndex,
+                (_, idx) => idx !== courseIndex
               ),
               creditsTotal: semester.creditsTotal - course.credit_max,
             }
-          : semester,
+          : semester
       );
 
       // Add to next semester
@@ -107,15 +107,17 @@ export const usePlannerCourse = ({
               courseList: [...semester.courseList, courseCopy],
               creditsTotal: semester.creditsTotal + courseCopy.data.credit_max,
             }
-          : semester,
+          : semester
       );
     });
   };
 
   const handleMoveToolbox = () => {
     setPlannerCourses((prev) => {
-      const courseToMove = { name, count, data: course };
-      const cleanedName = courseToMove.name.split("-")[0];
+      const formattedCourseName = `${course.subj_code}-${course.code_num} ${toTitleCase(course.title)}`;
+      const courseToMove = { name: formattedCourseName, count, data: course };
+      const nameParts = courseToMove.name.split("-");
+      const cleanedName = nameParts.slice(0, 2).join("-");
       const cleanedCourse = {
         ...courseToMove,
         name: cleanedName,
@@ -126,17 +128,17 @@ export const usePlannerCourse = ({
           ? {
               ...semester,
               courseList: semester.courseList.filter(
-                (_, idx) => idx !== courseIndex,
+                (_, idx) => idx !== courseIndex
               ),
               creditsTotal:
                 semester.creditsTotal - courseToMove.data.credit_max,
             }
-          : semester,
+          : semester
       );
 
       setToolboxCourses((toolboxPrev) => {
         const existingIndex = toolboxPrev.findIndex(
-          (entry) => entry.name === cleanedName,
+          (entry) => entry.name === cleanedName
         );
 
         if (existingIndex !== -1) {
@@ -159,12 +161,12 @@ export const usePlannerCourse = ({
           ? {
               ...semester,
               courseList: semester.courseList.filter(
-                (_, idx) => idx !== courseIndex,
+                (_, idx) => idx !== courseIndex
               ),
               creditsTotal: semester.creditsTotal - course.credit_max,
             }
-          : semester,
-      ),
+          : semester
+      )
     );
   };
 

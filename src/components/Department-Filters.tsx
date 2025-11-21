@@ -1,66 +1,14 @@
 import React from "react";
 import { useFilterData } from "../hooks/useFilters";
 
-// Department type
-interface Department {
-  code: string;
-  name: string;
-}
-
-// List of Departments
-const departments: Department[] = [
-  { code: "ADMN", name: "Administrative Courses" },
-  { code: "ARCH", name: "Architecture" },
-  { code: "ARTS", name: "Arts" },
-  { code: "ASTR", name: "Astronomy" },
-  { code: "BCBP", name: "BioChemistry & BioPhysics" },
-  { code: "BIOL", name: "Biology" },
-  { code: "BMED", name: "Biomedical Engineering" },
-  { code: "BUSN", name: "Business" },
-  { code: "CHEM", name: "Chemistry" },
-  { code: "CHME", name: "Chemical Engineering" },
-  { code: "CIVL", name: "Civil Engineering" },
-  { code: "COGS", name: "Cognitive Science" },
-  { code: "COMM", name: "Communication" },
-  { code: "CSCI", name: "Computer Science" },
-  { code: "ECON", name: "Economics" },
-  { code: "ECSE", name: "Electrical, Computer, Systems Engineering" },
-  { code: "ENGR", name: "Core Engineering" },
-  { code: "ENVE", name: "Environmental Engineering" },
-  { code: "ERTH", name: "Earth & Environmental Sci" },
-  { code: "GSAS", name: "Games & Simulation Arts & Sciences" },
-  { code: "IHSS", name: "HASS Inquiry" },
-  { code: "IENV", name: "Interdisciplinary Environmental" },
-  { code: "ISCI", name: "Interdisciplinary Science" },
-  { code: "ISYE", name: "Industrial & Systems Engineering" },
-  { code: "ITWS", name: "Information Technology & Web Sci" },
-  { code: "LANG", name: "Languages" },
-  { code: "LGHT", name: "Lighting" },
-  { code: "LITR", name: "Literature" },
-  { code: "MANE", name: "Mech, Aero, Nucl Engineer" },
-  { code: "MATH", name: "Mathematics" },
-  {
-    code: "MATP",
-    name: "Mathematical Programming, Probability, and Statistics",
-  },
-  { code: "MTLE", name: "Material Sciences & Engineering" },
-  { code: "PHIL", name: "Philosophy" },
-  { code: "PHYS", name: "Physics" },
-  { code: "STSO", name: "Science, Technology, & Society" },
-  { code: "USAF", name: "Aerospace Studies" },
-  { code: "USAR", name: "Military Science" },
-  { code: "USNA", name: "Naval Science" },
-  { code: "WRIT", name: "Writing" },
-];
-
 const DepartmentFilters: React.FC = () => {
-  const { toggleFilter } = useFilterData();
+  const { toggleFilter, subjects } = useFilterData();
 
   return (
     <div className="md:h-full md:w-full md:overflow-y-auto flex flex-wrap justify-center gap-2">
-      {departments.map((dept) => (
+      {subjects.map((subject) => (
         <button
-          key={dept.code}
+          key={subject.code}
           className={`
             px-3 
             py-2 
@@ -72,17 +20,11 @@ const DepartmentFilters: React.FC = () => {
             hover:bg-darkblue hover:text-carpipink
             h-fit
           `}
-          onClick={() =>
-            toggleFilter({
-              id: 1,
-              code: dept.code,
-              type: "Subject",
-            })
-          }
+          onClick={() => toggleFilter(subject)}
         >
           <div className="flex items-center gap-2 whitespace-nowrap">
-            <span className="font-bold">{dept.code}</span>
-            <span className="font-normal">{dept.name}</span>
+            <span className="font-bold">{subject.code}</span>
+            <span className="font-normal">{subject.value}</span>
           </div>
         </button>
       ))}

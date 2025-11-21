@@ -1,13 +1,17 @@
 import React, { useState, useEffect, ReactNode } from "react";
 import api from "../axios.ts";
-import { FilterData } from "../types/Filters.ts";
+import {
+  FilterData,
+  FilterCategory,
+} from "../types/interfaces/Filters.interface.ts";
 import FilterContext from "./FilterContext.tsx";
 
-const formatApiData = (type: string, data: string[]) => {
-  return data.map((item: string, index: number) => ({
+const formatApiData = (type: FilterCategory, data: Record<string, string>) => {
+  return Object.entries(data).map(([code, value], index) => ({
     id: index,
-    code: item,
-    type: type as "Subject" | "Attributes" | "Semesters",
+    code,
+    value,
+    type,
   }));
 };
 
@@ -24,7 +28,7 @@ export const FilterProvider: React.FC<{ children: ReactNode }> = ({
       try {
         const [subjectsResponse, attributesResponse, semestersResponse] =
           await Promise.all([
-            api.get("/course/filter/values/departments"),
+            api.get("/course/filter/values/subjects"),
             api.get("/course/filter/values/attributes"),
             api.get("/course/filter/values/semesters"),
           ]);
@@ -46,11 +50,11 @@ export const FilterProvider: React.FC<{ children: ReactNode }> = ({
   const toggleFilter = (filter: FilterData) => {
     setSelectedFilters((prevSelected) => {
       const exists = prevSelected.find(
-        (f) => f.code === filter.code && f.type === filter.type,
+        (f) => f.code === filter.code && f.type === filter.type
       );
       if (exists) {
         return prevSelected.filter(
-          (f) => !(f.code === filter.code && f.type === filter.type),
+          (f) => !(f.code === filter.code && f.type === filter.type)
         );
       } else {
         return [...prevSelected, filter];

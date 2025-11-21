@@ -12,6 +12,7 @@ interface FilterSectionProps {
   selected: string[];
   toggleFilter: (filter: FilterData) => void;
   showCode?: boolean;
+  classname: string;
 }
 
 const FilterSection: React.FC<FilterSectionProps> = ({
@@ -20,6 +21,7 @@ const FilterSection: React.FC<FilterSectionProps> = ({
   selected,
   toggleFilter,
   showCode = false,
+  classname,
 }) => {
   const isDesktop = useIsDesktop();
   const [isExpanded, setIsExpanded] = useState(false);
@@ -30,10 +32,10 @@ const FilterSection: React.FC<FilterSectionProps> = ({
 
   const tagStyle = ({ selected }: { selected: boolean }) => {
     return selected
-      ? "bg-darkblue text-carpipink hover:bg-black/70"
+      ? `${classname}`
       : isDesktop
-        ? "text-carpipink border border-carpipink hover:bg-darkblue/30"
-        : "text-darkblue border border-darkblue hover:bg-darkblue/30";
+        ? `text-carpipink border border-carpipink hover:bg-darkblue/30`
+        : `text-darkblue border border-darkblue hover:bg-darkblue/30`;
   };
 
   return (

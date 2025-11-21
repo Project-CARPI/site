@@ -3,14 +3,12 @@ import { FilterData } from "../../../types/interfaces/Filters.interface";
 
 interface TagProp {
   tag: FilterData;
-  bgcolor: string;
-  color: string;
+  classname: string;
 }
-const Tag: React.FC<TagProp> = ({ tag, bgcolor, color }) => {
+const Tag: React.FC<TagProp> = ({ tag, classname }) => {
   return (
     <div
-      className={`rounded-2xl px-3 py-1 text-xs mr-1 mb-1`}
-      style={{ backgroundColor: `${bgcolor}`, color: `${color}` }}
+      className={`rounded-2xl px-3 py-1 text-xs mr-1 mb-1 ${classname}`}
       title={tag.value}
     >
       {tag.code}

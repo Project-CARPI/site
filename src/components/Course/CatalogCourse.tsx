@@ -93,8 +93,7 @@ const Course: React.FC<CourseProps> = ({ course }) => {
                 <Tag
                   key={index}
                   tag={attr}
-                  bgcolor={"#99C1B9"}
-                  color={"#283044"}
+                  classname="bg-mutedteal text-darkblue"
                 />
               );
             })}
@@ -103,8 +102,7 @@ const Course: React.FC<CourseProps> = ({ course }) => {
                 <Tag
                   key={index}
                   tag={semester}
-                  bgcolor={"#565E87"}
-                  color={"#F5CECE"}
+                  classname="bg-dustygrape text-carpipink"
                 />
               );
             })}

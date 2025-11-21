@@ -17,7 +17,7 @@ const FilterPanel: React.FC = () => {
     .map((f) => f.code);
 
   return (
-    <div className="md:max-h-96 md:overflow-y-auto scrollbar-thin scrollbar-thumb-darkblue scrollbar-track-dustygrape/50">
+    <div className="md:max-h-96 md:overflow-y-auto scrollbar-thin scrollbar-thumb-darkblue scrollbar-track-copperwood/50">
       <h1 className="font-bold">Filter By</h1>
       <FilterSection
         sectionName="Subject"
@@ -32,14 +32,14 @@ const FilterPanel: React.FC = () => {
         tags={attributes}
         selected={selectedAttributes}
         toggleFilter={toggleFilter}
-        classname="bg-mutedteal text-darkblue hover:bg-[color-mix(in_oklab,var(--color-mutedteal)_80%,black_20%)]"
+        classname="bg-slategray text-carpipink hover:bg-[color-mix(in_oklab,var(--color-slategray)_80%,black_20%)]"
       />
       <FilterSection
         sectionName="Semester"
         tags={semesters}
         selected={selectedSemesters}
         toggleFilter={toggleFilter}
-        classname="bg-dustygrape text-carpipink hover:bg-[color-mix(in_oklab,var(--color-dustygrape)_80%,black_20%)]"
+        classname="bg-copperwood text-carpipink hover:bg-[color-mix(in_oklab,var(--color-copperwood)_80%,black_20%)]"
       />
     </div>
   );

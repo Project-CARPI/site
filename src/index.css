@@ -7,6 +7,8 @@
   --color-darkblue: oklch(31.09% 0.0378 267.38); /* #283044 */
   --color-mutedteal: oklch(77.97% 0.0441 181.55); /* #99C1B9 */
   --color-burgundy: oklch(36.07% 0.1294 18.64); /* #721121 */
+  --color-slategray: oklch(54.39% 0.0444 212.21); /* #51777F */
+  --color-copperwood: oklch(53.68% 0.1081 63.18); /* #AA6822 */
 }
 
 body {

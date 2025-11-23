@@ -2,8 +2,13 @@ import React from "react";
 import { IoClose } from "react-icons/io5";
 import { FilterData } from "../types/interfaces/Filters.interface";
 import { useFilterData } from "../hooks/useFilters";
+import useIsDesktop from "../hooks/useIsDesktop";
 
-const getColorClass = (type: string, isSelected: boolean): string => {
+const getColorClass = (
+  type: string,
+  isSelected: boolean,
+  isDesktop: boolean
+): string => {
   let accentColor: string;
   switch (type) {
     case "Subject":
@@ -21,11 +26,15 @@ const getColorClass = (type: string, isSelected: boolean): string => {
 
   // If the tag is selected, apply the active styles
   if (isSelected) {
-    return `text-carpipink border border-${accentColor} bg-${accentColor} hover:bg-[color-mix(in_oklab,var(--color-${accentColor})_90%,white_10%)]`;
+    return `border border-${accentColor} bg-${accentColor} hover:bg-[color-mix(in_oklab,var(--color-${accentColor})_90%,white_10%)]`;
   }
 
   // If not selected, return unselected style
-  return `border-1 border-carpipink hover:bg-[color-mix(in_oklab,var(--color-${accentColor})_70%,var(--color-darkblue)_30%)]`;
+  if (isDesktop) {
+    return `border-1 border-carpipink hover:bg-[color-mix(in_oklab,var(--color-${accentColor})_70%,var(--color-darkblue)_30%)]`;
+  } else {
+    return `border-1 border-darkblue text-darkblue hover:bg-[color-mix(in_oklab,var(--color-${accentColor})_70%,var(--color-darkblue)_30%)]`;
+  }
 };
 
 interface TagProps {
@@ -46,6 +55,7 @@ const Tag: React.FC<TagProps> = ({
   isRemovable = false,
 }) => {
   const { toggleFilter } = useFilterData();
+  const isDesktop = useIsDesktop();
 
   // Determine content: value or code
   const content = showCode ? filter.code : filter.value;
@@ -54,7 +64,7 @@ const Tag: React.FC<TagProps> = ({
   // Determine styles
   const baseClass =
     "rounded-full px-3 py-1 text-sm inline-flex items-center transition-colors text-carpipink";
-  const colorClasses = getColorClass(filter.type, selectedValue);
+  const colorClasses = getColorClass(filter.type, selectedValue, isDesktop);
 
   const handleClick = () => {
     if (isSelectable || isRemovable) {

@@ -6,7 +6,7 @@ import DraggableItem from "../../DraggableItem";
 
 import { SemesterBlockProps } from "./SemesterBlock";
 
-const seasons: string[] = ["fall", "spring", "summer", "misc"];
+const seasons: string[] = ["Fall", "Spring", "Summer", "Misc"];
 
 const DesktopSemesterBlock: React.FC<SemesterBlockProps> = ({
   semester,

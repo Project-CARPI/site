@@ -4,7 +4,7 @@ import useIsDesktop from "../../hooks/useIsDesktop";
 import ToolboxButton from "./ToolboxButton";
 import NavButton from "./NavButton";
 import { Droppable } from "@hello-pangea/dnd";
-import { IoIosArrowDown } from "react-icons/io";
+import { IoIosArrowUp } from "react-icons/io";
 import GarbageBin from "../GarbageBin";
 import DraggableItem from "../DraggableItem";
 import { useCourseWorkspace } from "../../hooks/useCourseWorkspace";
@@ -18,7 +18,7 @@ const Toolbox: React.FC = () => {
 
   useEffect(() => {
     setCount(
-      toolboxCourses.reduce((total, course) => total + (course.count || 0), 0),
+      toolboxCourses.reduce((total, course) => total + (course.count || 0), 0)
     );
   }, [toolboxCourses]);
 
@@ -64,7 +64,7 @@ const Toolbox: React.FC = () => {
         >
           <div className="flex items-center">
             <h2 className="text-[#F5CECE] font-semibold text-xl">TOOLBOX</h2>
-            <IoIosArrowDown
+            <IoIosArrowUp
               className={`ml-2 text-2xl text-[#F5CECE] transition-transform duration-300 ${
                 isOpen ? "rotate-180" : ""
               }`}

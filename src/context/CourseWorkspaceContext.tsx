@@ -14,7 +14,7 @@ export interface CourseWorkspaceContextType {
 }
 
 const CourseWorkspaceContext = createContext<CourseWorkspaceContextType | null>(
-  null
+  null,
 );
 
 export default CourseWorkspaceContext;

@@ -1,5 +1,5 @@
 import React, { useEffect } from "react";
-import SemesterBlock from "../components/PlannerComponents/SemesterBlocks/SemesterBlock";
+import SemesterBlock from "../components/PlannerComponents/SemesterBlock";
 import AddSemester from "../components/PlannerComponents/AddSemester";
 import DeleteSemester from "../components/PlannerComponents/DeleteSemester";
 import { useCourseWorkspace } from "../hooks/useCourseWorkspace";

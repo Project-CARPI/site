@@ -1,18 +1,19 @@
 import React from "react";
 
+import { SemesterType } from "../../types/interfaces/Semester.interface";
 import { Droppable } from "@hello-pangea/dnd";
-import PlannerCourseHolder from "../PlannerCourseHolder";
-import DraggableItem from "../../DraggableItem";
+import PlannerCourseHolder from "./PlannerCourseHolder";
+import DraggableItem from "../DraggableItem";
+import { useCourseWorkspace } from "../../hooks/useCourseWorkspace";
 
-import { SemesterBlockProps } from "./SemesterBlock";
-import { useCourseWorkspace } from "../../../hooks/useCourseWorkspace";
+const seasons: string[] = ["Fall", "Spring", "Summer", "Misc"];
 
-const seasons: string[] = ["fall", "spring", "summer", "misc"];
+export interface SemesterBlockProps {
+  index: number;
+  semester: SemesterType;
+}
 
-const DesktopSemesterBlock: React.FC<SemesterBlockProps> = ({
-  semester,
-  index,
-}) => {
+const SemesterBlock: React.FC<SemesterBlockProps> = ({ index, semester }) => {
   const { setPlannerCourses, setToolboxCourses } = useCourseWorkspace();
 
   const seasonDropdown = (e: React.ChangeEvent<HTMLSelectElement>) => {
@@ -25,6 +26,7 @@ const DesktopSemesterBlock: React.FC<SemesterBlockProps> = ({
       )
     );
   };
+
   return (
     <div className="flex flex-grow flex-col space-y-2">
       <div className="flex justify-between">
@@ -90,4 +92,4 @@ const DesktopSemesterBlock: React.FC<SemesterBlockProps> = ({
   );
 };
 
-export default DesktopSemesterBlock;
+export default SemesterBlock;

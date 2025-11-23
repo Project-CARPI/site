@@ -1,20 +1,18 @@
 import React, { useRef } from "react";
 import { SemesterType } from "../../types/interfaces/Semester.interface";
-import { v4 as uuidv4 } from "uuid";
+import { useCourseWorkspace } from "../../hooks/useCourseWorkspace";
 
-interface AddSemesterProps {
-  setPlannerCourses: React.Dispatch<React.SetStateAction<SemesterType[]>>;
-}
+const AddSemester: React.FC = () => {
+  const { setPlannerCourses } = useCourseWorkspace();
 
-const AddSemester: React.FC<AddSemesterProps> = ({ setPlannerCourses }) => {
   const nextId = useRef(1); // keeps a persistent counter across re-renders
 
   const handleAddCourse = () => {
     setPlannerCourses((prevCourses) => {
-      const newSemester = {
+      const newSemester: SemesterType = {
         semesterID: `sem-${nextId.current}`, // e.g. sem-1, sem-2, sem-3...
         semesterNumber: prevCourses.length + 1,
-        semesterSeason: "fall",
+        season: "Fall",
         creditsTotal: 0,
         courseList: [],
       };

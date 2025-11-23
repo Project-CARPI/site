@@ -35,7 +35,7 @@ const Planner: React.FC = () => {
       <section className="h-full w-full md:overflow-y-auto scrollbar-hide pr-4 flex flex-col gap-4">
         <div className="flex justify-between sticky top-0 z-10 bg-carpipink pt-4">
           <h1 className="font-bold text-xl">Planner</h1>
-          <AddSemester setPlannerCourses={setPlannerCourses} />
+          <AddSemester />
         </div>
 
         <div className="flex flex-col gap-4 md:grid md:grid-cols-2 md:gap-8">

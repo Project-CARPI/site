@@ -18,7 +18,7 @@ const Toolbox: React.FC = () => {
 
   useEffect(() => {
     setCount(
-      toolboxCourses.reduce((total, course) => total + (course.count || 0), 0),
+      toolboxCourses.reduce((total, course) => total + (course.count || 0), 0)
     );
   }, [toolboxCourses]);
 
@@ -93,8 +93,6 @@ const Toolbox: React.FC = () => {
                     index={index}
                     course={course.data}
                     location="toolbox"
-                    setPlannerCourses={null}
-                    setToolboxCourses={null}
                     semesterIndex={null}
                   />
                 ))}

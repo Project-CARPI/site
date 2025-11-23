@@ -1,12 +1,15 @@
 import React from "react";
 
-import { SemesterType } from "../../types/interfaces/Semester.interface";
+import {
+  SemesterSeason,
+  SemesterType,
+} from "../../types/interfaces/Semester.interface";
 import { Droppable } from "@hello-pangea/dnd";
 import PlannerCourseHolder from "./PlannerCourseHolder";
 import DraggableItem from "../DraggableItem";
 import { useCourseWorkspace } from "../../hooks/useCourseWorkspace";
 
-const seasons: string[] = ["Fall", "Spring", "Summer", "Misc"];
+const seasons: SemesterSeason[] = ["Fall", "Spring", "Summer"];
 
 export interface SemesterBlockProps {
   index: number;
@@ -14,14 +17,14 @@ export interface SemesterBlockProps {
 }
 
 const SemesterBlock: React.FC<SemesterBlockProps> = ({ index, semester }) => {
-  const { setPlannerCourses, setToolboxCourses } = useCourseWorkspace();
+  const { setPlannerCourses } = useCourseWorkspace();
 
   const seasonDropdown = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    const newSeason = e.target.value;
+    const newSeason = e.target.value as SemesterSeason;
     setPlannerCourses((prevCourses) =>
       prevCourses.map((sem) =>
         sem.semesterID === semester.semesterID
-          ? { ...sem, semesterSeason: newSeason }
+          ? { ...sem, season: newSeason }
           : sem
       )
     );
@@ -36,7 +39,7 @@ const SemesterBlock: React.FC<SemesterBlockProps> = ({ index, semester }) => {
 
         <div className="flex space-x-2 items-center">
           <select
-            value={semester.semesterSeason}
+            value={semester.season}
             onChange={seasonDropdown}
             className="border-1 border-black rounded-full px-2 py-0 h-fit w-fit min-w-0 font-medium text-sm"
           >
@@ -75,9 +78,7 @@ const SemesterBlock: React.FC<SemesterBlockProps> = ({ index, semester }) => {
                       course={course.data}
                       count={course.count}
                       index={courseIndex}
-                      semesterIndex={index}
-                      setPlannerCourses={setPlannerCourses}
-                      setToolboxCourses={setToolboxCourses}
+                      semesterIndex={index + 1}
                       location="planner"
                     />
                   ))}

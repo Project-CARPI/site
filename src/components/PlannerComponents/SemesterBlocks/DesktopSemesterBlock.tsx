@@ -5,23 +5,24 @@ import PlannerCourseHolder from "../PlannerCourseHolder";
 import DraggableItem from "../../DraggableItem";
 
 import { SemesterBlockProps } from "./SemesterBlock";
+import { useCourseWorkspace } from "../../../hooks/useCourseWorkspace";
 
 const seasons: string[] = ["fall", "spring", "summer", "misc"];
 
 const DesktopSemesterBlock: React.FC<SemesterBlockProps> = ({
   semester,
   index,
-  setPlannerCourses,
-  setToolboxCourses,
 }) => {
+  const { setPlannerCourses, setToolboxCourses } = useCourseWorkspace();
+
   const seasonDropdown = (e: React.ChangeEvent<HTMLSelectElement>) => {
     const newSeason = e.target.value;
     setPlannerCourses((prevCourses) =>
       prevCourses.map((sem) =>
         sem.semesterID === semester.semesterID
           ? { ...sem, semesterSeason: newSeason }
-          : sem,
-      ),
+          : sem
+      )
     );
   };
   return (

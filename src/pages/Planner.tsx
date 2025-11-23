@@ -16,14 +16,13 @@ const Planner: React.FC = () => {
     }
   }, [isDesktop, navigate]);
 
-  const { plannerCourses, setPlannerCourses, setToolboxCourses } =
-    useCourseWorkspace();
+  const { plannerCourses, setPlannerCourses } = useCourseWorkspace();
 
   const handleDeleteSemester = (semesterNumber: number) => {
     setPlannerCourses((prev) =>
       prev
         .filter((s) => s.semesterNumber !== semesterNumber)
-        .map((s, idx) => ({ ...s, semesterNumber: idx + 1 })),
+        .map((s, idx) => ({ ...s, semesterNumber: idx + 1 }))
     );
   };
 
@@ -46,11 +45,9 @@ const Planner: React.FC = () => {
               className="md:h-full border-b-1 border-darkblue flex flex-col justify-between pb-4"
             >
               <SemesterBlock
-                semester={semester}
                 index={index}
                 key={semester.semesterNumber}
-                setPlannerCourses={setPlannerCourses}
-                setToolboxCourses={setToolboxCourses}
+                semester={semester}
               />
 
               <DeleteSemester

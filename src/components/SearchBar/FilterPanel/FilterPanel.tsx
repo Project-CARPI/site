@@ -16,7 +16,7 @@ const FilterPanel: React.FC = () => {
     .map((f) => f.code);
 
   return (
-    <div className="md:max-h-96 md:overflow-y-auto scrollbar-thin scrollbar-thumb-darkblue scrollbar-track-copperwood/50">
+    <div className="md:max-h-80 md:overflow-y-auto scrollbar-thin scrollbar-thumb-carpipink scrollbar-track-darkblue/50">
       <h1 className="font-bold">Filter By</h1>
       <FilterSection
         sectionName="Subject"

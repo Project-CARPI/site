@@ -71,7 +71,7 @@ const Tag: React.FC<TagProps> = ({
     >
       {content}
       {isRemovable && (
-        <span className="inline ml-1" onClick={handleClick}>
+        <span className="inline ml-1">
           <IoClose
             className="w-4 h-4"
             aria-label={`Remove filter: ${filter.value}`}

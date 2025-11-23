@@ -32,13 +32,13 @@ const Planner: React.FC = () => {
         <img src="/carpi-black.png" alt="Carpi Logo" className="h-full" />
       </header>
 
-      <section className="h-full w-full md:overflow-y-auto scrollbar-hide pr-4 flex flex-col md:gap-4">
+      <section className="h-full w-full md:overflow-y-auto scrollbar-hide pr-4 flex flex-col gap-4">
         <div className="flex justify-between sticky top-0 z-10 bg-carpipink pt-4">
           <h1 className="font-bold text-xl">Planner</h1>
           <AddSemester setPlannerCourses={setPlannerCourses} />
         </div>
 
-        <div className="md:grid grid-cols-2 gap-8">
+        <div className="flex flex-col gap-4 md:grid md:grid-cols-2 md:gap-8">
           {plannerCourses.map((semester, index) => (
             <div
               key={semester.semesterNumber}

@@ -51,7 +51,7 @@ const SemesterBlock: React.FC<SemesterBlockProps> = ({ index, semester }) => {
         </div>
       </div>
 
-      <Droppable droppableId={`planner-${index}`} direction="vertical">
+      <Droppable droppableId={`planner-${index + 1}`} direction="vertical">
         {(provided, snapshot) => {
           const isEmpty = semester.courseList.length === 0;
           const isHovering = snapshot.isDraggingOver;

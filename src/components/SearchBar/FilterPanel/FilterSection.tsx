@@ -73,7 +73,7 @@ const FilterSection: React.FC<FilterSectionProps> = ({
             exit={{ opacity: 0 }}
             transition={{ duration: 0.2 }}
             aria-hidden="true"
-            className="absolute bottom-0 left-0 w-full h-12 bg-gradient-to-t from-copperwood to-transparent pointer-events-none"
+            className="absolute bottom-0 left-0 w-full h-12 bg-gradient-to-t from-darkblue to-transparent pointer-events-none"
           />
         )}
       </div>

@@ -14,11 +14,11 @@ const GarbageBin: React.FC<GarbageBinProps> = ({ isDragging }) => {
           <div
             ref={provided.innerRef}
             {...provided.droppableProps}
-            className={`absolute bottom-40 ${isDragging ? "" : "invisible"} w-fit`}
+            className={`absolute bottom-47 ${isDragging ? "" : "invisible"} w-fit`}
           >
             {provided.placeholder}
             <div
-              className={`rounded-full border-2 m-4 p-4 border-red-600 text-5xl
+              className={`rounded-full border-2 m-4 p-3 border-red-600 text-5xl
                 transition-transform ease-in-out w-fit 
                 ${snapshot.isDraggingOver ? "bg-red-500 scale-115" : "bg-red-400"}`}
             >

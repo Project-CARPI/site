@@ -26,8 +26,8 @@ const SemesterBlock: React.FC<SemesterBlockProps> = ({
       prevCourses.map((sem) =>
         sem.semesterID === semester.semesterID
           ? { ...sem, semesterSeason: newSeason }
-          : sem
-      )
+          : sem,
+      ),
     );
   };
 

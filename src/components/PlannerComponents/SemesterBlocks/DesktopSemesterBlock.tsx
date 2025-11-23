@@ -20,8 +20,8 @@ const DesktopSemesterBlock: React.FC<SemesterBlockProps> = ({
       prevCourses.map((sem) =>
         sem.semesterID === semester.semesterID
           ? { ...sem, semesterSeason: newSeason }
-          : sem
-      )
+          : sem,
+      ),
     );
   };
   return (

@@ -103,7 +103,7 @@ const Catalog: React.FC = () => {
         />
 
         {isDesktop && (
-          <div className="flex flex-wrap w-full items-start ">
+          <div className="flex flex-wrap w-full items-start gap-1">
             {selectedFilters.map((filter) => (
               <Tag key={filter.id} filter={filter} isRemovable={true} />
             ))}

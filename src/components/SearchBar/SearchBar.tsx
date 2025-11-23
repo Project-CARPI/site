@@ -84,7 +84,7 @@ const SearchBar: React.FC<SearchBarProps> = ({
       </div>
 
       {!isDesktop && selectedFilters.length > 0 && (
-        <div className="flex flex-wrap w-full items-start ">
+        <div className="flex flex-wrap w-full items-start gap-1">
           {selectedFilters.map((filter) => (
             <Tag key={filter.id} filter={filter} isRemovable={true} />
           ))}

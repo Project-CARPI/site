@@ -5,14 +5,14 @@ const DepartmentFilters: React.FC = () => {
   const { toggleFilter, subjects } = useFilterData();
 
   return (
-    <div className="md:h-full md:w-full md:overflow-y-auto flex flex-wrap justify-center gap-2">
+    <div className="md:h-full md:w-full md:overflow-y-auto flex flex-wrap justify-center gap-1">
       {subjects.map((subject) => (
         <button
           key={subject.code}
           className={`
             px-3 
             py-2 
-            rounded-xl 
+            rounded-full
             border 
             border-darkblue 
             text-xs

@@ -1,11 +1,11 @@
 import React, { useState } from "react";
-import Tag from "./CatalogCourse/Tag";
 import AddButton from "./CatalogCourse/AddButton";
 import { motion } from "framer-motion";
 import { APICourse } from "../../types/interfaces/Course.interface";
 import { useCourseWorkspace } from "../../hooks/useCourseWorkspace";
 import { useFilterData } from "../../hooks/useFilters";
 import { FilterData } from "../../types/interfaces/Filters.interface";
+import Tag from "../Tag";
 
 const findFiltersForCourse = (
   api_list: string[],
@@ -25,8 +25,6 @@ const Course: React.FC<CourseProps> = ({ course }) => {
 
   const attrFilters = findFiltersForCourse(course.attr_list || [], attributes);
   const semFilters = findFiltersForCourse(course.sem_list || [], semesters);
-
-  console.log("Attribute Filters:", attrFilters);
 
   const [isOpen, setIsOpen] = useState(false);
   const toggleOpen = (e: React.MouseEvent<HTMLDivElement>) => {
@@ -87,24 +85,12 @@ const Course: React.FC<CourseProps> = ({ course }) => {
             </b>
             <p>{toTitleCase(course.title)}</p>
           </div>
-          <div className={`flex flex-wrap mt-1`}>
+          <div className={`flex flex-wrap mt-1 gap-1`}>
             {attrFilters.map((attr, index) => {
-              return (
-                <Tag
-                  key={index}
-                  tag={attr}
-                  classname="bg-slategray text-carpipink"
-                />
-              );
+              return <Tag key={index} filter={attr} />;
             })}
             {semFilters?.map((semester, index) => {
-              return (
-                <Tag
-                  key={index}
-                  tag={semester}
-                  classname="bg-copperwood text-carpipink"
-                />
-              );
+              return <Tag key={index} filter={semester} />;
             })}
           </div>
         </div>

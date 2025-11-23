@@ -5,23 +5,20 @@ import {
   FilterData,
 } from "../../../types/interfaces/Filters.interface";
 import useIsDesktop from "../../../hooks/useIsDesktop";
+import Tag from "../../Tag";
 
 interface FilterSectionProps {
   sectionName: FilterCategory;
   tags: FilterData[];
   selected: string[];
-  toggleFilter: (filter: FilterData) => void;
   showCode?: boolean;
-  classname: string;
 }
 
 const FilterSection: React.FC<FilterSectionProps> = ({
   sectionName,
   tags,
   selected,
-  toggleFilter,
   showCode = false,
-  classname,
 }) => {
   const isDesktop = useIsDesktop();
   const [isExpanded, setIsExpanded] = useState(false);
@@ -29,14 +26,6 @@ const FilterSection: React.FC<FilterSectionProps> = ({
   const COLLAPSED_HEIGHT = "6rem";
   const TAG_THRESHOLD = 6;
   const shouldTruncate = tags.length > TAG_THRESHOLD;
-
-  const tagStyle = ({ selected }: { selected: boolean }) => {
-    return selected
-      ? `${classname}`
-      : isDesktop
-        ? `text-carpipink border border-carpipink hover:bg-darkblue/30`
-        : `text-darkblue border border-darkblue hover:bg-darkblue/30`;
-  };
 
   return (
     <div className="mt-2">
@@ -55,14 +44,13 @@ const FilterSection: React.FC<FilterSectionProps> = ({
           className="flex flex-wrap overflow-hidden gap-1"
         >
           {tags.map((tag) => (
-            <button
+            <Tag
               key={tag.id}
-              className={`hover:cursor-pointer rounded-2xl px-3 py-1 text-sm mr-1 mb-1 flex-none transition-colors
-                ${tagStyle({ selected: selected.includes(tag.code) })}`}
-              onClick={() => toggleFilter(tag)}
-            >
-              {showCode ? tag.code : tag.value}
-            </button>
+              filter={tag}
+              isSelectable={true}
+              isSelected={selected.includes(tag.code)}
+              showCode={showCode}
+            />
           ))}
         </motion.div>
 

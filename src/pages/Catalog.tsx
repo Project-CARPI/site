@@ -4,9 +4,9 @@ import Course from "../components/Course/CatalogCourse.tsx";
 import SearchBar from "../components/SearchBar/SearchBar";
 import { APICourse } from "../types/interfaces/Course.interface.ts";
 import DepartmentFilters from "../components/Department-Filters.tsx";
-import ChosenTag from "../components/SearchBar/ChosenTag";
 import { useFilterData } from "../hooks/useFilters.ts";
 import useIsDesktop from "../hooks/useIsDesktop.ts";
+import Tag from "../components/Tag.tsx";
 
 const Catalog: React.FC = () => {
   const { selectedFilters } = useFilterData();
@@ -105,7 +105,7 @@ const Catalog: React.FC = () => {
         {isDesktop && (
           <div className="flex flex-wrap w-full items-start ">
             {selectedFilters.map((filter) => (
-              <ChosenTag key={filter.id} filter={filter} />
+              <Tag key={filter.id} filter={filter} isRemovable={true} />
             ))}
           </div>
         )}

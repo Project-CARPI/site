@@ -8,6 +8,7 @@ import { Droppable } from "@hello-pangea/dnd";
 import PlannerCourseHolder from "./PlannerCourseHolder";
 import DraggableItem from "../DraggableItem";
 import { useCourseWorkspace } from "../../hooks/useCourseWorkspace";
+import DeleteSemester from "../PlannerComponents/DeleteSemester";
 
 const seasons: SemesterSeason[] = ["Fall", "Spring", "Summer"];
 
@@ -30,8 +31,16 @@ const SemesterBlock: React.FC<SemesterBlockProps> = ({ index, semester }) => {
     );
   };
 
+  const handleDeleteSemester = (semesterNumber: number) => {
+    setPlannerCourses((prev) =>
+      prev
+        .filter((s) => s.semesterNumber !== semesterNumber)
+        .map((s, idx) => ({ ...s, semesterNumber: idx + 1 }))
+    );
+  };
+
   return (
-    <div className="flex flex-grow flex-col space-y-2">
+    <div className="flex flex-grow flex-col space-y-2 bg-darkblue/10 p-4 rounded-2xl h-full">
       <div className="flex justify-between">
         <span className="text-md font-bold">
           Semester {semester.semesterNumber}
@@ -89,6 +98,11 @@ const SemesterBlock: React.FC<SemesterBlockProps> = ({ index, semester }) => {
           );
         }}
       </Droppable>
+
+      <DeleteSemester
+        semesterNumber={semester.semesterNumber}
+        onDelete={handleDeleteSemester}
+      />
     </div>
   );
 };

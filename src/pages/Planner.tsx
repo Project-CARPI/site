@@ -1,7 +1,6 @@
 import React, { useEffect } from "react";
 import SemesterBlock from "../components/PlannerComponents/SemesterBlock";
 import AddSemester from "../components/PlannerComponents/AddSemester";
-import DeleteSemester from "../components/PlannerComponents/DeleteSemester";
 import { useCourseWorkspace } from "../hooks/useCourseWorkspace";
 import { useNavigate } from "react-router-dom";
 import useIsDesktop from "../hooks/useIsDesktop";
@@ -18,13 +17,13 @@ const Planner: React.FC = () => {
 
   const { plannerCourses, setPlannerCourses } = useCourseWorkspace();
 
-  const handleDeleteSemester = (semesterNumber: number) => {
-    setPlannerCourses((prev) =>
-      prev
-        .filter((s) => s.semesterNumber !== semesterNumber)
-        .map((s, idx) => ({ ...s, semesterNumber: idx + 1 }))
-    );
-  };
+  // const handleDeleteSemester = (semesterNumber: number) => {
+  //   setPlannerCourses((prev) =>
+  //     prev
+  //       .filter((s) => s.semesterNumber !== semesterNumber)
+  //       .map((s, idx) => ({ ...s, semesterNumber: idx + 1 }))
+  //   );
+  // };
 
   return (
     <div className="md:h-[calc(100vh-10rem)] md:m-0 m-4 h-screen">
@@ -38,11 +37,11 @@ const Planner: React.FC = () => {
           <AddSemester />
         </div>
 
-        <div className="flex flex-col gap-4 md:grid md:grid-cols-2 md:gap-8">
+        <div className="flex flex-col gap-4 md:grid md:grid-cols-2 md:gap-4">
           {plannerCourses.map((semester, index) => (
             <div
               key={semester.semesterNumber}
-              className="md:h-full border-b-1 border-darkblue flex flex-col justify-between pb-4"
+              className="md:h-full flex flex-col justify-between"
             >
               <SemesterBlock
                 index={index}
@@ -50,10 +49,10 @@ const Planner: React.FC = () => {
                 semester={semester}
               />
 
-              <DeleteSemester
+              {/* <DeleteSemester
                 semesterNumber={semester.semesterNumber}
                 onDelete={handleDeleteSemester}
-              />
+              /> */}
             </div>
           ))}
         </div>

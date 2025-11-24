@@ -10,12 +10,12 @@ const DeleteSemester: React.FC<DeleteSemesterProps> = ({
   onDelete,
 }) => {
   return (
-    <div className="flex mt-4 justify-end">
+    <div className="flex justify-end">
       <button
         onClick={() => onDelete(semesterNumber)}
-        className="border border-black rounded-full px-3 py-0 h-fit font-medium text-sm"
+        className="border border-black rounded-full px-3 py-0 h-fit font-medium text-sm hover:cursor-pointer hover:bg-darkblue hover:text-carpipink transition-colors duration-200"
       >
-        delete
+        Delete
       </button>
     </div>
   );

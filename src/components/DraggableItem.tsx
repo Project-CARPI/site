@@ -1,7 +1,5 @@
-import { Dispatch, SetStateAction } from "react";
 import { Draggable } from "@hello-pangea/dnd";
-import { SemesterType } from "../types/interfaces/Semester.interface";
-import { APICourse, UserCourse } from "../types/interfaces/Course.interface";
+import { APICourse } from "../types/interfaces/Course.interface";
 
 import PlannerCourse from "./Course/PlannerCourse";
 import ToolboxCourse from "./Course/ToolboxCourse";
@@ -12,8 +10,6 @@ interface DraggableItemProps {
   index: number;
   course: APICourse;
   location: string;
-  setPlannerCourses: Dispatch<SetStateAction<SemesterType[]>> | null;
-  setToolboxCourses: Dispatch<SetStateAction<UserCourse[]>> | null;
   semesterIndex: number | null;
 }
 
@@ -23,8 +19,6 @@ const DraggableItem: React.FC<DraggableItemProps> = ({
   index,
   course,
   location,
-  setPlannerCourses,
-  setToolboxCourses,
   semesterIndex,
 }) => {
   return (
@@ -48,8 +42,6 @@ const DraggableItem: React.FC<DraggableItemProps> = ({
                 count={count}
                 isDragging={snapshot.isDragging}
                 index={index}
-                setPlannerCourses={setPlannerCourses!}
-                setToolboxCourses={setToolboxCourses!}
                 semesterIndex={semesterIndex!}
               />
             ) : (

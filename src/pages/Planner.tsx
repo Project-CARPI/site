@@ -1,7 +1,6 @@
 import React, { useEffect } from "react";
-import SemesterBlock from "../components/PlannerComponents/SemesterBlocks/SemesterBlock";
+import SemesterBlock from "../components/PlannerComponents/SemesterBlock";
 import AddSemester from "../components/PlannerComponents/AddSemester";
-import DeleteSemester from "../components/PlannerComponents/DeleteSemester";
 import { useCourseWorkspace } from "../hooks/useCourseWorkspace";
 import { useNavigate } from "react-router-dom";
 import useIsDesktop from "../hooks/useIsDesktop";
@@ -16,16 +15,7 @@ const Planner: React.FC = () => {
     }
   }, [isDesktop, navigate]);
 
-  const { plannerCourses, setPlannerCourses, setToolboxCourses } =
-    useCourseWorkspace();
-
-  const handleDeleteSemester = (semesterNumber: number) => {
-    setPlannerCourses((prev) =>
-      prev
-        .filter((s) => s.semesterNumber !== semesterNumber)
-        .map((s, idx) => ({ ...s, semesterNumber: idx + 1 })),
-    );
-  };
+  const { plannerCourses } = useCourseWorkspace();
 
   return (
     <div className="md:h-[calc(100vh-10rem)] md:m-0 m-4 h-screen">
@@ -33,29 +23,22 @@ const Planner: React.FC = () => {
         <img src="/carpi-black.png" alt="Carpi Logo" className="h-full" />
       </header>
 
-      <section className="h-full w-full md:overflow-y-auto scrollbar-hide pr-4 flex flex-col md:gap-4">
+      <section className="h-full w-full md:overflow-y-auto scrollbar-hide pr-4 flex flex-col gap-4">
         <div className="flex justify-between sticky top-0 z-10 bg-carpipink pt-4">
           <h1 className="font-bold text-xl">Planner</h1>
-          <AddSemester setPlannerCourses={setPlannerCourses} />
+          <AddSemester />
         </div>
 
-        <div className="md:grid grid-cols-2 gap-8">
+        <div className="flex flex-col gap-4 md:grid md:grid-cols-2 md:gap-4">
           {plannerCourses.map((semester, index) => (
             <div
               key={semester.semesterNumber}
-              className="md:h-full border-b-1 border-darkblue flex flex-col justify-between pb-4"
+              className="md:h-full flex flex-col justify-between"
             >
               <SemesterBlock
-                semester={semester}
                 index={index}
                 key={semester.semesterNumber}
-                setPlannerCourses={setPlannerCourses}
-                setToolboxCourses={setToolboxCourses}
-              />
-
-              <DeleteSemester
-                semesterNumber={semester.semesterNumber}
-                onDelete={handleDeleteSemester}
+                semester={semester}
               />
             </div>
           ))}

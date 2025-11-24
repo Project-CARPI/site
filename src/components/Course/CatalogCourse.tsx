@@ -46,12 +46,12 @@ const Course: React.FC<CourseProps> = ({ course }) => {
 
     setToolboxCourses((prevCourses) => {
       const existingIndex = prevCourses.findIndex(
-        (c) => c.name === courseDisplay
+        (c) => c.name === courseDisplay,
       );
 
       if (existingIndex !== -1) {
         return prevCourses.map((c, i) =>
-          i === existingIndex ? { ...c, count: c.count + 1 } : c
+          i === existingIndex ? { ...c, count: c.count + 1 } : c,
         );
       } else {
         return [

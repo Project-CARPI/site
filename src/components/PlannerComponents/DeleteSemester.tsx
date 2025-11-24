@@ -15,7 +15,7 @@ const DeleteSemester: React.FC<DeleteSemesterProps> = ({
         onClick={() => onDelete(semesterNumber)}
         className="border border-black rounded-full px-3 py-0 h-fit font-medium text-sm"
       >
-        delete
+        Delete
       </button>
     </div>
   );

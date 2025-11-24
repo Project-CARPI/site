@@ -50,11 +50,11 @@ export const FilterProvider: React.FC<{ children: ReactNode }> = ({
   const toggleFilter = (filter: FilterData) => {
     setSelectedFilters((prevSelected) => {
       const exists = prevSelected.find(
-        (f) => f.code === filter.code && f.type === filter.type
+        (f) => f.code === filter.code && f.type === filter.type,
       );
       if (exists) {
         return prevSelected.filter(
-          (f) => !(f.code === filter.code && f.type === filter.type)
+          (f) => !(f.code === filter.code && f.type === filter.type),
         );
       } else {
         return [...prevSelected, filter];

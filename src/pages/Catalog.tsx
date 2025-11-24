@@ -69,7 +69,7 @@ const Catalog: React.FC = () => {
             "&attrFilters=" +
             attrFilters +
             "&semFilters=" +
-            semFilters
+            semFilters,
         );
 
         const data = response.data;

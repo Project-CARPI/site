@@ -14,7 +14,7 @@ const PlannerCourseHolder: React.FC<PlannerCourseHolderProps> = ({
       {isHover ? (
         <p>Drop the course!</p>
       ) : (
-        <p>Drag a course here to add it to this semester</p>
+        <p>Drag a course from the Toolbox</p>
       )}
     </div>
   );

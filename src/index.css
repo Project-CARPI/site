@@ -6,6 +6,7 @@
   --color-darkblue: oklch(31.09% 0.0378 267.38);
   --color-darkblue-40: oklch(31.09% 0.0378 267.38/40%);
   --color-lightblue: oklch(68.85% 0.0588 236.57);
+  --color-rosewood: oklch(54.14% 0.206 10.45); /* #c91752 */
 }
 
 body {

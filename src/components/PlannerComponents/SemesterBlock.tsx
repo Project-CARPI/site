@@ -20,6 +20,11 @@ export interface SemesterBlockProps {
 const SemesterBlock: React.FC<SemesterBlockProps> = ({ index, semester }) => {
   const { setPlannerCourses } = useCourseWorkspace();
 
+  const CREDIT_LIMIT_WITHOUT_APPROVAL = 21;
+  const CREDIT_LIMIT = 23;
+  const over_limit = semester.creditsTotal > CREDIT_LIMIT_WITHOUT_APPROVAL;
+  const over_hard_limit = semester.creditsTotal > CREDIT_LIMIT;
+
   const seasonDropdown = (e: React.ChangeEvent<HTMLSelectElement>) => {
     const newSeason = e.target.value as SemesterSeason;
     setPlannerCourses((prevCourses) =>
@@ -40,7 +45,11 @@ const SemesterBlock: React.FC<SemesterBlockProps> = ({ index, semester }) => {
   };
 
   return (
-    <div className="flex flex-grow flex-col space-y-2 bg-darkblue/10 p-4 rounded-2xl h-full">
+    <div
+      className={`flex flex-grow flex-col space-y-2 bg-darkblue/10 p-4 rounded-2xl h-full ${
+        over_limit ? "border-2 border-rosewood" : ""
+      }`}
+    >
       <div className="flex justify-between">
         <span className="text-md font-bold">
           Semester {semester.semesterNumber}
@@ -62,6 +71,14 @@ const SemesterBlock: React.FC<SemesterBlockProps> = ({ index, semester }) => {
           <div className="">{semester.creditsTotal} credits</div>
         </div>
       </div>
+
+      {over_limit && (
+        <div className="text-darkblue text-sm bg-rosewood/20 rounded-2xl p-4 text-center">
+          You are over the maximum credit limit of{" "}
+          {over_hard_limit ? CREDIT_LIMIT : CREDIT_LIMIT_WITHOUT_APPROVAL}{" "}
+          credits! <b>Check with your advisor before proceeding.</b>
+        </div>
+      )}
 
       <Droppable droppableId={`planner-${index + 1}`} direction="vertical">
         {(provided, snapshot) => {

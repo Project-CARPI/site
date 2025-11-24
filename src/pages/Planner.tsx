@@ -15,15 +15,7 @@ const Planner: React.FC = () => {
     }
   }, [isDesktop, navigate]);
 
-  const { plannerCourses, setPlannerCourses } = useCourseWorkspace();
-
-  // const handleDeleteSemester = (semesterNumber: number) => {
-  //   setPlannerCourses((prev) =>
-  //     prev
-  //       .filter((s) => s.semesterNumber !== semesterNumber)
-  //       .map((s, idx) => ({ ...s, semesterNumber: idx + 1 }))
-  //   );
-  // };
+  const { plannerCourses } = useCourseWorkspace();
 
   return (
     <div className="md:h-[calc(100vh-10rem)] md:m-0 m-4 h-screen">
@@ -48,11 +40,6 @@ const Planner: React.FC = () => {
                 key={semester.semesterNumber}
                 semester={semester}
               />
-
-              {/* <DeleteSemester
-                semesterNumber={semester.semesterNumber}
-                onDelete={handleDeleteSemester}
-              /> */}
             </div>
           ))}
         </div>

@@ -20,10 +20,20 @@ export interface SemesterBlockProps {
 const SemesterBlock: React.FC<SemesterBlockProps> = ({ index, semester }) => {
   const { setPlannerCourses } = useCourseWorkspace();
 
+  // check for credit limits
   const CREDIT_LIMIT_WITHOUT_APPROVAL = 21;
   const CREDIT_LIMIT = 23;
   const over_limit = semester.creditsTotal > CREDIT_LIMIT_WITHOUT_APPROVAL;
   const over_hard_limit = semester.creditsTotal > CREDIT_LIMIT;
+
+  // check for duplicate courses
+  const hasDuplicateCourses = semester.courseList.some((course, index) => {
+    return (
+      semester.courseList.findIndex(
+        (c) => c.data.title === course.data.title
+      ) !== index
+    );
+  });
 
   const seasonDropdown = (e: React.ChangeEvent<HTMLSelectElement>) => {
     const newSeason = e.target.value as SemesterSeason;
@@ -47,7 +57,7 @@ const SemesterBlock: React.FC<SemesterBlockProps> = ({ index, semester }) => {
   return (
     <div
       className={`flex flex-grow flex-col space-y-2 bg-darkblue/10 p-4 rounded-2xl h-full ${
-        over_limit ? "border-2 border-rosewood" : ""
+        over_limit || hasDuplicateCourses ? "border-2 border-rosewood" : ""
       }`}
     >
       <div className="flex justify-between">
@@ -77,6 +87,12 @@ const SemesterBlock: React.FC<SemesterBlockProps> = ({ index, semester }) => {
           You are over the maximum credit limit of{" "}
           {over_hard_limit ? CREDIT_LIMIT : CREDIT_LIMIT_WITHOUT_APPROVAL}{" "}
           credits! <b>Check with your advisor before proceeding.</b>
+        </div>
+      )}
+
+      {hasDuplicateCourses && (
+        <div className="text-darkblue text-sm bg-rosewood/20 rounded-2xl p-4 text-center">
+          There are duplicate courses in this semester!
         </div>
       )}
 

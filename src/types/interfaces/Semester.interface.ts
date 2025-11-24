@@ -1,9 +1,11 @@
 import { UserCourse } from "./Course.interface";
 
+export type SemesterSeason = "Fall" | "Spring" | "Summer" | "";
+
 export interface SemesterType {
   semesterNumber: number;
   semesterID: string;
-  semesterSeason: string;
+  season: SemesterSeason;
   creditsTotal: number;
   courseList: UserCourse[];
 }

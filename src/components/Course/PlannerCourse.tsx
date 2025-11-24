@@ -1,24 +1,15 @@
-import React, {
-  useState,
-  useEffect,
-  useRef,
-  Dispatch,
-  SetStateAction,
-} from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { MdDragIndicator, MdOutlineMoreHoriz } from "react-icons/md";
 import { APICourse } from "../../types/interfaces/Course.interface";
-import { SemesterType } from "../../types/interfaces/Semester.interface";
-import { UserCourse } from "../../types/interfaces/Course.interface";
 import * as RightClickContextMenu from "@radix-ui/react-context-menu";
 import { usePlannerCourse } from "../../hooks/usePlannerCourseOptions";
 import PlannerOptionsPopup from "../PlannerComponents/PlannerOptionsPopup";
+import { useCourseWorkspace } from "../../hooks/useCourseWorkspace";
 
 interface PlannerCourseProps {
   course: APICourse;
   isDragging?: boolean;
   index: number;
-  setPlannerCourses: Dispatch<SetStateAction<SemesterType[]>>;
-  setToolboxCourses: Dispatch<SetStateAction<UserCourse[]>>;
   semesterIndex: number;
   count: number;
 }
@@ -27,10 +18,9 @@ const PlannerCourse: React.FC<PlannerCourseProps> = ({
   course,
   count,
   index,
-  setPlannerCourses,
-  setToolboxCourses,
   semesterIndex,
 }) => {
+  const { setPlannerCourses, setToolboxCourses } = useCourseWorkspace();
   const [openPopup, setOpenPopup] = useState<boolean>(false);
   const componentRef = useRef<HTMLDivElement>(null);
 

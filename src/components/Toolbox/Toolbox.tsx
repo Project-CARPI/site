@@ -93,8 +93,6 @@ const Toolbox: React.FC = () => {
                     index={index}
                     course={course.data}
                     location="toolbox"
-                    setPlannerCourses={null}
-                    setToolboxCourses={null}
                     semesterIndex={null}
                   />
                 ))}

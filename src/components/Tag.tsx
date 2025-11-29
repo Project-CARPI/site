@@ -4,36 +4,42 @@ import { FilterData } from "../types/interfaces/Filters.interface";
 import { useFilterData } from "../hooks/useFilters";
 import useIsDesktop from "../hooks/useIsDesktop";
 
-const getColorClass = (
-  type: string,
-  isSelected: boolean,
-  isDesktop: boolean
-): string => {
-  let accentColor: string;
+interface ColorClass {
+  selected_border: string;
+  selected_bg: string;
+  hover_bg: string;
+}
+
+const getColorClass = (type: string): ColorClass => {
   switch (type) {
     case "Subject":
-      accentColor = "burgundy";
-      break;
+      return {
+        selected_border: "border-burgundy",
+        selected_bg: "bg-burgundy",
+        hover_bg:
+          "hover:bg-[color-mix(in_oklab,var(--color-burgundy)_90%,white_10%)]",
+      };
     case "Attribute":
-      accentColor = "slategray";
-      break;
+      return {
+        selected_border: "border-slategray",
+        selected_bg: "bg-slategray",
+        hover_bg:
+          "hover:bg-[color-mix(in_oklab,var(--color-slategray)_90%,white_10%)]",
+      };
     case "Semester":
-      accentColor = "copperwood";
-      break;
+      return {
+        selected_border: "border-copperwood",
+        selected_bg: "bg-copperwood",
+        hover_bg:
+          "hover:bg-[color-mix(in_oklab,var(--color-copperwood)_90%,white_10%)]",
+      };
     default:
-      accentColor = "darkblue";
-  }
-
-  // If the tag is selected, apply the active styles
-  if (isSelected) {
-    return `border border-${accentColor} bg-${accentColor} hover:bg-[color-mix(in_oklab,var(--color-${accentColor})_90%,white_10%)]`;
-  }
-
-  // If not selected, return unselected style
-  if (isDesktop) {
-    return `border-1 border-carpipink hover:bg-[color-mix(in_oklab,var(--color-${accentColor})_70%,var(--color-darkblue)_30%)]`;
-  } else {
-    return `border-1 border-darkblue text-darkblue hover:bg-[color-mix(in_oklab,var(--color-${accentColor})_70%,var(--color-darkblue)_30%)]`;
+      return {
+        selected_border: "border-darkblue",
+        selected_bg: "bg-darkblue",
+        hover_bg:
+          "hover:bg-[color-mix(in_oklab,var(--color-darkblue)_90%,white_10%)]",
+      };
   }
 };
 
@@ -64,7 +70,12 @@ const Tag: React.FC<TagProps> = ({
   // Determine styles
   const baseClass =
     "rounded-full px-3 py-1 text-sm inline-flex items-center transition-colors text-carpipink";
-  const colorClasses = getColorClass(filter.type, selectedValue, isDesktop);
+  const accentColor = getColorClass(filter.type);
+  const colorClasses = selectedValue
+    ? `${accentColor.selected_border} ${accentColor.selected_bg} ${accentColor.hover_bg}`
+    : isDesktop
+      ? `border-carpipink ${accentColor.hover_bg}`
+      : `border-darkblue text-darkblue ${accentColor.hover_bg}`;
 
   const handleClick = () => {
     if (isSelectable || isRemovable) {
@@ -74,7 +85,7 @@ const Tag: React.FC<TagProps> = ({
 
   return (
     <button
-      className={`${baseClass} ${colorClasses} ${isSelectable || isRemovable ? "hover:cursor-pointer" : ""}`}
+      className={`border ${baseClass} ${colorClasses} ${isSelectable || isRemovable ? "hover:cursor-pointer" : ""}`}
       onClick={handleClick}
       disabled={!isSelectable && !isRemovable}
       title={filter.value}

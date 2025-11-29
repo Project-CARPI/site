@@ -17,7 +17,7 @@ const DepartmentFilters: React.FC = () => {
             border-darkblue 
             text-xs
             transition-colors
-            hover:bg-darkblue hover:text-carpipink
+            hover:bg-darkblue hover:text-carpipink hover:cursor-pointer
             h-fit
           `}
           onClick={() => toggleFilter(subject)}

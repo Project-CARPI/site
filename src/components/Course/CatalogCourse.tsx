@@ -72,7 +72,7 @@ const Course: React.FC<CourseProps> = ({ course }) => {
       <div
         className={`${
           courseCount === undefined ? "hidden" : ""
-        } absolute right-[-10px] top-[-10px] rounded-full bg-dustygrape w-8 h-8 flex justify-center items-center text-carpipink`}
+        } absolute right-[-10px] top-[-10px] rounded-full bg-steelblue w-8 h-8 flex justify-center items-center text-carpipink`}
       >
         <p>{courseCount}</p>
       </div>

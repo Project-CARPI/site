@@ -71,7 +71,7 @@ const Toolbox: React.FC = () => {
             />
           </div>
           {count > 0 && (
-            <div className="flex h-6 w-6 items-center justify-center rounded-full bg-dustygrape text-sm font-medium text-white">
+            <div className="flex h-6 w-6 items-center justify-center rounded-full bg-steelblue text-sm font-medium text-white">
               {count}
             </div>
           )}

@@ -9,7 +9,7 @@ import Tag from "../Tag";
 
 const findFiltersForCourse = (
   api_list: string[],
-  filterDataType: FilterData[]
+  filterDataType: FilterData[],
 ) => {
   console.log("API List:", api_list);
   return filterDataType.filter((attr) => api_list.includes(attr.code));
@@ -46,12 +46,12 @@ const Course: React.FC<CourseProps> = ({ course }) => {
 
     setToolboxCourses((prevCourses) => {
       const existingIndex = prevCourses.findIndex(
-        (c) => c.name === courseDisplay
+        (c) => c.name === courseDisplay,
       );
 
       if (existingIndex !== -1) {
         return prevCourses.map((c, i) =>
-          i === existingIndex ? { ...c, count: c.count + 1 } : c
+          i === existingIndex ? { ...c, count: c.count + 1 } : c,
         );
       } else {
         return [

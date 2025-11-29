@@ -1,14 +1,7 @@
 name: Prettier Check
 
-# Trigger the workflow on push or pull request to main
-on:
-  push:
-    branches:
-      - main
-      - main-preview
-  pull_request:
-    branches:
-      - main
+# Trigger the workflow on all pushes and pull requests
+on: [push, pull_request]
 
 jobs:
   prettier-check:

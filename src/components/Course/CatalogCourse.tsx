@@ -46,12 +46,12 @@ const Course: React.FC<CourseProps> = ({ course }) => {
 
     setToolboxCourses((prevCourses) => {
       const existingIndex = prevCourses.findIndex(
-        (c) => c.name === courseDisplay,
+        (c) => c.name === courseDisplay
       );
 
       if (existingIndex !== -1) {
         return prevCourses.map((c, i) =>
-          i === existingIndex ? { ...c, count: c.count + 1 } : c,
+          i === existingIndex ? { ...c, count: c.count + 1 } : c
         );
       } else {
         return [
@@ -72,7 +72,7 @@ const Course: React.FC<CourseProps> = ({ course }) => {
       <div
         className={`${
           courseCount === undefined ? "hidden" : ""
-        } absolute right-[-10px] top-[-10px] rounded-full bg-[#78A1BB] w-8 h-8 flex justify-center items-center text-white`}
+        } absolute right-[-10px] top-[-10px] rounded-full bg-dustygrape w-8 h-8 flex justify-center items-center text-carpipink`}
       >
         <p>{courseCount}</p>
       </div>

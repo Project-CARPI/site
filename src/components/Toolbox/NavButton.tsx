@@ -6,7 +6,7 @@ const NavButton = () => {
 
   return (
     <Link
-      className={`bg-darkblue text-carpipink w-full text-center rounded-t-2xl py-2 absolute bottom-0`}
+      className={`bg-darkblue text-carpipink border-carpipink border-t w-full text-center rounded-t-2xl py-2 absolute bottom-0`}
       to={`${path == "/" ? "/planner" : "/"}`}
     >
       {path == "/" ? "Go to Planner" : "Go to Courses"}

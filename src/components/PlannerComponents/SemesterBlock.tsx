@@ -39,7 +39,7 @@ const SemesterBlock: React.FC<SemesterBlockProps> = ({ index, semester }) => {
   const hasDuplicateCourses = semester.courseList.some((course, index) => {
     return (
       semester.courseList.findIndex(
-        (c) => c.data.title === course.data.title
+        (c) => c.data.title === course.data.title,
       ) !== index
     );
   });
@@ -49,8 +49,8 @@ const SemesterBlock: React.FC<SemesterBlockProps> = ({ index, semester }) => {
       prev.map((sem) =>
         sem.semesterID === semester.semesterID
           ? { ...sem, semesterTitle: e.target.value }
-          : sem
-      )
+          : sem,
+      ),
     );
   };
   // handle season dropdown
@@ -60,8 +60,8 @@ const SemesterBlock: React.FC<SemesterBlockProps> = ({ index, semester }) => {
       prevCourses.map((sem) =>
         sem.semesterID === semester.semesterID
           ? { ...sem, season: newSeason }
-          : sem
-      )
+          : sem,
+      ),
     );
   };
 
@@ -69,7 +69,7 @@ const SemesterBlock: React.FC<SemesterBlockProps> = ({ index, semester }) => {
     setPlannerCourses((prev) =>
       prev
         .filter((s) => s.semesterNumber !== semesterNumber)
-        .map((s, idx) => ({ ...s, semesterNumber: idx + 1 }))
+        .map((s, idx) => ({ ...s, semesterNumber: idx + 1 })),
     );
   };
 

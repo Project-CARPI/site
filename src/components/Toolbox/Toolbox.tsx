@@ -85,17 +85,25 @@ const Toolbox: React.FC = () => {
                 {...provided.droppableProps}
                 className={`courses gap-4 pt-3 md:h-[75px] h-[100px] md:min-h-[50px] scrollbar-none flex justify-items-center w-full overflow-x-auto px-4 pb-2 transition-colors`}
               >
-                {toolboxCourses.map((course, index) => (
-                  <DraggableItem
-                    key={course.name}
-                    name={course.name}
-                    count={course.count}
-                    index={index}
-                    course={course.data}
-                    location="toolbox"
-                    semesterIndex={null}
-                  />
-                ))}
+                {toolboxCourses.length === 0 ? (
+                  <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
+                    <span className="text-[#F5CECE] opacity-60 text-sm md:text-base font-medium italic">
+                      Add courses to plan your semester
+                    </span>
+                  </div>
+                ) : (
+                  toolboxCourses.map((course, index) => (
+                    <DraggableItem
+                      key={course.name}
+                      name={course.name}
+                      count={course.count}
+                      index={index}
+                      course={course.data}
+                      location="toolbox"
+                      semesterIndex={null}
+                    />
+                  ))
+                )}
                 {provided.placeholder}
               </div>
             )}

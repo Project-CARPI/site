@@ -9,8 +9,10 @@ const AddSemester: React.FC = () => {
 
   const handleAddCourse = () => {
     setPlannerCourses((prevCourses) => {
+      const nextNum = prevCourses.length + 1;
       const newSemester: SemesterType = {
-        semesterID: `sem-${nextId.current}`, // e.g. sem-1, sem-2, sem-3...
+        semesterTitle: `Semester ${nextNum}`,
+        semesterID: `sem-${nextNum}`, // e.g. sem-1, sem-2, sem-3...
         semesterNumber: prevCourses.length + 1,
         season: "Fall",
         creditsTotal: 0,

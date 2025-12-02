@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState, useRef, useEffect } from "react";
 
 import {
   SemesterSeason,
@@ -9,6 +9,7 @@ import PlannerCourseHolder from "./PlannerCourseHolder";
 import DraggableItem from "../DraggableItem";
 import { useCourseWorkspace } from "../../hooks/useCourseWorkspace";
 import DeleteSemester from "../PlannerComponents/DeleteSemester";
+import { MdEdit } from "react-icons/md";
 
 const seasons: SemesterSeason[] = ["Fall", "Spring", "Summer"];
 
@@ -19,6 +20,14 @@ export interface SemesterBlockProps {
 
 const SemesterBlock: React.FC<SemesterBlockProps> = ({ index, semester }) => {
   const { setPlannerCourses } = useCourseWorkspace();
+  const [isEditing, setIsEditing] = useState(false);
+  const inputRef = useRef<HTMLInputElement>(null);
+
+  useEffect(() => {
+    if (isEditing && inputRef.current) {
+      inputRef.current.focus();
+    }
+  }, [isEditing]);
 
   // check for credit limits
   const CREDIT_LIMIT_WITHOUT_APPROVAL = 21;
@@ -30,19 +39,29 @@ const SemesterBlock: React.FC<SemesterBlockProps> = ({ index, semester }) => {
   const hasDuplicateCourses = semester.courseList.some((course, index) => {
     return (
       semester.courseList.findIndex(
-        (c) => c.data.title === course.data.title,
+        (c) => c.data.title === course.data.title
       ) !== index
     );
   });
-
+  // customizable semester title
+  const handleTitleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setPlannerCourses((prev) =>
+      prev.map((sem) =>
+        sem.semesterID === semester.semesterID
+          ? { ...sem, semesterTitle: e.target.value }
+          : sem
+      )
+    );
+  };
+  // handle season dropdown
   const seasonDropdown = (e: React.ChangeEvent<HTMLSelectElement>) => {
     const newSeason = e.target.value as SemesterSeason;
     setPlannerCourses((prevCourses) =>
       prevCourses.map((sem) =>
         sem.semesterID === semester.semesterID
           ? { ...sem, season: newSeason }
-          : sem,
-      ),
+          : sem
+      )
     );
   };
 
@@ -50,9 +69,18 @@ const SemesterBlock: React.FC<SemesterBlockProps> = ({ index, semester }) => {
     setPlannerCourses((prev) =>
       prev
         .filter((s) => s.semesterNumber !== semesterNumber)
-        .map((s, idx) => ({ ...s, semesterNumber: idx + 1 })),
+        .map((s, idx) => ({ ...s, semesterNumber: idx + 1 }))
     );
   };
+
+  const finishEditing = () => setIsEditing(false);
+  const handleKeyDown = (e: React.KeyboardEvent) => {
+    if (e.key === "Enter") finishEditing();
+  };
+
+  const defaultTitle = `Semester ${semester.semesterNumber}`;
+  const isPlaceholder =
+    !semester.semesterTitle || semester.semesterTitle === defaultTitle;
 
   return (
     <div
@@ -60,10 +88,38 @@ const SemesterBlock: React.FC<SemesterBlockProps> = ({ index, semester }) => {
         over_limit || hasDuplicateCourses ? "border-2 border-rosewood" : ""
       }`}
     >
-      <div className="flex justify-between">
-        <span className="text-md font-bold">
-          Semester {semester.semesterNumber}
-        </span>
+      <div className="flex justify-between items-center mb-1 h-8">
+        {isEditing ? (
+          <input
+            ref={inputRef}
+            type="text"
+            value={semester.semesterTitle}
+            onChange={handleTitleChange}
+            onBlur={finishEditing}
+            onKeyDown={handleKeyDown}
+            className="text-md font-bold bg-transparent border-b border-black focus:outline-none w-1/2 placeholder:opacity-60"
+            placeholder={`Semester ${semester.semesterNumber}`}
+          />
+        ) : (
+          <div className="flex items-center gap-2 w-1/2">
+            <span
+              className={`text-md font-bold truncate cursor-pointer hover:underline decoration-dotted underline-offset-4 ${
+                isPlaceholder ? "opacity-60 italic" : ""
+              }`}
+              onClick={() => setIsEditing(true)}
+              title="Click to rename"
+            >
+              {semester.semesterTitle || defaultTitle}
+            </span>
+            <button
+              onClick={() => setIsEditing(true)}
+              className="text-black transition-colors"
+              title="Edit Semester Name"
+            >
+              <MdEdit size={18} />
+            </button>
+          </div>
+        )}
 
         <div className="flex space-x-2 items-center">
           <select

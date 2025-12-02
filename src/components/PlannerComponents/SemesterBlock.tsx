@@ -104,7 +104,7 @@ const SemesterBlock: React.FC<SemesterBlockProps> = ({ index, semester }) => {
           <div className="flex items-center gap-2 w-1/2">
             <span
               className={`text-md font-bold truncate cursor-pointer hover:underline decoration-dotted underline-offset-4 ${
-                isPlaceholder ? "opacity-60 italic" : ""
+                isPlaceholder ? "opacity-50 italic" : ""
               }`}
               onClick={() => setIsEditing(true)}
               title="Click to rename"

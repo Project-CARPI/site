@@ -29,7 +29,7 @@ const DepartmentFilters: React.FC = () => {
         </button>
       ))}
 
-      <div className="h-15" />
+      <div className="h-40" />
     </div>
   );
 };

@@ -34,7 +34,7 @@ const FilterPanel: React.FC = () => {
         tags={semesters}
         selected={selectedSemesters}
       />
-      <div className="h-15 md:h-5" />
+      <div className="h-20 md:h-5" />
     </div>
   );
 };

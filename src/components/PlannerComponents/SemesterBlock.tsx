@@ -78,10 +78,6 @@ const SemesterBlock: React.FC<SemesterBlockProps> = ({ index, semester }) => {
     if (e.key === "Enter") finishEditing();
   };
 
-  const defaultTitle = `Semester ${semester.semesterNumber}`;
-  const isPlaceholder =
-    !semester.semesterTitle || semester.semesterTitle === defaultTitle;
-
   return (
     <div
       className={`flex flex-grow flex-col space-y-2 bg-darkblue/10 p-4 rounded-2xl h-full ${
@@ -103,13 +99,11 @@ const SemesterBlock: React.FC<SemesterBlockProps> = ({ index, semester }) => {
         ) : (
           <div className="flex items-center gap-2 w-1/2">
             <span
-              className={`text-md font-bold truncate cursor-pointer hover:underline decoration-dotted underline-offset-4 ${
-                isPlaceholder ? "opacity-50 italic" : ""
-              }`}
+              className="text-md font-bold truncate cursor-pointer hover:underline decoration-dotted underline-offset-4"
               onClick={() => setIsEditing(true)}
               title="Click to rename"
             >
-              {semester.semesterTitle || defaultTitle}
+              {semester.semesterTitle || `Semester ${semester.semesterNumber}`}
             </span>
             <button
               onClick={() => setIsEditing(true)}

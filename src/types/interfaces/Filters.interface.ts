@@ -1,9 +1,9 @@
-export type FilterCategory = "Subject" | "Attributes" | "Semesters";
+export type FilterCategory = "Subject" | "Attribute" | "Semester";
 
 export interface Filters {
   Subject: string[];
-  Attributes: string[];
-  Semesters: string[];
+  Attribute: string[];
+  Semester: string[];
 }
 
 export interface FilterData {

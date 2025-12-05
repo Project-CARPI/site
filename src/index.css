@@ -2,10 +2,14 @@
 @plugin 'tailwind-scrollbar';
 
 @theme {
-  --color-carpipink: oklch(88.46% 0.0441 18.02);
-  --color-darkblue: oklch(31.09% 0.0378 267.38);
-  --color-darkblue-40: oklch(31.09% 0.0378 267.38/40%);
-  --color-lightblue: oklch(68.85% 0.0588 236.57);
+  --color-carpipink: oklch(88.46% 0.0441 18.02); /* #F5CECE */
+  --color-steelblue: oklch(68.85% 0.0588 236.57); /* #78a1bb */
+  --color-dustygrape: oklch(49.23% 0.0665 275.21); /* #565E87 */
+  --color-darkblue: oklch(31.09% 0.0378 267.38); /* #283044 */
+  --color-mutedteal: oklch(77.97% 0.0441 181.55); /* #99C1B9 */
+  --color-burgundy: oklch(36.07% 0.1294 18.64); /* #721121 */
+  --color-slategray: oklch(54.39% 0.0444 212.21); /* #51777F */
+  --color-copperwood: oklch(53.68% 0.1081 63.18); /* #AA6822 */
   --color-rosewood: oklch(54.14% 0.206 10.45); /* #c91752 */
 }
 

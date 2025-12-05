@@ -1,22 +1,27 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useEffect, useRef } from "react";
 import { IoClose, IoSearchOutline, IoFilter } from "react-icons/io5";
 import FilterPanel from "./FilterPanel/FilterPanel.tsx";
 import useIsDesktop from "../../hooks/useIsDesktop.ts";
 import FilterPanelPopup from "./FilterPanel/FilterPanelPopup.tsx";
+import { useFilterData } from "../../hooks/useFilters.ts";
+import Tag from "../Tag.tsx";
 
 interface SearchBarProps {
   searchPrompt: string;
   setSearchPrompt: React.Dispatch<React.SetStateAction<string>>;
+  showFilter: boolean;
+  setShowFilter: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
 const SearchBar: React.FC<SearchBarProps> = ({
   searchPrompt,
   setSearchPrompt,
+  showFilter,
+  setShowFilter,
 }) => {
+  const { selectedFilters } = useFilterData();
   const isDesktop = useIsDesktop();
   const componentRef = useRef<HTMLDivElement>(null);
-
-  const [showFilter, setShowFilter] = useState(false);
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setSearchPrompt(e.target.value);
@@ -37,14 +42,14 @@ const SearchBar: React.FC<SearchBarProps> = ({
     return () => {
       document.removeEventListener("mousedown", handleClickOutside);
     };
-  }, []);
+  }, [setShowFilter]);
 
   return (
-    <div className="flex justify-between flex-col items-center gap-2">
-      <div
-        ref={componentRef}
-        className="flex items-center gap-4 w-full border-b border-darkblue p-2"
-      >
+    <div
+      ref={componentRef}
+      className="flex justify-between flex-col items-center gap-2"
+    >
+      <div className="flex items-center gap-4 w-full border-b border-darkblue p-2">
         <IoSearchOutline className="w-5 h-5" />
         <input
           type="text"
@@ -78,6 +83,13 @@ const SearchBar: React.FC<SearchBarProps> = ({
         {showFilter && isDesktop && <FilterPanelPopup />}
       </div>
 
+      {!isDesktop && selectedFilters.length > 0 && (
+        <div className="flex flex-wrap w-full items-start gap-1">
+          {selectedFilters.map((filter) => (
+            <Tag key={filter.id} filter={filter} isRemovable={true} />
+          ))}
+        </div>
+      )}
       {showFilter && !isDesktop && <FilterPanel />}
     </div>
   );

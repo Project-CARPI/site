@@ -34,8 +34,8 @@ export const FilterProvider: React.FC<{ children: ReactNode }> = ({
           ]);
 
         setSubjects(formatApiData("Subject", subjectsResponse.data));
-        setAttributes(formatApiData("Attributes", attributesResponse.data));
-        setSemesters(formatApiData("Semesters", semestersResponse.data));
+        setAttributes(formatApiData("Attribute", attributesResponse.data));
+        setSemesters(formatApiData("Semester", semestersResponse.data));
       } catch (error) {
         console.error("Failed to fetch filters:", error);
       }

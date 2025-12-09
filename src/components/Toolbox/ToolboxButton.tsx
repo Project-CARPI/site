@@ -20,7 +20,7 @@ const ToolboxButton: React.FC<ToolboxButtonProps> = ({
       <div
         className={`${
           count === 0 ? "hidden" : ""
-        } absolute -top-1 -right-2  rounded-full bg-[#78A1BB] w-8 h-8 flex justify-center items-center text-white text-lg`}
+        } absolute -top-1 -right-2  rounded-full bg-steelblue w-8 h-8 flex justify-center items-center text-white text-lg`}
       >
         <p>{count}</p>
       </div>

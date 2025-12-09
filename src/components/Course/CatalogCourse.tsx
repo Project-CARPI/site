@@ -1,9 +1,19 @@
 import React, { useState } from "react";
-import Tag from "./CatalogCourse/Tag";
 import AddButton from "./CatalogCourse/AddButton";
 import { motion } from "framer-motion";
 import { APICourse } from "../../types/interfaces/Course.interface";
 import { useCourseWorkspace } from "../../hooks/useCourseWorkspace";
+import { useFilterData } from "../../hooks/useFilters";
+import { FilterData } from "../../types/interfaces/Filters.interface";
+import Tag from "../Tag";
+
+const findFiltersForCourse = (
+  api_list: string[],
+  filterDataType: FilterData[],
+) => {
+  console.log("API List:", api_list);
+  return filterDataType.filter((attr) => api_list.includes(attr.code));
+};
 
 interface CourseProps {
   course: APICourse;
@@ -11,6 +21,10 @@ interface CourseProps {
 
 const Course: React.FC<CourseProps> = ({ course }) => {
   const { toolboxCourses, setToolboxCourses } = useCourseWorkspace();
+  const { attributes, semesters } = useFilterData();
+
+  const attrFilters = findFiltersForCourse(course.attr_list || [], attributes);
+  const semFilters = findFiltersForCourse(course.sem_list || [], semesters);
 
   const [isOpen, setIsOpen] = useState(false);
   const toggleOpen = (e: React.MouseEvent<HTMLDivElement>) => {
@@ -58,7 +72,7 @@ const Course: React.FC<CourseProps> = ({ course }) => {
       <div
         className={`${
           courseCount === undefined ? "hidden" : ""
-        } absolute right-[-10px] top-[-10px] rounded-full bg-[#78A1BB] w-8 h-8 flex justify-center items-center text-white`}
+        } absolute right-[-10px] top-[-10px] rounded-full bg-steelblue w-8 h-8 flex justify-center items-center text-carpipink`}
       >
         <p>{courseCount}</p>
       </div>
@@ -71,26 +85,12 @@ const Course: React.FC<CourseProps> = ({ course }) => {
             </b>
             <p>{toTitleCase(course.title)}</p>
           </div>
-          <div className={`flex flex-wrap mt-1`}>
-            {course.attr_list?.map((attr, index) => {
-              return (
-                <Tag
-                  key={index}
-                  name={attr}
-                  bgcolor={"#99C1B9"}
-                  color={"#283044"}
-                />
-              );
+          <div className={`flex flex-wrap mt-1 gap-1`}>
+            {attrFilters.map((attr, index) => {
+              return <Tag key={index} filter={attr} />;
             })}
-            {course.sem_list?.map((semester, index) => {
-              return (
-                <Tag
-                  key={index}
-                  name={semester}
-                  bgcolor={"#565E87"}
-                  color={"#F5CECE"}
-                />
-              );
+            {semFilters?.map((semester, index) => {
+              return <Tag key={index} filter={semester} />;
             })}
           </div>
         </div>

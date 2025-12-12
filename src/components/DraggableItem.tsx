@@ -1,3 +1,4 @@
+import { createPortal } from "react-dom";
 import { Draggable } from "@hello-pangea/dnd";
 import { APICourse } from "../types/interfaces/Course.interface";
 
@@ -29,7 +30,7 @@ const DraggableItem: React.FC<DraggableItemProps> = ({
           cursor: "grab",
         };
 
-        return (
+        const child = (
           <div
             ref={provided.innerRef}
             {...provided.draggableProps}
@@ -55,6 +56,12 @@ const DraggableItem: React.FC<DraggableItemProps> = ({
             )}
           </div>
         );
+
+        if (snapshot.isDragging) {
+          return createPortal(child, document.body);
+        }
+
+        return child;
       }}
     </Draggable>
   );

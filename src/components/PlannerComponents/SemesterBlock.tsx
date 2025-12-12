@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState, useRef, useEffect } from "react";
 
 import {
   SemesterSeason,
@@ -9,6 +9,7 @@ import PlannerCourseHolder from "./PlannerCourseHolder";
 import DraggableItem from "../DraggableItem";
 import { useCourseWorkspace } from "../../hooks/useCourseWorkspace";
 import DeleteSemester from "../PlannerComponents/DeleteSemester";
+import { MdEdit } from "react-icons/md";
 
 const seasons: SemesterSeason[] = ["Fall", "Spring", "Summer"];
 
@@ -19,6 +20,14 @@ export interface SemesterBlockProps {
 
 const SemesterBlock: React.FC<SemesterBlockProps> = ({ index, semester }) => {
   const { setPlannerCourses } = useCourseWorkspace();
+  const [isEditing, setIsEditing] = useState(false);
+  const inputRef = useRef<HTMLInputElement>(null);
+
+  useEffect(() => {
+    if (isEditing && inputRef.current) {
+      inputRef.current.focus();
+    }
+  }, [isEditing]);
 
   // check for credit limits
   const CREDIT_LIMIT_WITHOUT_APPROVAL = 21;
@@ -34,7 +43,17 @@ const SemesterBlock: React.FC<SemesterBlockProps> = ({ index, semester }) => {
       ) !== index
     );
   });
-
+  // customizable semester title
+  const handleTitleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setPlannerCourses((prev) =>
+      prev.map((sem) =>
+        sem.semesterID === semester.semesterID
+          ? { ...sem, semesterTitle: e.target.value }
+          : sem,
+      ),
+    );
+  };
+  // handle season dropdown
   const seasonDropdown = (e: React.ChangeEvent<HTMLSelectElement>) => {
     const newSeason = e.target.value as SemesterSeason;
     setPlannerCourses((prevCourses) =>
@@ -54,16 +73,47 @@ const SemesterBlock: React.FC<SemesterBlockProps> = ({ index, semester }) => {
     );
   };
 
+  const finishEditing = () => setIsEditing(false);
+  const handleKeyDown = (e: React.KeyboardEvent) => {
+    if (e.key === "Enter") finishEditing();
+  };
+
   return (
     <div
       className={`flex flex-grow flex-col space-y-2 bg-darkblue/10 p-4 rounded-2xl h-full ${
         over_limit || hasDuplicateCourses ? "border-2 border-rosewood" : ""
       }`}
     >
-      <div className="flex justify-between">
-        <span className="text-md font-bold">
-          Semester {semester.semesterNumber}
-        </span>
+      <div className="flex justify-between items-center mb-1 h-8">
+        {isEditing ? (
+          <input
+            ref={inputRef}
+            type="text"
+            value={semester.semesterTitle}
+            onChange={handleTitleChange}
+            onBlur={finishEditing}
+            onKeyDown={handleKeyDown}
+            className="text-md font-bold bg-transparent border-b border-black focus:outline-none w-1/2 placeholder:opacity-60"
+            placeholder={`Semester ${semester.semesterNumber}`}
+          />
+        ) : (
+          <div className="flex items-center gap-2 w-1/2">
+            <span
+              className="text-md font-bold truncate cursor-pointer hover:underline decoration-dotted underline-offset-4"
+              onClick={() => setIsEditing(true)}
+              title="Click to rename"
+            >
+              {semester.semesterTitle || `Semester ${semester.semesterNumber}`}
+            </span>
+            <button
+              onClick={() => setIsEditing(true)}
+              className="text-black transition-colors"
+              title="Edit Semester Name"
+            >
+              <MdEdit size={18} />
+            </button>
+          </div>
+        )}
 
         <div className="flex space-x-2 items-center">
           <select

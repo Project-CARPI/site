@@ -55,39 +55,48 @@ const Toolbox: React.FC = () => {
       >
         <GarbageBin isDragging={isDragging} />
 
-        <div id="toolbox-content">
-          <div className="flex items-center gap-4 p-3 mx-2 cursor-pointer">
-            <div className="flex items-center">
-              <h2 className="text-[#F5CECE] font-semibold text-xl">TOOLBOX</h2>
-              <IoIosArrowUp
-                className={`ml-2 text-2xl text-[#F5CECE] transition-transform duration-300 ${
-                  isOpen ? "rotate-180" : ""
-                }`}
-                onClick={toggleToolbox}
-                role="button"
-                aria-expanded={isOpen}
-                aria-controls="hideable-toolbox-content"
-              />
-            </div>
-            {count > 0 && (
-              <div className="flex h-6 w-6 items-center justify-center rounded-full bg-steelblue text-sm font-medium text-white">
-                {count}
-              </div>
-            )}
+        {/* Header */}
+        <div className="flex items-center gap-4 p-3 mx-2 cursor-pointer">
+          <div className="flex items-center">
+            <h2 className="text-[#F5CECE] font-semibold text-xl">TOOLBOX</h2>
+            <IoIosArrowUp
+              className={`ml-2 text-2xl text-[#F5CECE] transition-transform duration-300 ${
+                isOpen ? "rotate-180" : ""
+              }`}
+              onClick={toggleToolbox}
+              role="button"
+              aria-expanded={isOpen}
+              aria-controls="hideable-toolbox-content"
+            />
           </div>
 
-          <div
-            className={`${isOpen ? "block" : "hidden"}`}
-            id="hideable-toolbox-content"
-          >
-            <Droppable droppableId="toolbox" direction="horizontal">
-              {(provided) => (
-                <div
-                  ref={provided.innerRef}
-                  {...provided.droppableProps}
-                  className={`courses gap-4 pt-3 md:h-[75px] h-[100px] md:min-h-[50px] scrollbar-none flex justify-items-center w-full overflow-x-auto px-4 pb-2 transition-colors`}
-                >
-                  {toolboxCourses.map((course, index) => (
+          {count > 0 && (
+            <div className="flex h-6 w-6 items-center justify-center rounded-full bg-steelblue text-sm font-medium text-white">
+              {count}
+            </div>
+          )}
+        </div>
+
+        {/* Collapsible content */}
+        <div
+          className={`${isOpen ? "block" : "hidden"}`}
+          id="hideable-toolbox-content"
+        >
+          <Droppable droppableId="toolbox" direction="horizontal">
+            {(provided) => (
+              <div
+                ref={provided.innerRef}
+                {...provided.droppableProps}
+                className={`courses gap-4 pt-3 md:h-[75px] h-[100px] md:min-h-[50px] scrollbar-none flex justify-items-center w-full overflow-x-auto px-4 pb-2 transition-colors relative`}
+              >
+                {toolboxCourses.length === 0 ? (
+                  <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
+                    <span className="text-[#F5CECE] opacity-60 text-sm md:text-base font-medium italic">
+                      Add courses to plan your semester
+                    </span>
+                  </div>
+                ) : (
+                  toolboxCourses.map((course, index) => (
                     <DraggableItem
                       key={course.name}
                       name={course.name}
@@ -97,12 +106,13 @@ const Toolbox: React.FC = () => {
                       location="toolbox"
                       semesterIndex={null}
                     />
-                  ))}
-                  {provided.placeholder}
-                </div>
-              )}
-            </Droppable>
-          </div>
+                  ))
+                )}
+
+                {provided.placeholder}
+              </div>
+            )}
+          </Droppable>
         </div>
       </div>
 

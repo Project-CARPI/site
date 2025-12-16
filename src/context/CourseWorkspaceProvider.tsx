@@ -1,7 +1,6 @@
-import React, { useState, ReactNode } from "react";
+import React, { useState, ReactNode, useMemo } from "react";
 import { UserCourse } from "../types/interfaces/Course.interface.ts";
 import { SemesterType } from "../types/interfaces/Semester.interface.ts";
-import { useDragAndDrop } from "../hooks/useDragAndDrop.ts";
 import CourseWorkspaceContext from "./CourseWorkspaceContext.tsx";
 
 export const CourseWorkspaceProvider: React.FC<{ children: ReactNode }> = ({
@@ -43,25 +42,16 @@ export const CourseWorkspaceProvider: React.FC<{ children: ReactNode }> = ({
       courseList: [],
     },
   ]);
-  const [isDragging, setIsDragging] = useState<boolean>(false);
 
-  const { onDragStart, onDragEnd } = useDragAndDrop({
-    toolboxCourses,
-    setToolboxCourses,
-    plannerCourses,
-    setPlannerCourses,
-    setIsDragging,
-  });
-
-  const value = {
-    plannerCourses,
-    setPlannerCourses,
-    toolboxCourses,
-    setToolboxCourses,
-    isDragging,
-    onDragStart,
-    onDragEnd,
-  };
+  const value = useMemo(
+    () => ({
+      plannerCourses,
+      setPlannerCourses,
+      toolboxCourses,
+      setToolboxCourses,
+    }),
+    [plannerCourses, toolboxCourses]
+  );
 
   return (
     <CourseWorkspaceContext.Provider value={value}>

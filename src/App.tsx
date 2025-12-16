@@ -3,20 +3,51 @@ import Catalog from "./pages/Catalog";
 import Planner from "./pages/Planner";
 import Toolbox from "./components/Toolbox/Toolbox";
 import HomePage from "./pages/HomePage";
-import { DragDropContext } from "@hello-pangea/dnd";
 import { CourseWorkspaceProvider } from "./context/CourseWorkspaceProvider.tsx";
 import { FilterProvider } from "./context/FilterProvider.tsx";
-import { useCourseWorkspace } from "./hooks/useCourseWorkspace.ts";
+
+import { DndContext, DragOverlay } from "@dnd-kit/core";
+import { useDndLogic } from "./hooks/useDragAndDrop.ts";
+import { createPortal } from "react-dom";
+import PlannerCourse from "./components/Course/PlannerCourse.tsx";
 
 const AppDragDropContext: React.FC<{ children: React.ReactNode }> = ({
   children,
 }) => {
-  // 2. Get the dnd functions from the hook
-  const { onDragStart, onDragEnd } = useCourseWorkspace();
+  const {
+    sensors,
+    collisionDetectionStrategy,
+    onDragStart,
+    onDragOver,
+    onDragEnd,
+    activeItem,
+  } = useDndLogic();
+
   return (
-    <DragDropContext onDragEnd={onDragEnd} onDragStart={onDragStart}>
+    <DndContext
+      sensors={sensors}
+      collisionDetection={collisionDetectionStrategy}
+      onDragStart={onDragStart}
+      onDragOver={onDragOver}
+      onDragEnd={onDragEnd}
+    >
       {children}
-    </DragDropContext>
+
+      {createPortal(
+        <DragOverlay>
+          {activeItem ? (
+            // Render the component appearance while dragging
+            <PlannerCourse
+              course={activeItem.data}
+              count={activeItem.count}
+              index={1}
+              semesterIndex={1}
+            />
+          ) : null}
+        </DragOverlay>,
+        document.body
+      )}
+    </DndContext>
   );
 };
 

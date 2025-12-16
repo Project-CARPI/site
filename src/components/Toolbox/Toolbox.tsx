@@ -3,22 +3,31 @@ import useIsDesktop from "../../hooks/useIsDesktop";
 
 import ToolboxButton from "./ToolboxButton";
 import NavButton from "./NavButton";
-import { Droppable } from "@hello-pangea/dnd";
 import { IoIosArrowUp } from "react-icons/io";
 import GarbageBin from "../GarbageBin";
-import DraggableItem from "../DraggableItem";
 import { useCourseWorkspace } from "../../hooks/useCourseWorkspace";
 
+import { SortableItem } from "../dnd/SortableItem";
+import {
+  SortableContext,
+  horizontalListSortingStrategy,
+} from "@dnd-kit/sortable";
+import { useDroppable } from "@dnd-kit/core";
+import ToolboxCourse from "../Course/ToolboxCourse";
+// import SortableToolboxItem from "../dnd/SortableToolboxItem";
+
 const Toolbox: React.FC = () => {
+  const { setNodeRef } = useDroppable({ id: "toolbox" });
+
   const isDesktop = useIsDesktop();
   const [isOpen, setIsOpen] = useState(isDesktop);
   const [count, setCount] = useState(0);
 
-  const { toolboxCourses, isDragging } = useCourseWorkspace();
+  const { toolboxCourses } = useCourseWorkspace();
 
   useEffect(() => {
     setCount(
-      toolboxCourses.reduce((total, course) => total + (course.count || 0), 0),
+      toolboxCourses.reduce((total, course) => total + (course.count || 0), 0)
     );
   }, [toolboxCourses]);
 
@@ -53,7 +62,7 @@ const Toolbox: React.FC = () => {
               : "transform translate-y-full"
         }`}
       >
-        <GarbageBin isDragging={isDragging} />
+        <GarbageBin />
 
         {/* Header */}
         <div className="flex items-center gap-4 p-3 mx-2 cursor-pointer">
@@ -82,7 +91,42 @@ const Toolbox: React.FC = () => {
           className={`${isOpen ? "block" : "hidden"}`}
           id="hideable-toolbox-content"
         >
-          <Droppable droppableId="toolbox" direction="horizontal">
+          <div
+            ref={setNodeRef}
+            className="courses gap-4 pt-3 md:h-[75px] h-[100px] md:min-h-[50px] scrollbar-none flex justify-items-center w-full overflow-x-auto px-4 pb-2 transition-colors relative"
+          >
+            {/* 2. Provide the sorting context */}
+            <SortableContext
+              items={toolboxCourses.map((c) => c.name)}
+              strategy={horizontalListSortingStrategy}
+            >
+              {toolboxCourses.length === 0 ? (
+                <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
+                  <span className="text-[#F5CECE] opacity-60 text-sm md:text-base font-medium italic">
+                    Add courses to plan your semester
+                  </span>
+                </div>
+              ) : (
+                toolboxCourses.map((course, index) => (
+                  <SortableItem
+                    key={course.name}
+                    id={course.name}
+                    data={course}
+                  >
+                    <ToolboxCourse
+                      course={course.data}
+                      name={course.name}
+                      count={course.count}
+                      index={index}
+                      isDragging={false}
+                    />
+                  </SortableItem>
+                ))
+              )}
+            </SortableContext>
+          </div>
+
+          {/* <Droppable droppableId="toolbox" direction="horizontal">
             {(provided) => (
               <div
                 ref={provided.innerRef}
@@ -112,7 +156,7 @@ const Toolbox: React.FC = () => {
                 {provided.placeholder}
               </div>
             )}
-          </Droppable>
+          </Droppable> */}
         </div>
       </div>
 

@@ -4,12 +4,21 @@ import {
   SemesterSeason,
   SemesterType,
 } from "../../types/interfaces/Semester.interface";
-import { Droppable } from "@hello-pangea/dnd";
+
+import { useDroppable } from "@dnd-kit/core";
+import { SortableItem } from "../dnd/SortableItem";
+import {
+  SortableContext,
+  verticalListSortingStrategy,
+} from "@dnd-kit/sortable";
+
+// import { Droppable } from "@hello-pangea/dnd";
 import PlannerCourseHolder from "./PlannerCourseHolder";
-import DraggableItem from "../DraggableItem";
+// import DraggableItem from "../DraggableItem";
 import { useCourseWorkspace } from "../../hooks/useCourseWorkspace";
 import DeleteSemester from "../PlannerComponents/DeleteSemester";
 import { MdEdit } from "react-icons/md";
+import PlannerCourse from "../Course/PlannerCourse";
 
 const seasons: SemesterSeason[] = ["Fall", "Spring", "Summer"];
 
@@ -19,6 +28,10 @@ export interface SemesterBlockProps {
 }
 
 const SemesterBlock: React.FC<SemesterBlockProps> = ({ index, semester }) => {
+  const { setNodeRef, isOver } = useDroppable({
+    id: semester.semesterID,
+  });
+
   const { setPlannerCourses } = useCourseWorkspace();
   const [isEditing, setIsEditing] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
@@ -39,7 +52,7 @@ const SemesterBlock: React.FC<SemesterBlockProps> = ({ index, semester }) => {
   const hasDuplicateCourses = semester.courseList.some((course, index) => {
     return (
       semester.courseList.findIndex(
-        (c) => c.data.title === course.data.title,
+        (c) => c.data.title === course.data.title
       ) !== index
     );
   });
@@ -49,8 +62,8 @@ const SemesterBlock: React.FC<SemesterBlockProps> = ({ index, semester }) => {
       prev.map((sem) =>
         sem.semesterID === semester.semesterID
           ? { ...sem, semesterTitle: e.target.value }
-          : sem,
-      ),
+          : sem
+      )
     );
   };
   // handle season dropdown
@@ -60,8 +73,8 @@ const SemesterBlock: React.FC<SemesterBlockProps> = ({ index, semester }) => {
       prevCourses.map((sem) =>
         sem.semesterID === semester.semesterID
           ? { ...sem, season: newSeason }
-          : sem,
-      ),
+          : sem
+      )
     );
   };
 
@@ -69,7 +82,7 @@ const SemesterBlock: React.FC<SemesterBlockProps> = ({ index, semester }) => {
     setPlannerCourses((prev) =>
       prev
         .filter((s) => s.semesterNumber !== semesterNumber)
-        .map((s, idx) => ({ ...s, semesterNumber: idx + 1 })),
+        .map((s, idx) => ({ ...s, semesterNumber: idx + 1 }))
     );
   };
 
@@ -146,7 +159,33 @@ const SemesterBlock: React.FC<SemesterBlockProps> = ({ index, semester }) => {
         </div>
       )}
 
-      <Droppable droppableId={`planner-${index + 1}`} direction="vertical">
+      <div
+        ref={setNodeRef}
+        className="flex flex-col space-y-2 h-full min-h-[50px]"
+      >
+        <SortableContext
+          items={semester.courseList.map((c) => c.name)}
+          strategy={verticalListSortingStrategy}
+        >
+          {semester.courseList.length === 0 ? (
+            // 5. SHOW PLACEHOLDER IF EMPTY
+            <PlannerCourseHolder isHover={isOver} />
+          ) : (
+            semester.courseList.map((course) => (
+              <SortableItem key={course.name} id={course.name} data={course}>
+                <PlannerCourse
+                  course={course.data}
+                  count={course.count}
+                  index={index}
+                  semesterIndex={index + 1}
+                />
+              </SortableItem>
+            ))
+          )}
+        </SortableContext>
+      </div>
+
+      {/* <Droppable droppableId={`planner-${index + 1}`} direction="vertical">
         {(provided, snapshot) => {
           const isEmpty = semester.courseList.length === 0;
           const isHovering = snapshot.isDraggingOver;
@@ -180,7 +219,7 @@ const SemesterBlock: React.FC<SemesterBlockProps> = ({ index, semester }) => {
             </div>
           );
         }}
-      </Droppable>
+      </Droppable> */}
 
       <DeleteSemester
         semesterNumber={semester.semesterNumber}

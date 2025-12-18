@@ -1,4 +1,5 @@
 import { useState, useCallback, useRef } from "react";
+import { v4 as uuidv4 } from "uuid";
 import {
   useSensor,
   useSensors,
@@ -18,27 +19,6 @@ import { sortableKeyboardCoordinates, arrayMove } from "@dnd-kit/sortable";
 import { useCourseWorkspace } from "./useCourseWorkspace";
 import { UserCourse } from "../types/interfaces/Course.interface";
 
-// --- Helpers ---
-
-const generateId = (baseName: string) =>
-  `${baseName}-${Math.random().toString(36).substring(2, 9)}`;
-
-const toTitleCase = (str: string) => {
-  return str
-    .toLowerCase()
-    .split(" ")
-    .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
-    .join(" ");
-};
-
-// Generates the standard "Toolbox Name" (e.g., "CSCI-4500 Computer Graphics")
-// This is our key for detecting duplicates.
-const getCanonicalName = (course: UserCourse) => {
-  return `${course.data.subj_code}-${course.data.code_num} ${toTitleCase(
-    course.data.title
-  )}`;
-};
-
 export const useDndLogic = () => {
   const {
     plannerCourses,
@@ -49,13 +29,10 @@ export const useDndLogic = () => {
 
   const [activeItem, setActiveItem] = useState<UserCourse | null>(null);
 
-  // Track state for drag-cancellation
+  // Snapshot of toolbox before drag starts. Used for "Cancel" (Esc/Drop nowhere).
   const [originalToolboxState, setOriginalToolboxState] = useState<
     UserCourse[] | null
   >(null);
-  const [toolboxRemainderId, setToolboxRemainderId] = useState<string | null>(
-    null
-  );
 
   const lastOverId = useRef<UniqueIdentifier | null>(null);
   const recentlyMovedToNewContainer = useRef(false);
@@ -70,28 +47,31 @@ export const useDndLogic = () => {
     })
   );
 
-  // --- Find Container Helper ---
+  // --- Helper: Find Container by Course ID ---
   const findContainer = (
     id: UniqueIdentifier
   ): UniqueIdentifier | undefined => {
-    if (toolboxCourses.find((c) => c.name === id)) return "toolbox";
+    if (toolboxCourses.find((c) => c.id === id)) return "toolbox";
+
     const semester = plannerCourses.find((sem) =>
-      sem.courseList.find((c) => c.name === id)
+      sem.courseList.find((c) => c.id === id)
     );
     if (semester) return semester.semesterID;
+
     return undefined;
   };
 
   // --- Collision Strategy ---
   const collisionDetectionStrategy: CollisionDetection = useCallback(
     (args) => {
-      // Prioritize Toolbox if active item belongs there
+      // Prioritize Toolbox if active item started there
       if (
         activeItem &&
-        findContainer(activeItem.name) === "toolbox" &&
+        findContainer(activeItem.id) === "toolbox" &&
         args.droppableContainers.find((c) => c.id === "toolbox")
       ) {
-        // This helps bias selection towards toolbox when dragging near it
+        // Optional: Add logic here if you want to bias towards toolbox
+        // return [{ id: "toolbox" }];
       }
 
       const pointerIntersections = pointerWithin(args);
@@ -103,12 +83,11 @@ export const useDndLogic = () => {
       let overId = getFirstCollision(intersections, "id");
 
       if (overId != null) {
-        if (overId === "garbage") return intersections;
-        if (overId === "toolbox") return intersections;
+        if (overId === "garbage" || overId === "toolbox") return intersections;
 
         const semester = plannerCourses.find((s) => s.semesterID === overId);
         if (semester) {
-          const containerItems = semester.courseList.map((c) => c.name);
+          const containerItems = semester.courseList.map((c) => c.id);
           if (containerItems.length > 0) {
             overId = closestCenter({
               ...args,
@@ -125,7 +104,7 @@ export const useDndLogic = () => {
       }
 
       if (recentlyMovedToNewContainer.current) {
-        lastOverId.current = activeItem?.name || null;
+        lastOverId.current = activeItem?.id || null;
       }
 
       return lastOverId.current ? [{ id: lastOverId.current }] : [];
@@ -133,8 +112,7 @@ export const useDndLogic = () => {
     [activeItem, plannerCourses, toolboxCourses]
   );
 
-  // --- Handlers ---
-
+  // --- 1. Drag Start ---
   const onDragStart = (event: DragStartEvent) => {
     const { active } = event;
     const item = active.data.current as UserCourse;
@@ -147,6 +125,7 @@ export const useDndLogic = () => {
     document.body.classList.add("no-scroll-during-drag");
   };
 
+  // --- 2. Drag Over (Moving items between lists) ---
   const onDragOver = useCallback(
     (event: DragOverEvent) => {
       const { active, over } = event;
@@ -169,41 +148,46 @@ export const useDndLogic = () => {
         return;
       }
 
-      // Find the actual item data
+      // Find the moving item data
       let itemToMove: UserCourse | undefined;
       if (activeContainer === "toolbox") {
-        itemToMove = toolboxCourses.find((c) => c.name === active.id);
+        itemToMove = toolboxCourses.find((c) => c.id === active.id);
       } else {
         const sem = plannerCourses.find(
           (s) => s.semesterID === activeContainer
         );
-        itemToMove = sem?.courseList.find((c) => c.name === active.id);
+        itemToMove = sem?.courseList.find((c) => c.id === active.id);
       }
 
       if (!itemToMove) return;
 
-      // 1. Remove from Source
+      // --- EXECUTE MOVE ---
+
+      // A. Remove from Source
       if (activeContainer === "toolbox") {
         setToolboxCourses((prev) => {
+          // If count > 1: We "Take" the active item (ID 1) and "Leave" a new item (ID 2)
+          // This keeps the dnd-kit active ID consistent with the cursor.
           if (itemToMove!.count > 1) {
-            // If moving a multiple-count item, leave a remainder behind
-            const tempId = generateId(itemToMove!.name);
-            setToolboxRemainderId(tempId);
-            return prev.map((c) =>
-              c.name === active.id
-                ? { ...c, name: tempId, count: c.count - 1 }
-                : c
-            );
+            const remainder: UserCourse = {
+              ...itemToMove!,
+              id: uuidv4(), // NEW ID for the item staying behind
+              count: itemToMove!.count - 1,
+            };
+            // Replace the moving item with the remainder
+            return prev.map((c) => (c.id === active.id ? remainder : c));
           }
-          return prev.filter((c) => c.name !== active.id);
+          // If count == 1, just remove it
+          return prev.filter((c) => c.id !== active.id);
         });
       } else {
+        // Remove from Semester
         setPlannerCourses((prev) =>
           prev.map((sem) => {
             if (sem.semesterID === activeContainer) {
               return {
                 ...sem,
-                courseList: sem.courseList.filter((c) => c.name !== active.id),
+                courseList: sem.courseList.filter((c) => c.id !== active.id),
                 creditsTotal: sem.creditsTotal - itemToMove!.data.credit_max,
               };
             }
@@ -212,7 +196,8 @@ export const useDndLogic = () => {
         );
       }
 
-      // 2. Add to Destination
+      // B. Add to Destination
+      // Ensure the moved item has count 1 in its new home
       const itemWithSingleCount = { ...itemToMove!, count: 1 };
 
       if (overContainer === "toolbox") {
@@ -230,7 +215,7 @@ export const useDndLogic = () => {
               let overIndex = nextList.length;
 
               if (overId !== overContainer) {
-                const idx = nextList.findIndex((c) => c.name === overId);
+                const idx = nextList.findIndex((c) => c.id === overId);
                 const isBelow =
                   over &&
                   active.rect.current.translated &&
@@ -258,135 +243,120 @@ export const useDndLogic = () => {
     [plannerCourses, toolboxCourses, setPlannerCourses, setToolboxCourses]
   );
 
+  // --- 3. Drag End (Cleanup & Merging) ---
   const onDragEnd = (event: DragEndEvent) => {
     const { active, over } = event;
     const activeContainer = findContainer(active.id);
 
+    // Cleanup
     document.body.classList.remove("no-scroll-during-drag");
     setActiveItem(null);
     lastOverId.current = null;
 
-    // 1. Handle Garbage
+    // A. Handle Garbage Drop
     if (over?.id === "garbage") {
       if (activeContainer === "toolbox") {
-        setToolboxCourses((prev) => prev.filter((c) => c.name !== active.id));
+        setToolboxCourses((prev) => prev.filter((c) => c.id !== active.id));
       } else {
         setPlannerCourses((prev) =>
           prev.map((sem) => ({
             ...sem,
-            courseList: sem.courseList.filter((c) => c.name !== active.id),
-            // credits updated in onDragOver essentially, but safe to filter here
+            courseList: sem.courseList.filter((c) => c.id !== active.id),
+            // Credits update handled in onDragOver, but this is a safe sync
+            creditsTotal: sem.courseList
+              .filter((c) => c.id !== active.id)
+              .reduce((acc, c) => acc + c.data.credit_max, 0),
           }))
         );
       }
-      // If we left a remainder, restore its ID so it matches the canonical name again
-      if (toolboxRemainderId) {
-        const originalName = active.id as string;
-        setToolboxCourses((prev) =>
-          prev.map((c) =>
-            c.name === toolboxRemainderId ? { ...c, name: originalName } : c
-          )
-        );
-        setToolboxRemainderId(null);
-      }
+      setOriginalToolboxState(null);
       return;
     }
 
-    // 2. Handle Reorder (Toolbox)
-    if (
-      activeContainer === "toolbox" &&
-      over?.id &&
-      findContainer(over.id) === "toolbox"
-    ) {
+    // B. Handle Cancel / Drop Nowhere
+    if (!over) {
+      if (originalToolboxState) {
+        setToolboxCourses(originalToolboxState);
+        // Remove ghost from planner if it exists
+        setPlannerCourses((prev) =>
+          prev.map((sem) => ({
+            ...sem,
+            courseList: sem.courseList.filter((c) => c.id !== active.id),
+            creditsTotal: sem.courseList
+              .filter((c) => c.id !== active.id)
+              .reduce((acc, c) => acc + c.data.credit_max, 0),
+          }))
+        );
+      }
+      setOriginalToolboxState(null);
+      return;
+    }
+
+    // C. Handle Reorder within same container
+    if (activeContainer && overContainerIsSame(activeContainer, over.id)) {
       const activeIndex = event.active.data.current?.sortable?.index;
       const overIndex = event.over?.data.current?.sortable?.index;
 
-      if (
-        activeIndex !== undefined &&
-        overIndex !== undefined &&
-        activeIndex !== overIndex
-      ) {
-        setToolboxCourses((items) => arrayMove(items, activeIndex, overIndex));
+      if (activeIndex !== overIndex) {
+        if (activeContainer === "toolbox") {
+          setToolboxCourses((items) =>
+            arrayMove(items, activeIndex, overIndex)
+          );
+        } else {
+          setPlannerCourses((prev) =>
+            prev.map((sem) =>
+              sem.semesterID === activeContainer
+                ? {
+                    ...sem,
+                    courseList: arrayMove(
+                      sem.courseList,
+                      activeIndex,
+                      overIndex
+                    ),
+                  }
+                : sem
+            )
+          );
+        }
       }
     }
 
-    // If the item ended up in the toolbox, check for duplicates and merge them.
+    // D. Merge Logic (If dropped in Toolbox)
+    // We group by Content (Subj + Code) to merge duplicates
     if (activeContainer === "toolbox") {
       setToolboxCourses((prev) => {
         const uniqueMap = new Map<string, UserCourse>();
 
-        // Iterate through all courses currently in the toolbox
         for (const course of prev) {
-          const canonicalName = getCanonicalName(course);
-
-          if (uniqueMap.has(canonicalName)) {
-            // Found a duplicate! Merge counts.
-            const existing = uniqueMap.get(canonicalName)!;
+          if (uniqueMap.has(course.name)) {
+            const existing = uniqueMap.get(course.name)!;
+            // Merge counts
             existing.count += course.count;
           } else {
-            // New entry. Ensure name is canonical (resets any temp IDs)
-            uniqueMap.set(canonicalName, { ...course, name: canonicalName });
+            // New entry
+            uniqueMap.set(course.name, { ...course });
           }
         }
         return Array.from(uniqueMap.values());
       });
-
-      // Clear remainder tracking since we just merged everything
-      setToolboxRemainderId(null);
-      setOriginalToolboxState(null);
-      return;
     }
 
-    // 4. Handle Planner Drop (Rename to unique ID)
-    if (activeContainer && activeContainer !== "toolbox") {
-      const originalName = active.id as string;
-      // If it came from toolbox (or split), we give it a unique ID now
-      if (toolboxRemainderId || originalToolboxState) {
-        setPlannerCourses((prev) =>
-          prev.map((sem) => {
-            if (sem.semesterID === activeContainer) {
-              return {
-                ...sem,
-                courseList: sem.courseList.map((c) => {
-                  if (c.name === originalName) {
-                    return { ...c, name: generateId(c.name.split(" ")[0]) };
-                  }
-                  return c;
-                }),
-              };
-            }
-            return sem;
-          })
-        );
-      }
+    // Clear snapshot after successful drop
+    setOriginalToolboxState(null);
+  };
 
-      // Fix remainder in toolbox if needed
-      if (toolboxRemainderId) {
-        const originalName = active.id as string;
-        setToolboxCourses((prev) =>
-          prev.map((c) =>
-            c.name === toolboxRemainderId ? { ...c, name: originalName } : c
-          )
-        );
-        setToolboxRemainderId(null);
-      }
-      setOriginalToolboxState(null);
-    }
-
-    // 5. Handle Cancel / Drop Nowhere
-    if (!over) {
-      if (originalToolboxState) {
-        setToolboxCourses(originalToolboxState);
-        setPlannerCourses((prev) =>
-          prev.map((sem) => ({
-            ...sem,
-            courseList: sem.courseList.filter((c) => c.name !== active.id),
-          }))
-        );
-      }
-      setToolboxRemainderId(null);
-      setOriginalToolboxState(null);
-    }
+  // Helper to check if overID belongs to the active container
+  const overContainerIsSame = (
+    activeContainer: UniqueIdentifier,
+    overId: UniqueIdentifier
+  ) => {
+    // If we are over the container itself or an item inside it
+    const overRealContainer =
+      plannerCourses.some((s) => s.semesterID === overId) ||
+      overId === "toolbox"
+        ? overId
+        : findContainer(overId);
+    return activeContainer === overRealContainer;
   };
 
   return {

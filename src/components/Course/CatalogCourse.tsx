@@ -1,4 +1,6 @@
 import React, { useState } from "react";
+import { v4 as uuidv4 } from "uuid";
+
 import AddButton from "./CatalogCourse/AddButton";
 import { motion } from "framer-motion";
 import { APICourse } from "../../types/interfaces/Course.interface";
@@ -56,7 +58,12 @@ const Course: React.FC<CourseProps> = ({ course }) => {
       } else {
         return [
           ...prevCourses,
-          { name: courseDisplay, count: 1, data: course },
+          {
+            id: uuidv4(),
+            name: courseDisplay,
+            count: 1,
+            data: course,
+          },
         ];
       }
     });

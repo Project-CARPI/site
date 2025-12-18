@@ -37,12 +37,7 @@ const AppDragDropContext: React.FC<{ children: React.ReactNode }> = ({
         <DragOverlay>
           {activeItem ? (
             // Render the component appearance while dragging
-            <PlannerCourse
-              course={activeItem.data}
-              count={activeItem.count}
-              index={1}
-              semesterIndex={1}
-            />
+            <PlannerCourse course={activeItem} semesterId={null} />
           ) : null}
         </DragOverlay>,
         document.body

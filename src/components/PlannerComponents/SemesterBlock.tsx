@@ -27,7 +27,7 @@ export interface SemesterBlockProps {
   semester: SemesterType;
 }
 
-const SemesterBlock: React.FC<SemesterBlockProps> = ({ index, semester }) => {
+const SemesterBlock: React.FC<SemesterBlockProps> = ({ semester }) => {
   const { setNodeRef, isOver } = useDroppable({
     id: semester.semesterID,
   });
@@ -164,7 +164,7 @@ const SemesterBlock: React.FC<SemesterBlockProps> = ({ index, semester }) => {
         className="flex flex-col space-y-2 h-full min-h-[50px]"
       >
         <SortableContext
-          items={semester.courseList.map((c) => c.name)}
+          items={semester.courseList.map((c) => c.id)}
           strategy={verticalListSortingStrategy}
         >
           {semester.courseList.length === 0 ? (
@@ -172,54 +172,16 @@ const SemesterBlock: React.FC<SemesterBlockProps> = ({ index, semester }) => {
             <PlannerCourseHolder isHover={isOver} />
           ) : (
             semester.courseList.map((course) => (
-              <SortableItem key={course.name} id={course.name} data={course}>
+              <SortableItem key={course.id} id={course.id} data={course}>
                 <PlannerCourse
-                  course={course.data}
-                  count={course.count}
-                  index={index}
-                  semesterIndex={index + 1}
+                  course={course}
+                  semesterId={semester.semesterID}
                 />
               </SortableItem>
             ))
           )}
         </SortableContext>
       </div>
-
-      {/* <Droppable droppableId={`planner-${index + 1}`} direction="vertical">
-        {(provided, snapshot) => {
-          const isEmpty = semester.courseList.length === 0;
-          const isHovering = snapshot.isDraggingOver;
-
-          return (
-            <div
-              ref={provided.innerRef}
-              {...provided.droppableProps}
-              className="flex flex-col space-y-2 h-full"
-            >
-              {isEmpty && !isHovering && (
-                <PlannerCourseHolder isHover={false} />
-              )}
-              {isEmpty && isHovering && <PlannerCourseHolder isHover={true} />}
-              {!isEmpty && (
-                <>
-                  {semester.courseList.map((course, courseIndex) => (
-                    <DraggableItem
-                      key={course.name}
-                      name={course.name}
-                      course={course.data}
-                      count={course.count}
-                      index={courseIndex}
-                      semesterIndex={index + 1}
-                      location="planner"
-                    />
-                  ))}
-                  {provided.placeholder}
-                </>
-              )}
-            </div>
-          );
-        }}
-      </Droppable> */}
 
       <DeleteSemester
         semesterNumber={semester.semesterNumber}

@@ -1,52 +1,22 @@
-import { Dispatch, SetStateAction } from "react";
-import { SemesterType } from "../types/interfaces/Semester.interface";
-import { UserCourse, APICourse } from "../types/interfaces/Course.interface";
+import { v4 as uuidv4 } from "uuid";
+
+import { UserCourse } from "../types/interfaces/Course.interface";
+import { useCourseWorkspace } from "../hooks/useCourseWorkspace";
 
 interface UsePlannerCourseProps {
-  setPlannerCourses: Dispatch<SetStateAction<SemesterType[]>>;
-  setToolboxCourses: Dispatch<SetStateAction<UserCourse[]>>;
-  semesterIndex: number; // 1-based index
-  courseIndex: number; // 0-based index
-  course: APICourse;
-  name: string;
-  count: number;
+  course: UserCourse;
+  semesterId: string | null;
 }
 
 export const usePlannerCourse = ({
-  setPlannerCourses,
-  setToolboxCourses,
-  semesterIndex,
-  courseIndex,
   course,
-  name,
-  count,
+  semesterId,
 }: UsePlannerCourseProps) => {
+  const { setPlannerCourses, setToolboxCourses } = useCourseWorkspace();
+
   // --- Helper Functions ---
-
-  const getNextName = (originalName: string): string => {
-    const [base, tag] = originalName.split("-");
-    if (!tag) {
-      return `${base}-A`;
-    }
-    const nextTag = incrementTag(tag);
-    return `${base}-${nextTag}`;
-  };
-
-  const incrementTag = (tag: string): string => {
-    const chars = tag.toUpperCase().split("");
-    let carry = true;
-    for (let i = chars.length - 1; i >= 0 && carry; i--) {
-      if (chars[i] === "Z") {
-        chars[i] = "A";
-      } else {
-        chars[i] = String.fromCharCode(chars[i].charCodeAt(0) + 1);
-        carry = false;
-      }
-    }
-    if (carry) {
-      chars.unshift("A");
-    }
-    return chars.join("");
+  const calculateCredits = (courses: UserCourse[]) => {
+    return courses.reduce((acc, c) => acc + c.data.credit_max, 0);
   };
 
   const toTitleCase = (str: string): string => {
@@ -62,111 +32,112 @@ export const usePlannerCourse = ({
 
   const handleDuplicate = () => {
     setPlannerCourses((prev) =>
-      prev.map((semester, i) =>
-        i === semesterIndex - 1 // 1-based index
-          ? {
-              ...semester,
-              creditsTotal: semester.creditsTotal + course.credit_max,
-              courseList: [
-                ...semester.courseList.slice(0, courseIndex + 1),
-                {
-                  name: getNextName(name), // Use prop
-                  count: count, // Use prop
-                  data: course, // Use prop
-                },
-                ...semester.courseList.slice(courseIndex + 1),
-              ],
-            }
-          : semester,
-      ),
+      prev.map((sem) => {
+        if (sem.semesterID !== semesterId) return sem;
+
+        const currentIndex = sem.courseList.findIndex(
+          (c) => c.id === course.id
+        );
+        if (currentIndex === -1) return sem;
+
+        const newCourse: UserCourse = {
+          ...course,
+          id: uuidv4(), // Generate NEW ID
+          count: 1,
+        };
+
+        const newCourseList = [...sem.courseList];
+        newCourseList.splice(currentIndex + 1, 0, newCourse);
+
+        return {
+          ...sem,
+          courseList: newCourseList,
+          creditsTotal: calculateCredits(newCourseList),
+        };
+      })
     );
   };
 
   const handleMoveNext = () => {
     setPlannerCourses((prev) => {
-      const courseCopy = { name, count, data: course };
-
-      const updatedPlanner = prev.map((semester, i) =>
-        i === semesterIndex - 1
-          ? {
-              ...semester,
-              courseList: semester.courseList.filter(
-                (_, idx) => idx !== courseIndex,
-              ),
-              creditsTotal: semester.creditsTotal - course.credit_max,
-            }
-          : semester,
+      const currentSemIndex = prev.findIndex(
+        (s) => s.semesterID === semesterId
       );
 
-      // Add to next semester
-      // Note: This will not work if it's the last semester
-      return updatedPlanner.map((semester, i) =>
-        i === semesterIndex // 1-based index becomes 0-based index of next sem
-          ? {
-              ...semester,
-              courseList: [...semester.courseList, courseCopy],
-              creditsTotal: semester.creditsTotal + courseCopy.data.credit_max,
-            }
-          : semester,
+      // If semester not found or it's the last semester, do nothing
+      if (currentSemIndex === -1 || currentSemIndex === prev.length - 1) {
+        return prev;
+      }
+
+      const nextSemIndex = currentSemIndex + 1;
+      const nextSem = prev[nextSemIndex];
+      const currentSem = prev[currentSemIndex];
+
+      // Remove from current
+      const newCurrentList = currentSem.courseList.filter(
+        (c) => c.id !== course.id
       );
+
+      // Add to next (at the end)
+      const newNextList = [...nextSem.courseList, course];
+
+      const nextState = [...prev];
+
+      nextState[currentSemIndex] = {
+        ...currentSem,
+        courseList: newCurrentList,
+        creditsTotal: calculateCredits(newCurrentList),
+      };
+
+      nextState[nextSemIndex] = {
+        ...nextSem,
+        courseList: newNextList,
+        creditsTotal: calculateCredits(newNextList),
+      };
+
+      return nextState;
     });
   };
 
   const handleMoveToolbox = () => {
-    setPlannerCourses((prev) => {
-      const formattedCourseName = `${course.subj_code}-${course.code_num} ${toTitleCase(course.title)}`;
-      const courseToMove = { name: formattedCourseName, count, data: course };
-      const nameParts = courseToMove.name.split("-");
-      const cleanedName = nameParts.slice(0, 2).join("-");
-      const cleanedCourse = {
-        ...courseToMove,
-        name: cleanedName,
-      };
+    // A. Remove from Planner
+    handleDelete();
 
-      const updatedPlanner = prev.map((semester, i) =>
-        i === semesterIndex - 1
-          ? {
-              ...semester,
-              courseList: semester.courseList.filter(
-                (_, idx) => idx !== courseIndex,
-              ),
-              creditsTotal:
-                semester.creditsTotal - courseToMove.data.credit_max,
-            }
-          : semester,
+    // B. Add to Toolbox with Merge Logic
+    setToolboxCourses((prev) => {
+      // We match duplicates by CONTENT (Subject + Code), not ID.
+      // e.g. "CSCI-1200"
+      const existingIndex = prev.findIndex(
+        (c) =>
+          c.data.subj_code === course.data.subj_code &&
+          c.data.code_num === course.data.code_num
       );
 
-      setToolboxCourses((toolboxPrev) => {
-        const existingIndex = toolboxPrev.findIndex(
-          (entry) => entry.name === cleanedName,
+      if (existingIndex !== -1) {
+        // Increment count of existing item
+        return prev.map((c, i) =>
+          i === existingIndex ? { ...c, count: c.count + 1 } : c
         );
-
-        if (existingIndex !== -1) {
-          const updated = [...toolboxPrev];
-          updated[existingIndex].count += cleanedCourse.count;
-          return updated;
-        } else {
-          return [...toolboxPrev, cleanedCourse];
-        }
-      });
-
-      return updatedPlanner;
+      } else {
+        // Add as new item (resetting ID to be clean)
+        return [...prev, { ...course, id: uuidv4(), count: 1 }];
+      }
     });
   };
 
   const handleDelete = () => {
     setPlannerCourses((prev) =>
-      prev.map((semester, i) =>
-        i === semesterIndex - 1
-          ? {
-              ...semester,
-              courseList: semester.courseList.filter(
-                (_, idx) => idx !== courseIndex,
-              ),
-              creditsTotal: semester.creditsTotal - course.credit_max,
-            }
-          : semester,
-      ),
+      prev.map((sem) => {
+        if (sem.semesterID !== semesterId) return sem;
+
+        const newCourseList = sem.courseList.filter((c) => c.id !== course.id);
+
+        return {
+          ...sem,
+          courseList: newCourseList,
+          creditsTotal: calculateCredits(newCourseList),
+        };
+      })
     );
   };
 

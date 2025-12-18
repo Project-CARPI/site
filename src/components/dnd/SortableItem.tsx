@@ -6,7 +6,7 @@ import { UserCourse } from "../../types/interfaces/Course.interface";
 interface SortableItemProps {
   id: string;
   children: React.ReactNode;
-  data?: UserCourse;
+  data: UserCourse;
 }
 
 export const SortableItem = ({ id, children, data }: SortableItemProps) => {

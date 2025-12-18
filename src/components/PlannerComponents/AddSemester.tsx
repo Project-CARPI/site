@@ -1,4 +1,6 @@
 import React, { useRef } from "react";
+import { v4 as uuidv4 } from "uuid";
+
 import { SemesterType } from "../../types/interfaces/Semester.interface";
 import { useCourseWorkspace } from "../../hooks/useCourseWorkspace";
 
@@ -12,7 +14,7 @@ const AddSemester: React.FC = () => {
       const nextNum = prevCourses.length + 1;
       const newSemester: SemesterType = {
         semesterTitle: `Semester ${nextNum}`,
-        semesterID: `sem-${nextNum}`, // e.g. sem-1, sem-2, sem-3...
+        semesterID: uuidv4(), // e.g. sem-1, sem-2, sem-3...
         semesterNumber: prevCourses.length + 1,
         season: "Fall",
         creditsTotal: 0,

@@ -1,26 +1,19 @@
 import React, { useState, useEffect, useRef } from "react";
 import { MdDragIndicator, MdOutlineMoreHoriz } from "react-icons/md";
-import { APICourse } from "../../types/interfaces/Course.interface";
+import { UserCourse } from "../../types/interfaces/Course.interface";
 import * as RightClickContextMenu from "@radix-ui/react-context-menu";
 import { usePlannerCourse } from "../../hooks/usePlannerCourseOptions";
 import PlannerOptionsPopup from "../PlannerComponents/PlannerOptionsPopup";
-import { useCourseWorkspace } from "../../hooks/useCourseWorkspace";
 
 interface PlannerCourseProps {
-  course: APICourse;
-  isDragging?: boolean;
-  index: number;
-  semesterIndex: number;
-  count: number;
+  course: UserCourse;
+  semesterId: string | null;
 }
 
 const PlannerCourse: React.FC<PlannerCourseProps> = ({
   course,
-  count,
-  index,
-  semesterIndex,
+  semesterId,
 }) => {
-  const { setPlannerCourses, setToolboxCourses } = useCourseWorkspace();
   const [openPopup, setOpenPopup] = useState<boolean>(false);
   const componentRef = useRef<HTMLDivElement>(null);
 
@@ -41,13 +34,8 @@ const PlannerCourse: React.FC<PlannerCourseProps> = ({
     handleDelete,
     toTitleCase,
   } = usePlannerCourse({
-    setPlannerCourses: setPlannerCourses,
-    setToolboxCourses: setToolboxCourses,
-    semesterIndex: semesterIndex,
-    courseIndex: index,
     course: course,
-    name: course.title,
-    count: count,
+    semesterId: semesterId,
   });
 
   useEffect(() => {
@@ -78,30 +66,25 @@ const PlannerCourse: React.FC<PlannerCourseProps> = ({
             <MdDragIndicator className="text-2xl" />
             <div className={`text-sm`}>
               <b>
-                {course.subj_code}-{course.code_num}
+                {course.data.subj_code}-{course.data.code_num}
               </b>
               <i>
-                {course.credit_min !== course.credit_max ? (
+                {course.data.credit_min !== course.data.credit_max ? (
                   <span className="ml-2 text-gray-500">
-                    {course.credit_min}–{course.credit_max} credits
+                    {course.data.credit_min}–{course.data.credit_max} credits
                   </span>
                 ) : (
                   <span className="ml-2 text-gray-500">
-                    {course.credit_max} credits
+                    {course.data.credit_max} credits
                   </span>
                 )}
               </i>
 
-              <p>{toTitleCase(course.title)}</p>
+              <p>{toTitleCase(course.data.title)}</p>
             </div>
           </div>
 
           <div className={`flex gap-1 items-center`}>
-            {/* <div
-              className={`rounded-full bg-[#F5CECE] text-[#283044] w-5 h-5 flex items-center justify-center text-sm`}
-            >
-              <p>{course.credit_max}</p>
-            </div> */}
             <MdOutlineMoreHoriz
               onClick={togglePopup}
               className="cursor-pointer text-2xl"

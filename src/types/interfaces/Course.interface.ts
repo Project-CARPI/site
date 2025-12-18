@@ -16,6 +16,7 @@ export interface APICourse {
 }
 
 export interface UserCourse {
+  id: string;
   name: string;
   count: number;
   data: APICourse;

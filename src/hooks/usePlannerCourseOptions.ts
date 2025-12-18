@@ -99,6 +99,47 @@ export const usePlannerCourse = ({
     });
   };
 
+  const handleMovePrev = () => {
+    setPlannerCourses((prev) => {
+      const currentSemIndex = prev.findIndex(
+        (s) => s.semesterID === semesterId
+      );
+
+      // If semester not found or it's the first semester, do nothing
+      if (currentSemIndex <= 0) {
+        return prev;
+      }
+
+      const prevSemIndex = currentSemIndex - 1;
+      const prevSem = prev[prevSemIndex];
+      const currentSem = prev[currentSemIndex];
+
+      // Remove from current
+      const newCurrentList = currentSem.courseList.filter(
+        (c) => c.id !== course.id
+      );
+
+      // Add to previous (at the end)
+      const newPrevList = [...prevSem.courseList, course];
+
+      const nextState = [...prev];
+
+      nextState[currentSemIndex] = {
+        ...currentSem,
+        courseList: newCurrentList,
+        creditsTotal: calculateCredits(newCurrentList),
+      };
+
+      nextState[prevSemIndex] = {
+        ...prevSem,
+        courseList: newPrevList,
+        creditsTotal: calculateCredits(newPrevList),
+      };
+
+      return nextState;
+    });
+  };
+
   const handleMoveToolbox = () => {
     // A. Remove from Planner
     handleDelete();
@@ -145,6 +186,7 @@ export const usePlannerCourse = ({
   return {
     handleDuplicate,
     handleMoveNext,
+    handleMovePrev,
     handleMoveToolbox,
     handleDelete,
     toTitleCase,

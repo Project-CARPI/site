@@ -12,9 +12,7 @@ import {
   verticalListSortingStrategy,
 } from "@dnd-kit/sortable";
 
-// import { Droppable } from "@hello-pangea/dnd";
 import PlannerCourseHolder from "./PlannerCourseHolder";
-// import DraggableItem from "../DraggableItem";
 import { useCourseWorkspace } from "../../hooks/useCourseWorkspace";
 import DeleteSemester from "../PlannerComponents/DeleteSemester";
 import { MdEdit } from "react-icons/md";
@@ -32,7 +30,7 @@ const SemesterBlock: React.FC<SemesterBlockProps> = ({ semester }) => {
     id: semester.semesterID,
   });
 
-  const { setPlannerCourses } = useCourseWorkspace();
+  const { plannerCourses, setPlannerCourses } = useCourseWorkspace();
   const [isEditing, setIsEditing] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
 
@@ -56,6 +54,7 @@ const SemesterBlock: React.FC<SemesterBlockProps> = ({ semester }) => {
       ) !== index
     );
   });
+
   // customizable semester title
   const handleTitleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setPlannerCourses((prev) =>
@@ -66,6 +65,7 @@ const SemesterBlock: React.FC<SemesterBlockProps> = ({ semester }) => {
       )
     );
   };
+
   // handle season dropdown
   const seasonDropdown = (e: React.ChangeEvent<HTMLSelectElement>) => {
     const newSeason = e.target.value as SemesterSeason;
@@ -159,16 +159,12 @@ const SemesterBlock: React.FC<SemesterBlockProps> = ({ semester }) => {
         </div>
       )}
 
-      <div
-        ref={setNodeRef}
-        className="flex flex-col space-y-2 h-full min-h-[50px]"
-      >
+      <div ref={setNodeRef}>
         <SortableContext
           items={semester.courseList.map((c) => c.id)}
           strategy={verticalListSortingStrategy}
         >
           {semester.courseList.length === 0 ? (
-            // 5. SHOW PLACEHOLDER IF EMPTY
             <PlannerCourseHolder isHover={isOver} />
           ) : (
             semester.courseList.map((course) => (
@@ -176,6 +172,10 @@ const SemesterBlock: React.FC<SemesterBlockProps> = ({ semester }) => {
                 <PlannerCourse
                   course={course}
                   semesterId={semester.semesterID}
+                  isFirstSemester={semester.semesterNumber === 1}
+                  isLastSemester={
+                    semester.semesterNumber === plannerCourses.length
+                  }
                 />
               </SortableItem>
             ))

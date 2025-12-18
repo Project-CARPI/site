@@ -1,35 +1,30 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef, useMemo } from "react";
 import { MdDragIndicator, MdOutlineMoreHoriz } from "react-icons/md";
 import { UserCourse } from "../../types/interfaces/Course.interface";
 import * as RightClickContextMenu from "@radix-ui/react-context-menu";
 import { usePlannerCourse } from "../../hooks/usePlannerCourseOptions";
-import PlannerOptionsPopup from "../PlannerComponents/PlannerOptionsPopup";
+import PlannerOptionsPopup, { MenuOption } from "./PlannerCourseOptionsPopup";
 
 interface PlannerCourseProps {
   course: UserCourse;
   semesterId: string | null;
+  isFirstSemester?: boolean;
+  isLastSemester?: boolean;
 }
 
 const PlannerCourse: React.FC<PlannerCourseProps> = ({
   course,
   semesterId,
+  isFirstSemester = false,
+  isLastSemester = false,
 }) => {
   const [openPopup, setOpenPopup] = useState<boolean>(false);
   const componentRef = useRef<HTMLDivElement>(null);
 
-  const togglePopup = (event: React.MouseEvent) => {
-    event.stopPropagation();
-    setOpenPopup((prev) => !prev);
-  };
-
-  const handleSelect = (action: () => void) => {
-    action();
-    setOpenPopup(false);
-  };
-
   const {
     handleDuplicate,
     handleMoveNext,
+    handleMovePrev,
     handleMoveToolbox,
     handleDelete,
     toTitleCase,
@@ -37,6 +32,49 @@ const PlannerCourse: React.FC<PlannerCourseProps> = ({
     course: course,
     semesterId: semesterId,
   });
+
+  // --- 1. DEFINE YOUR MENU CONFIGURATION HERE ---
+  // Using useMemo prevents it from being recreated on every render
+  const menuOptions: MenuOption[] = useMemo(
+    () => [
+      { label: "Duplicate", action: handleDuplicate },
+      {
+        label: "Move to next sem",
+        action: handleMoveNext,
+        disabled: semesterId === null || isLastSemester,
+      },
+      {
+        label: "Move to prev sem",
+        action: handleMovePrev,
+        disabled: semesterId === null || isFirstSemester,
+      },
+      {
+        label: "Move back to toolbox",
+        action: handleMoveToolbox,
+        hasSeparatorBefore: true,
+      },
+      {
+        label: "Delete",
+        action: handleDelete,
+        isDanger: true,
+      },
+    ],
+    [
+      handleDuplicate,
+      handleMoveNext,
+      handleMovePrev,
+      handleMoveToolbox,
+      handleDelete,
+      semesterId,
+      isFirstSemester,
+      isLastSemester,
+    ]
+  );
+
+  const togglePopup = (event: React.MouseEvent) => {
+    event.stopPropagation();
+    setOpenPopup((prev) => !prev);
+  };
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -47,14 +85,12 @@ const PlannerCourse: React.FC<PlannerCourseProps> = ({
         setOpenPopup(false);
       }
     };
-
     document.addEventListener("mousedown", handleClickOutside);
     return () => {
       document.removeEventListener("mousedown", handleClickOutside);
     };
   }, []);
 
-  /* Right-Click Context Menu */
   return (
     <RightClickContextMenu.Root>
       <RightClickContextMenu.Trigger>
@@ -68,18 +104,6 @@ const PlannerCourse: React.FC<PlannerCourseProps> = ({
               <b>
                 {course.data.subj_code}-{course.data.code_num}
               </b>
-              <i>
-                {course.data.credit_min !== course.data.credit_max ? (
-                  <span className="ml-2 text-gray-500">
-                    {course.data.credit_min}–{course.data.credit_max} credits
-                  </span>
-                ) : (
-                  <span className="ml-2 text-gray-500">
-                    {course.data.credit_max} credits
-                  </span>
-                )}
-              </i>
-
               <p>{toTitleCase(course.data.title)}</p>
             </div>
           </div>
@@ -93,42 +117,34 @@ const PlannerCourse: React.FC<PlannerCourseProps> = ({
 
           {openPopup && (
             <PlannerOptionsPopup
-              handleSelect={handleSelect}
-              handleDuplicate={handleDuplicate}
-              handleMoveNext={handleMoveNext}
-              handleMoveToolbox={handleMoveToolbox}
-              handleDelete={handleDelete}
+              options={menuOptions}
+              onClose={() => setOpenPopup(false)}
             />
           )}
         </div>
       </RightClickContextMenu.Trigger>
+
       <RightClickContextMenu.Portal>
-        <RightClickContextMenu.Content className="bg-[#F5CECE] rounded-xl border border-slate-500 text-[#283044] text-xs p-2 shadow-lg z-50">
-          <RightClickContextMenu.Item
-            className="hover:bg-gray-300 p-1 rounded w-full text-left"
-            onSelect={handleDuplicate}
-          >
-            Duplicate
-          </RightClickContextMenu.Item>
-          <RightClickContextMenu.Item
-            className="hover:bg-gray-300 p-1 rounded w-full text-left"
-            onSelect={handleMoveNext}
-          >
-            Move to next sem
-          </RightClickContextMenu.Item>
-          <RightClickContextMenu.Separator className="h-px bg-gray-400 my-1" />
-          <RightClickContextMenu.Item
-            className="hover:bg-gray-300 p-1 rounded w-full text-left"
-            onSelect={handleMoveToolbox}
-          >
-            Move back to toolbox
-          </RightClickContextMenu.Item>
-          <RightClickContextMenu.Item
-            className="hover:bg-red-300 p-1 rounded w-full text-left"
-            onSelect={handleDelete}
-          >
-            Delete
-          </RightClickContextMenu.Item>
+        <RightClickContextMenu.Content className="bg-carpipink rounded-xl border border-darkblue text-darkblue text-xs p-1.5 shadow-lg z-50 min-w-[150px]">
+          {menuOptions.map((opt) => (
+            <React.Fragment key={opt.label}>
+              {opt.hasSeparatorBefore && (
+                <RightClickContextMenu.Separator className="h-px bg-darkblue my-1 mx-3" />
+              )}
+              <RightClickContextMenu.Item
+                className={`px-3 py-1 rounded-lg w-full text-left outline-none cursor-pointer ${
+                  opt.disabled
+                    ? "opacity-50 cursor-not-allowed"
+                    : opt.isDanger
+                      ? "hover:bg-rosewood hover:text-carpipink cursor-pointer"
+                      : "hover:bg-slategray hover:text-carpipink cursor-pointer"
+                }`}
+                onSelect={opt.action}
+              >
+                {opt.label}
+              </RightClickContextMenu.Item>
+            </React.Fragment>
+          ))}
         </RightClickContextMenu.Content>
       </RightClickContextMenu.Portal>
     </RightClickContextMenu.Root>

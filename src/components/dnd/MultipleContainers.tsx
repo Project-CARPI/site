@@ -174,10 +174,10 @@ export function MultipleContainers({
         B: createRange(itemCount, (index) => `B${index + 1}`),
         C: createRange(itemCount, (index) => `C${index + 1}`),
         D: createRange(itemCount, (index) => `D${index + 1}`),
-      }
+      },
   );
   const [containers, setContainers] = useState(
-    Object.keys(items) as UniqueIdentifier[]
+    Object.keys(items) as UniqueIdentifier[],
   );
   const [activeId, setActiveId] = useState<UniqueIdentifier | null>(null);
   const lastOverId = useRef<UniqueIdentifier | null>(null);
@@ -199,7 +199,7 @@ export function MultipleContainers({
         return closestCenter({
           ...args,
           droppableContainers: args.droppableContainers.filter(
-            (container) => container.id in items
+            (container) => container.id in items,
           ),
         });
       }
@@ -231,7 +231,7 @@ export function MultipleContainers({
               droppableContainers: args.droppableContainers.filter(
                 (container) =>
                   container.id !== overId &&
-                  containerItems.includes(container.id)
+                  containerItems.includes(container.id),
               ),
             })[0]?.id;
           }
@@ -253,7 +253,7 @@ export function MultipleContainers({
       // If no droppable is matched, return the last match
       return lastOverId.current ? [{ id: lastOverId.current }] : [];
     },
-    [activeId, items]
+    [activeId, items],
   );
   const [clonedItems, setClonedItems] = useState<Items | null>(null);
   const sensors = useSensors(
@@ -261,7 +261,7 @@ export function MultipleContainers({
     useSensor(TouchSensor),
     useSensor(KeyboardSensor, {
       coordinateGetter,
-    })
+    }),
   );
   const findContainer = (id: UniqueIdentifier) => {
     if (id in items) {
@@ -356,14 +356,14 @@ export function MultipleContainers({
             return {
               ...items,
               [activeContainer]: items[activeContainer].filter(
-                (item) => item !== active.id
+                (item) => item !== active.id,
               ),
               [overContainer]: [
                 ...items[overContainer].slice(0, newIndex),
                 items[activeContainer][activeIndex],
                 ...items[overContainer].slice(
                   newIndex,
-                  items[overContainer].length
+                  items[overContainer].length,
                 ),
               ],
             };
@@ -398,7 +398,7 @@ export function MultipleContainers({
           setItems((items) => ({
             ...items,
             [activeContainer]: items[activeContainer].filter(
-              (id) => id !== activeId
+              (id) => id !== activeId,
             ),
           }));
           setActiveId(null);
@@ -413,7 +413,7 @@ export function MultipleContainers({
             setItems((items) => ({
               ...items,
               [activeContainer]: items[activeContainer].filter(
-                (id) => id !== activeId
+                (id) => id !== activeId,
               ),
               [newContainerId]: [active.id],
             }));
@@ -434,7 +434,7 @@ export function MultipleContainers({
               [overContainer]: arrayMove(
                 items[overContainer],
                 activeIndex,
-                overIndex
+                overIndex,
               ),
             }));
           }
@@ -515,7 +515,7 @@ export function MultipleContainers({
               : renderSortableItemDragOverlay(activeId)
             : null}
         </DragOverlay>,
-        document.body
+        document.body,
       )}
       {trashable && activeId && !containers.includes(activeId) ? (
         <Trash id={TRASH_ID} />
@@ -581,7 +581,7 @@ export function MultipleContainers({
 
   function handleRemove(containerID: UniqueIdentifier) {
     setContainers((containers) =>
-      containers.filter((id) => id !== containerID)
+      containers.filter((id) => id !== containerID),
     );
   }
 

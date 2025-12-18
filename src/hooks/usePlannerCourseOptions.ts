@@ -36,7 +36,7 @@ export const usePlannerCourse = ({
         if (sem.semesterID !== semesterId) return sem;
 
         const currentIndex = sem.courseList.findIndex(
-          (c) => c.id === course.id
+          (c) => c.id === course.id,
         );
         if (currentIndex === -1) return sem;
 
@@ -54,14 +54,14 @@ export const usePlannerCourse = ({
           courseList: newCourseList,
           creditsTotal: calculateCredits(newCourseList),
         };
-      })
+      }),
     );
   };
 
   const handleMoveNext = () => {
     setPlannerCourses((prev) => {
       const currentSemIndex = prev.findIndex(
-        (s) => s.semesterID === semesterId
+        (s) => s.semesterID === semesterId,
       );
 
       // If semester not found or it's the last semester, do nothing
@@ -75,7 +75,7 @@ export const usePlannerCourse = ({
 
       // Remove from current
       const newCurrentList = currentSem.courseList.filter(
-        (c) => c.id !== course.id
+        (c) => c.id !== course.id,
       );
 
       // Add to next (at the end)
@@ -102,7 +102,7 @@ export const usePlannerCourse = ({
   const handleMovePrev = () => {
     setPlannerCourses((prev) => {
       const currentSemIndex = prev.findIndex(
-        (s) => s.semesterID === semesterId
+        (s) => s.semesterID === semesterId,
       );
 
       // If semester not found or it's the first semester, do nothing
@@ -116,7 +116,7 @@ export const usePlannerCourse = ({
 
       // Remove from current
       const newCurrentList = currentSem.courseList.filter(
-        (c) => c.id !== course.id
+        (c) => c.id !== course.id,
       );
 
       // Add to previous (at the end)
@@ -151,13 +151,13 @@ export const usePlannerCourse = ({
       const existingIndex = prev.findIndex(
         (c) =>
           c.data.subj_code === course.data.subj_code &&
-          c.data.code_num === course.data.code_num
+          c.data.code_num === course.data.code_num,
       );
 
       if (existingIndex !== -1) {
         // Increment count of existing item
         return prev.map((c, i) =>
-          i === existingIndex ? { ...c, count: c.count + 1 } : c
+          i === existingIndex ? { ...c, count: c.count + 1 } : c,
         );
       } else {
         // Add as new item (resetting ID to be clean)
@@ -178,7 +178,7 @@ export const usePlannerCourse = ({
           courseList: newCourseList,
           creditsTotal: calculateCredits(newCourseList),
         };
-      })
+      }),
     );
   };
 

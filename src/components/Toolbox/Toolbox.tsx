@@ -27,7 +27,7 @@ const Toolbox: React.FC = () => {
 
   useEffect(() => {
     setCount(
-      toolboxCourses.reduce((total, course) => total + (course.count || 0), 0)
+      toolboxCourses.reduce((total, course) => total + (course.count || 0), 0),
     );
   }, [toolboxCourses]);
 

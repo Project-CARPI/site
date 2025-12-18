@@ -44,17 +44,17 @@ export const useDndLogic = () => {
     }),
     useSensor(KeyboardSensor, {
       coordinateGetter: sortableKeyboardCoordinates,
-    })
+    }),
   );
 
   // --- Helper: Find Container by Course ID ---
   const findContainer = (
-    id: UniqueIdentifier
+    id: UniqueIdentifier,
   ): UniqueIdentifier | undefined => {
     if (toolboxCourses.find((c) => c.id === id)) return "toolbox";
 
     const semester = plannerCourses.find((sem) =>
-      sem.courseList.find((c) => c.id === id)
+      sem.courseList.find((c) => c.id === id),
     );
     if (semester) return semester.semesterID;
 
@@ -94,7 +94,7 @@ export const useDndLogic = () => {
               droppableContainers: args.droppableContainers.filter(
                 (container) =>
                   container.id !== overId &&
-                  containerItems.includes(container.id as string)
+                  containerItems.includes(container.id as string),
               ),
             })[0]?.id;
           }
@@ -109,7 +109,7 @@ export const useDndLogic = () => {
 
       return lastOverId.current ? [{ id: lastOverId.current }] : [];
     },
-    [activeItem, plannerCourses, toolboxCourses]
+    [activeItem, plannerCourses, toolboxCourses],
   );
 
   // --- 1. Drag Start ---
@@ -154,7 +154,7 @@ export const useDndLogic = () => {
         itemToMove = toolboxCourses.find((c) => c.id === active.id);
       } else {
         const sem = plannerCourses.find(
-          (s) => s.semesterID === activeContainer
+          (s) => s.semesterID === activeContainer,
         );
         itemToMove = sem?.courseList.find((c) => c.id === active.id);
       }
@@ -192,7 +192,7 @@ export const useDndLogic = () => {
               };
             }
             return sem;
-          })
+          }),
         );
       }
 
@@ -234,13 +234,13 @@ export const useDndLogic = () => {
               };
             }
             return sem;
-          })
+          }),
         );
       }
 
       recentlyMovedToNewContainer.current = true;
     },
-    [plannerCourses, toolboxCourses, setPlannerCourses, setToolboxCourses]
+    [plannerCourses, toolboxCourses, setPlannerCourses, setToolboxCourses],
   );
 
   // --- 3. Drag End (Cleanup & Merging) ---
@@ -266,7 +266,7 @@ export const useDndLogic = () => {
             creditsTotal: sem.courseList
               .filter((c) => c.id !== active.id)
               .reduce((acc, c) => acc + c.data.credit_max, 0),
-          }))
+          })),
         );
       }
       setOriginalToolboxState(null);
@@ -285,7 +285,7 @@ export const useDndLogic = () => {
             creditsTotal: sem.courseList
               .filter((c) => c.id !== active.id)
               .reduce((acc, c) => acc + c.data.credit_max, 0),
-          }))
+          })),
         );
       }
       setOriginalToolboxState(null);
@@ -300,7 +300,7 @@ export const useDndLogic = () => {
       if (activeIndex !== overIndex) {
         if (activeContainer === "toolbox") {
           setToolboxCourses((items) =>
-            arrayMove(items, activeIndex, overIndex)
+            arrayMove(items, activeIndex, overIndex),
           );
         } else {
           setPlannerCourses((prev) =>
@@ -311,11 +311,11 @@ export const useDndLogic = () => {
                     courseList: arrayMove(
                       sem.courseList,
                       activeIndex,
-                      overIndex
+                      overIndex,
                     ),
                   }
-                : sem
-            )
+                : sem,
+            ),
           );
         }
       }
@@ -348,7 +348,7 @@ export const useDndLogic = () => {
   // Helper to check if overID belongs to the active container
   const overContainerIsSame = (
     activeContainer: UniqueIdentifier,
-    overId: UniqueIdentifier
+    overId: UniqueIdentifier,
   ) => {
     // If we are over the container itself or an item inside it
     const overRealContainer =

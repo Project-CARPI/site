@@ -68,7 +68,7 @@ const PlannerCourse: React.FC<PlannerCourseProps> = ({
       semesterId,
       isFirstSemester,
       isLastSemester,
-    ]
+    ],
   );
 
   const togglePopup = (event: React.MouseEvent) => {

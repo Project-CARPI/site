@@ -40,7 +40,7 @@ const AppDragDropContext: React.FC<{ children: React.ReactNode }> = ({
             <PlannerCourse course={activeItem} semesterId={null} />
           ) : null}
         </DragOverlay>,
-        document.body
+        document.body,
       )}
     </DndContext>
   );

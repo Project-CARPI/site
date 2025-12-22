@@ -1,6 +1,4 @@
 import React, { useState } from "react";
-import { v4 as uuidv4 } from "uuid";
-
 import AddButton from "./CatalogCourse/AddButton";
 import { motion } from "framer-motion";
 import { APICourse } from "../../types/interfaces/Course.interface";
@@ -13,9 +11,8 @@ import CourseBadge from "./shared/CourseBadge";
 
 const findFiltersForCourse = (
   api_list: string[],
-  filterDataType: FilterData[]
+  filterDataType: FilterData[],
 ) => {
-  console.log("API List:", api_list);
   return filterDataType.filter((attr) => api_list.includes(attr.code));
 };
 
@@ -24,7 +21,7 @@ interface CourseProps {
 }
 
 const Course: React.FC<CourseProps> = ({ course }) => {
-  const { toolboxCourses, setToolboxCourses } = useCourseWorkspace();
+  const { addCourseToToolbox, getCourseCountInToolbox } = useCourseWorkspace();
   const { attributes, semesters } = useFilterData();
 
   const attrFilters = findFiltersForCourse(course.attr_list || [], attributes);
@@ -36,41 +33,15 @@ const Course: React.FC<CourseProps> = ({ course }) => {
     if (target.id !== "add-button") setIsOpen((open) => !open);
   };
 
-  const courseDisplay: string = `${course.subj_code}-${course.code_num}`;
-  const addCourse = (e: React.MouseEvent<HTMLButtonElement>) => {
-    e.stopPropagation();
-
-    setToolboxCourses((prevCourses) => {
-      const existingIndex = prevCourses.findIndex(
-        (c) => c.name === courseDisplay
-      );
-
-      if (existingIndex !== -1) {
-        return prevCourses.map((c, i) =>
-          i === existingIndex ? { ...c, count: c.count + 1 } : c
-        );
-      } else {
-        return [
-          ...prevCourses,
-          {
-            id: uuidv4(),
-            name: courseDisplay,
-            count: 1,
-            data: course,
-          },
-        ];
-      }
-    });
-  };
-  const toolboxCourse =
-    toolboxCourses[toolboxCourses.findIndex((c) => c.name === courseDisplay)];
-  const courseCount = toolboxCourse ? toolboxCourse.count : undefined;
   return (
     <div
       className="relative bg-carpipink hover:cursor-pointer hover:bg-darkblue/10 border-1 border-black rounded-xl w-full p-4"
       onClick={toggleOpen}
     >
-      <CourseBadge count={courseCount} className="absolute -top-2 -right-2" />
+      <CourseBadge
+        count={getCourseCountInToolbox(course)}
+        className="absolute -top-2 -right-2"
+      />
 
       <div className={`flex items-center justify-between`}>
         <div>
@@ -89,7 +60,7 @@ const Course: React.FC<CourseProps> = ({ course }) => {
           </div>
         </div>
         <div id="add-button" className={``}>
-          <AddButton addCourse={addCourse} />
+          <AddButton addCourse={() => addCourseToToolbox(course)} />
         </div>
       </div>
       <div className={`${isOpen ? "" : "hidden"} mt-2`}>

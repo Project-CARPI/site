@@ -14,7 +14,6 @@ import {
 
 import PlannerCourseHolder from "./PlannerCourseHolder";
 import { useCourseWorkspace } from "../../hooks/useCourseWorkspace";
-import DeleteSemester from "../PlannerComponents/DeleteSemester";
 import { MdEdit } from "react-icons/md";
 import PlannerCourse from "../Course/PlannerCourse";
 
@@ -30,7 +29,8 @@ const SemesterBlock: React.FC<SemesterBlockProps> = ({ semester }) => {
     id: semester.semesterID,
   });
 
-  const { plannerCourses, setPlannerCourses } = useCourseWorkspace();
+  const { updateSemesterName, updateSemesterSeason, deleteSemester } =
+    useCourseWorkspace();
   const [isEditing, setIsEditing] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
 
@@ -57,33 +57,17 @@ const SemesterBlock: React.FC<SemesterBlockProps> = ({ semester }) => {
 
   // customizable semester title
   const handleTitleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setPlannerCourses((prev) =>
-      prev.map((sem) =>
-        sem.semesterID === semester.semesterID
-          ? { ...sem, semesterTitle: e.target.value }
-          : sem,
-      ),
-    );
+    updateSemesterName(semester.semesterID, e.target.value);
   };
 
   // handle season dropdown
   const seasonDropdown = (e: React.ChangeEvent<HTMLSelectElement>) => {
     const newSeason = e.target.value as SemesterSeason;
-    setPlannerCourses((prevCourses) =>
-      prevCourses.map((sem) =>
-        sem.semesterID === semester.semesterID
-          ? { ...sem, season: newSeason }
-          : sem,
-      ),
-    );
+    updateSemesterSeason(semester.semesterID, newSeason);
   };
 
-  const handleDeleteSemester = (semesterNumber: number) => {
-    setPlannerCourses((prev) =>
-      prev
-        .filter((s) => s.semesterNumber !== semesterNumber)
-        .map((s, idx) => ({ ...s, semesterNumber: idx + 1 })),
-    );
+  const handleDeleteSemester = (semesterId: string) => {
+    deleteSemester(semesterId);
   };
 
   const finishEditing = () => setIsEditing(false);
@@ -172,10 +156,6 @@ const SemesterBlock: React.FC<SemesterBlockProps> = ({ semester }) => {
                 <PlannerCourse
                   course={course}
                   semesterId={semester.semesterID}
-                  isFirstSemester={semester.semesterNumber === 1}
-                  isLastSemester={
-                    semester.semesterNumber === plannerCourses.length
-                  }
                 />
               </SortableItem>
             ))
@@ -183,10 +163,14 @@ const SemesterBlock: React.FC<SemesterBlockProps> = ({ semester }) => {
         </SortableContext>
       </div>
 
-      <DeleteSemester
-        semesterNumber={semester.semesterNumber}
-        onDelete={handleDeleteSemester}
-      />
+      <div className="flex justify-end">
+        <button
+          onClick={() => handleDeleteSemester(semester.semesterID)}
+          className="border border-black rounded-full px-3 py-0 h-fit font-medium text-sm hover:cursor-pointer hover:bg-darkblue hover:text-carpipink transition-colors duration-200"
+        >
+          Delete
+        </button>
+      </div>
     </div>
   );
 };

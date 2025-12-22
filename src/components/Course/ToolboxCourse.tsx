@@ -1,7 +1,7 @@
 import React from "react";
 import { UserCourse } from "../../types/interfaces/Course.interface";
-import CourseLabel from "./CourseLabel";
-import CourseBadge from "./CourseBadge";
+import CourseLabel from "./shared/CourseLabel";
+import CourseBadge from "./shared/CourseBadge";
 
 interface ToolboxCourseProps {
   course: UserCourse;

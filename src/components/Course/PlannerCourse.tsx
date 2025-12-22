@@ -16,8 +16,6 @@ interface PlannerCourseProps {
 const PlannerCourse: React.FC<PlannerCourseProps> = ({
   course,
   semesterId,
-  isFirstSemester = false,
-  isLastSemester = false,
 }) => {
   const [openPopup, setOpenPopup] = useState<boolean>(false);
   const componentRef = useRef<HTMLDivElement>(null);
@@ -25,8 +23,6 @@ const PlannerCourse: React.FC<PlannerCourseProps> = ({
   const menuOptions = usePlannerCourse({
     course,
     semesterId,
-    isFirstSemester,
-    isLastSemester,
   });
 
   const togglePopup = (event: React.MouseEvent) => {

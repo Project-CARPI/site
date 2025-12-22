@@ -14,124 +14,74 @@ export interface MenuOption {
 interface UsePlannerCourseProps {
   course: UserCourse;
   semesterId: string | null;
-  isFirstSemester?: boolean;
-  isLastSemester?: boolean;
 }
 
 export const usePlannerCourse = ({
   course,
   semesterId,
-  isFirstSemester = false,
-  isLastSemester = false,
 }: UsePlannerCourseProps) => {
-  const { setPlannerCourses, setToolboxCourses } = useCourseWorkspace();
+  const {
+    addCourseToSemester,
+    removeCourseFromSemester,
+    addCourseToToolbox,
+    plannerCourses,
+  } = useCourseWorkspace();
 
-  /* HELPER FUNCTIONS */
-  const calculateCredits = (courses: UserCourse[]) => {
-    return courses.reduce((acc, c) => acc + c.data.credit_max, 0);
-  };
+  /* HELPERS */
+  const isFirstSemester = useMemo(() => {
+    return semesterId ? plannerCourses[0].semesterID === semesterId : false;
+  }, [semesterId, plannerCourses]);
+
+  const isLastSemester = useMemo(() => {
+    return semesterId
+      ? plannerCourses[plannerCourses.length - 1].semesterID === semesterId
+      : false;
+  }, [semesterId, plannerCourses]);
 
   /* HANDLER FUNCTIONS */
   const handleMove = useCallback(
     (direction: "next" | "prev") => {
-      setPlannerCourses((prev) => {
-        const currentSemIndex = prev.findIndex(
-          (s) => s.semesterID === semesterId
-        );
-        if (currentSemIndex === -1) return prev;
+      if (!semesterId) return;
 
-        // determine target semester index
-        const offset = direction === "next" ? 1 : -1;
-        const targetSemIndex = currentSemIndex + offset;
+      // find next/prev semester
+      const currentIdx = plannerCourses.findIndex(
+        (s) => s.semesterID === semesterId,
+      );
+      const targetIdx = direction === "next" ? currentIdx + 1 : currentIdx - 1;
+      const targetSem = plannerCourses[targetIdx];
 
-        // boundary check
-        if (targetSemIndex < 0 || targetSemIndex >= prev.length) {
-          return prev;
-        }
-
-        const currentSem = prev[currentSemIndex];
-        const targetSem = prev[targetSemIndex];
-
-        // remove from current
-        const newCurrentList = currentSem.courseList.filter(
-          (c) => c.id !== course.id
-        );
-
-        // add to target
-        const newTargetList = [...targetSem.courseList, course];
-        const nextState = [...prev];
-
-        nextState[currentSemIndex] = {
-          ...currentSem,
-          courseList: newCurrentList,
-          creditsTotal: calculateCredits(newCurrentList),
-        };
-
-        nextState[targetSemIndex] = {
-          ...targetSem,
-          courseList: newTargetList,
-          creditsTotal: calculateCredits(newTargetList),
-        };
-
-        return nextState;
-      });
+      // move course
+      if (targetSem) {
+        removeCourseFromSemester(semesterId, course.id);
+        addCourseToSemester(targetSem.semesterID, course);
+      }
     },
-    [course, semesterId, setPlannerCourses]
+    [
+      course,
+      semesterId,
+      plannerCourses,
+      removeCourseFromSemester,
+      addCourseToSemester,
+    ],
   );
 
   const handleDelete = useCallback(() => {
-    setPlannerCourses((prev) =>
-      prev.map((sem) => {
-        if (sem.semesterID !== semesterId) return sem;
-        const newCourseList = sem.courseList.filter((c) => c.id !== course.id);
-        return {
-          ...sem,
-          courseList: newCourseList,
-          creditsTotal: calculateCredits(newCourseList),
-        };
-      })
-    );
-  }, [course, semesterId, setPlannerCourses]);
+    // goes into the ether
+    if (semesterId) removeCourseFromSemester(semesterId, course.id);
+  }, [course, semesterId, removeCourseFromSemester]);
 
   const handleDuplicate = useCallback(() => {
-    setPlannerCourses((prev) =>
-      prev.map((sem) => {
-        if (sem.semesterID !== semesterId) return sem;
-        const currentIndex = sem.courseList.findIndex(
-          (c) => c.id === course.id
-        );
-        if (currentIndex === -1) return sem;
+    if (!semesterId) return;
 
-        const newCourse: UserCourse = { ...course, id: uuidv4(), count: 1 };
-        const newCourseList = [...sem.courseList];
-        newCourseList.splice(currentIndex + 1, 0, newCourse);
-
-        return {
-          ...sem,
-          courseList: newCourseList,
-          creditsTotal: calculateCredits(newCourseList),
-        };
-      })
-    );
-  }, [course, semesterId, setPlannerCourses]);
+    // create a new course with a new ID
+    const newCourse = { ...course, id: uuidv4(), count: 1 };
+    addCourseToSemester(semesterId, newCourse);
+  }, [course, semesterId, addCourseToSemester]);
 
   const handleMoveToolbox = useCallback(() => {
-    handleDelete();
-    setToolboxCourses((prev) => {
-      const existingIndex = prev.findIndex(
-        (c) =>
-          c.data.subj_code === course.data.subj_code &&
-          c.data.code_num === course.data.code_num
-      );
-      if (existingIndex !== -1) {
-        return prev.map((c, i) =>
-          i === existingIndex ? { ...c, count: c.count + 1 } : c
-        );
-      } else {
-        return [...prev, { ...course, id: uuidv4(), count: 1 }];
-      }
-    });
-  }, [course, handleDelete, setToolboxCourses]);
+    if (semesterId) removeCourseFromSemester(semesterId, course.id);
+    addCourseToToolbox(course.data);
+  }, [course, semesterId, removeCourseFromSemester, addCourseToToolbox]);
 
   /* MENU OPTIONS */
   return useMemo<MenuOption[]>(
@@ -170,6 +120,6 @@ export const usePlannerCourse = ({
       semesterId,
       isFirstSemester,
       isLastSemester,
-    ]
+    ],
   );
 };

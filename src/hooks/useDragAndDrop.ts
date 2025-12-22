@@ -15,16 +15,26 @@ import {
   getFirstCollision,
   closestCenter,
 } from "@dnd-kit/core";
-import { sortableKeyboardCoordinates, arrayMove } from "@dnd-kit/sortable";
+import { sortableKeyboardCoordinates } from "@dnd-kit/sortable";
 import { useCourseWorkspace } from "./useCourseWorkspace";
 import { UserCourse } from "../types/interfaces/Course.interface";
 
 export const useDndLogic = () => {
   const {
     plannerCourses,
-    setPlannerCourses,
     toolboxCourses,
-    setToolboxCourses,
+
+    // Planner Actions
+    addCourseToSemester,
+    removeCourseFromSemester,
+    moveCourseInSemester,
+
+    // Toolbox Actions
+    insertCourseIntoToolbox,
+    removeCourseFromToolbox,
+    moveCourseInToolbox,
+    consolidateToolboxCourses,
+    resetToolbox,
   } = useCourseWorkspace();
 
   const [activeItem, setActiveItem] = useState<UserCourse | null>(null);
@@ -48,18 +58,19 @@ export const useDndLogic = () => {
   );
 
   // --- Helper: Find Container by Course ID ---
-  const findContainer = (
-    id: UniqueIdentifier,
-  ): UniqueIdentifier | undefined => {
-    if (toolboxCourses.find((c) => c.id === id)) return "toolbox";
+  const findContainer = useCallback(
+    (id: UniqueIdentifier): UniqueIdentifier | undefined => {
+      if (toolboxCourses.find((c) => c.id === id)) return "toolbox";
 
-    const semester = plannerCourses.find((sem) =>
-      sem.courseList.find((c) => c.id === id),
-    );
-    if (semester) return semester.semesterID;
+      const semester = plannerCourses.find((sem) =>
+        sem.courseList.find((c) => c.id === id),
+      );
+      if (semester) return semester.semesterID;
 
-    return undefined;
-  };
+      return undefined;
+    },
+    [plannerCourses, toolboxCourses],
+  );
 
   // --- Collision Strategy ---
   const collisionDetectionStrategy: CollisionDetection = useCallback(
@@ -109,7 +120,7 @@ export const useDndLogic = () => {
 
       return lastOverId.current ? [{ id: lastOverId.current }] : [];
     },
-    [activeItem, plannerCourses, toolboxCourses],
+    [activeItem, findContainer, plannerCourses],
   );
 
   // --- 1. Drag Start ---
@@ -163,36 +174,26 @@ export const useDndLogic = () => {
 
       // --- EXECUTE MOVE ---
 
-      // A. Remove from Source
+      // remove from source
       if (activeContainer === "toolbox") {
-        setToolboxCourses((prev) => {
-          // If count > 1: We "Take" the active item (ID 1) and "Leave" a new item (ID 2)
-          // This keeps the dnd-kit active ID consistent with the cursor.
-          if (itemToMove!.count > 1) {
-            const remainder: UserCourse = {
-              ...itemToMove!,
-              id: uuidv4(), // NEW ID for the item staying behind
-              count: itemToMove!.count - 1,
-            };
-            // Replace the moving item with the remainder
-            return prev.map((c) => (c.id === active.id ? remainder : c));
-          }
-          // If count == 1, just remove it
-          return prev.filter((c) => c.id !== active.id);
-        });
+        // If count > 1, decrement count instead of removing
+        if (itemToMove.count > 1) {
+          const remainder: UserCourse = {
+            ...itemToMove,
+            id: uuidv4(),
+            count: itemToMove.count - 1,
+          };
+
+          const index = toolboxCourses.findIndex((c) => c.id === active.id);
+          removeCourseFromToolbox(active.id as string);
+          insertCourseIntoToolbox(remainder, index);
+        } else {
+          removeCourseFromToolbox(active.id as string);
+        }
       } else {
-        // Remove from Semester
-        setPlannerCourses((prev) =>
-          prev.map((sem) => {
-            if (sem.semesterID === activeContainer) {
-              return {
-                ...sem,
-                courseList: sem.courseList.filter((c) => c.id !== active.id),
-                creditsTotal: sem.creditsTotal - itemToMove!.data.credit_max,
-              };
-            }
-            return sem;
-          }),
+        removeCourseFromSemester(
+          activeContainer as string,
+          active.id as string,
         );
       }
 
@@ -201,46 +202,44 @@ export const useDndLogic = () => {
       const itemWithSingleCount = { ...itemToMove!, count: 1 };
 
       if (overContainer === "toolbox") {
-        setToolboxCourses((prev) => {
-          const next = [...prev];
-          const overIndex = over.data.current?.sortable?.index ?? next.length;
-          next.splice(overIndex, 0, itemWithSingleCount);
-          return next;
-        });
+        const overIndex =
+          over.data.current?.sortable?.index ?? toolboxCourses.length;
+        insertCourseIntoToolbox(itemWithSingleCount, overIndex);
       } else {
-        setPlannerCourses((prev) =>
-          prev.map((sem) => {
-            if (sem.semesterID === overContainer) {
-              const nextList = [...sem.courseList];
-              let overIndex = nextList.length;
+        const sem = plannerCourses.find((s) => s.semesterID === overContainer);
+        if (sem) {
+          const nextList = sem.courseList;
+          let overIndex = nextList.length;
 
-              if (overId !== overContainer) {
-                const idx = nextList.findIndex((c) => c.id === overId);
-                const isBelow =
-                  over &&
-                  active.rect.current.translated &&
-                  active.rect.current.translated.top >
-                    over.rect.top + over.rect.height;
-                const modifier = isBelow ? 1 : 0;
-                overIndex = idx >= 0 ? idx + modifier : nextList.length;
-              }
-
-              nextList.splice(overIndex, 0, itemWithSingleCount);
-              return {
-                ...sem,
-                courseList: nextList,
-                creditsTotal:
-                  sem.creditsTotal + itemWithSingleCount.data.credit_max,
-              };
-            }
-            return sem;
-          }),
-        );
+          if (overId !== overContainer) {
+            const idx = nextList.findIndex((c) => c.id === overId);
+            const isBelow =
+              over &&
+              active.rect.current.translated &&
+              active.rect.current.translated.top >
+                over.rect.top + over.rect.height;
+            const modifier = isBelow ? 1 : 0;
+            overIndex = idx >= 0 ? idx + modifier : nextList.length;
+          }
+          addCourseToSemester(
+            overContainer as string,
+            itemWithSingleCount,
+            overIndex,
+          );
+        }
       }
 
       recentlyMovedToNewContainer.current = true;
     },
-    [plannerCourses, toolboxCourses, setPlannerCourses, setToolboxCourses],
+    [
+      findContainer,
+      plannerCourses,
+      toolboxCourses,
+      addCourseToSemester,
+      removeCourseFromSemester,
+      removeCourseFromToolbox,
+      insertCourseIntoToolbox,
+    ],
   );
 
   // --- 3. Drag End (Cleanup & Merging) ---
@@ -256,17 +255,11 @@ export const useDndLogic = () => {
     // A. Handle Garbage Drop
     if (over?.id === "garbage") {
       if (activeContainer === "toolbox") {
-        setToolboxCourses((prev) => prev.filter((c) => c.id !== active.id));
-      } else {
-        setPlannerCourses((prev) =>
-          prev.map((sem) => ({
-            ...sem,
-            courseList: sem.courseList.filter((c) => c.id !== active.id),
-            // Credits update handled in onDragOver, but this is a safe sync
-            creditsTotal: sem.courseList
-              .filter((c) => c.id !== active.id)
-              .reduce((acc, c) => acc + c.data.credit_max, 0),
-          })),
+        removeCourseFromToolbox(active.id as string);
+      } else if (activeContainer) {
+        removeCourseFromSemester(
+          activeContainer as string,
+          active.id as string,
         );
       }
       setOriginalToolboxState(null);
@@ -276,17 +269,15 @@ export const useDndLogic = () => {
     // B. Handle Cancel / Drop Nowhere
     if (!over) {
       if (originalToolboxState) {
-        setToolboxCourses(originalToolboxState);
-        // Remove ghost from planner if it exists
-        setPlannerCourses((prev) =>
-          prev.map((sem) => ({
-            ...sem,
-            courseList: sem.courseList.filter((c) => c.id !== active.id),
-            creditsTotal: sem.courseList
-              .filter((c) => c.id !== active.id)
-              .reduce((acc, c) => acc + c.data.credit_max, 0),
-          })),
-        );
+        resetToolbox(originalToolboxState);
+
+        // remmove from planner if came from there
+        if (activeContainer && activeContainer !== "toolbox") {
+          removeCourseFromSemester(
+            activeContainer as string,
+            active.id as string,
+          );
+        }
       }
       setOriginalToolboxState(null);
       return;
@@ -299,46 +290,20 @@ export const useDndLogic = () => {
 
       if (activeIndex !== overIndex) {
         if (activeContainer === "toolbox") {
-          setToolboxCourses((items) =>
-            arrayMove(items, activeIndex, overIndex),
-          );
+          moveCourseInToolbox(activeIndex, overIndex);
         } else {
-          setPlannerCourses((prev) =>
-            prev.map((sem) =>
-              sem.semesterID === activeContainer
-                ? {
-                    ...sem,
-                    courseList: arrayMove(
-                      sem.courseList,
-                      activeIndex,
-                      overIndex,
-                    ),
-                  }
-                : sem,
-            ),
+          moveCourseInSemester(
+            activeContainer as string,
+            activeIndex,
+            overIndex,
           );
         }
       }
     }
 
     // D. Merge Logic (If dropped in Toolbox)
-    // We group by Content (Subj + Code) to merge duplicates
     if (activeContainer === "toolbox") {
-      setToolboxCourses((prev) => {
-        const uniqueMap = new Map<string, UserCourse>();
-
-        for (const course of prev) {
-          if (uniqueMap.has(course.name)) {
-            const existing = uniqueMap.get(course.name)!;
-            // Merge counts
-            existing.count += course.count;
-          } else {
-            // New entry
-            uniqueMap.set(course.name, { ...course });
-          }
-        }
-        return Array.from(uniqueMap.values());
-      });
+      consolidateToolboxCourses();
     }
 
     // Clear snapshot after successful drop

@@ -6,7 +6,8 @@ import {
   DragStartEvent,
   DragOverEvent,
   DragEndEvent,
-  PointerSensor,
+  MouseSensor,
+  TouchSensor,
   KeyboardSensor,
   UniqueIdentifier,
   CollisionDetection,
@@ -49,12 +50,20 @@ export const useDndLogic = () => {
 
   // --- Sensors ---
   const sensors = useSensors(
-    useSensor(PointerSensor, {
-      activationConstraint: { distance: 5 },
+    useSensor(MouseSensor, {
+      activationConstraint: {
+        distance: 10,
+      },
+    }),
+    useSensor(TouchSensor, {
+      activationConstraint: {
+        delay: 250,
+        tolerance: 5,
+      },
     }),
     useSensor(KeyboardSensor, {
       coordinateGetter: sortableKeyboardCoordinates,
-    }),
+    })
   );
 
   // --- Helper: Find Container by Course ID ---
@@ -63,13 +72,13 @@ export const useDndLogic = () => {
       if (toolboxCourses.find((c) => c.id === id)) return "toolbox";
 
       const semester = plannerCourses.find((sem) =>
-        sem.courseList.find((c) => c.id === id),
+        sem.courseList.find((c) => c.id === id)
       );
       if (semester) return semester.semesterID;
 
       return undefined;
     },
-    [plannerCourses, toolboxCourses],
+    [plannerCourses, toolboxCourses]
   );
 
   // --- Collision Strategy ---
@@ -105,7 +114,7 @@ export const useDndLogic = () => {
               droppableContainers: args.droppableContainers.filter(
                 (container) =>
                   container.id !== overId &&
-                  containerItems.includes(container.id as string),
+                  containerItems.includes(container.id as string)
               ),
             })[0]?.id;
           }
@@ -120,7 +129,7 @@ export const useDndLogic = () => {
 
       return lastOverId.current ? [{ id: lastOverId.current }] : [];
     },
-    [activeItem, findContainer, plannerCourses],
+    [activeItem, findContainer, plannerCourses]
   );
 
   // --- 1. Drag Start ---
@@ -165,7 +174,7 @@ export const useDndLogic = () => {
         itemToMove = toolboxCourses.find((c) => c.id === active.id);
       } else {
         const sem = plannerCourses.find(
-          (s) => s.semesterID === activeContainer,
+          (s) => s.semesterID === activeContainer
         );
         itemToMove = sem?.courseList.find((c) => c.id === active.id);
       }
@@ -193,7 +202,7 @@ export const useDndLogic = () => {
       } else {
         removeCourseFromSemester(
           activeContainer as string,
-          active.id as string,
+          active.id as string
         );
       }
 
@@ -224,7 +233,7 @@ export const useDndLogic = () => {
           addCourseToSemester(
             overContainer as string,
             itemWithSingleCount,
-            overIndex,
+            overIndex
           );
         }
       }
@@ -239,7 +248,7 @@ export const useDndLogic = () => {
       removeCourseFromSemester,
       removeCourseFromToolbox,
       insertCourseIntoToolbox,
-    ],
+    ]
   );
 
   // --- 3. Drag End (Cleanup & Merging) ---
@@ -259,7 +268,7 @@ export const useDndLogic = () => {
       } else if (activeContainer) {
         removeCourseFromSemester(
           activeContainer as string,
-          active.id as string,
+          active.id as string
         );
       }
       setOriginalToolboxState(null);
@@ -275,7 +284,7 @@ export const useDndLogic = () => {
         if (activeContainer && activeContainer !== "toolbox") {
           removeCourseFromSemester(
             activeContainer as string,
-            active.id as string,
+            active.id as string
           );
         }
       }
@@ -295,7 +304,7 @@ export const useDndLogic = () => {
           moveCourseInSemester(
             activeContainer as string,
             activeIndex,
-            overIndex,
+            overIndex
           );
         }
       }
@@ -313,7 +322,7 @@ export const useDndLogic = () => {
   // Helper to check if overID belongs to the active container
   const overContainerIsSame = (
     activeContainer: UniqueIdentifier,
-    overId: UniqueIdentifier,
+    overId: UniqueIdentifier
   ) => {
     // If we are over the container itself or an item inside it
     const overRealContainer =

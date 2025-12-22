@@ -23,6 +23,7 @@ export const SortableItem = ({ id, children, data }: SortableItemProps) => {
     transform: CSS.Translate.toString(transform),
     transition,
     opacity: isDragging ? 0.5 : 1,
+    touchAction: "none",
   };
 
   return (

@@ -23,26 +23,35 @@ const Planner: React.FC = () => {
         <img src="/carpi-black.png" alt="Carpi Logo" className="h-full" />
       </header>
 
-      <section className="h-full w-full md:overflow-y-auto scrollbar-hide pr-4 flex flex-col gap-4">
+      <section className="h-full w-full flex flex-col gap-4">
         <div className="flex justify-between sticky top-0 z-10 bg-carpipink pt-4">
           <h1 className="font-bold text-xl">Planner</h1>
           <AddSemester />
         </div>
 
-        <div className="flex flex-col gap-4 md:grid md:grid-cols-2 md:gap-4">
-          {plannerCourses.map((semester, index) => (
-            <div
-              key={semester.semesterNumber}
-              className="md:h-full flex flex-col justify-between"
-            >
-              <SemesterBlock
-                index={index}
-                key={semester.semesterNumber}
-                semester={semester}
-              />
-            </div>
-          ))}
-        </div>
+        {plannerCourses.length === 0 ? (
+          <div className="flex flex-col justify-center text-center opacity-60 italic">
+            <p>
+              No semesters added yet. <br></br>
+              Click "Add Semester Block" to get started!
+            </p>
+          </div>
+        ) : (
+          <div className="md:overflow-y-auto grid md:grid-cols-2 gap-4 pr-4 pb-30">
+            {plannerCourses.map((semester, index) => (
+              <div
+                key={semester.semesterID}
+                className="md:h-full flex flex-col justify-between"
+              >
+                <SemesterBlock
+                  index={index}
+                  key={semester.semesterID}
+                  semester={semester}
+                />
+              </div>
+            ))}
+          </div>
+        )}
       </section>
     </div>
   );

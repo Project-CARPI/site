@@ -50,7 +50,7 @@ const SemesterBlock: React.FC<SemesterBlockProps> = ({ semester }) => {
   const hasDuplicateCourses = semester.courseList.some((course, index) => {
     return (
       semester.courseList.findIndex(
-        (c) => c.data.title === course.data.title,
+        (c) => c.data.title === course.data.title
       ) !== index
     );
   });
@@ -143,7 +143,7 @@ const SemesterBlock: React.FC<SemesterBlockProps> = ({ semester }) => {
         </div>
       )}
 
-      <div ref={setNodeRef}>
+      <div ref={setNodeRef} className="flex flex-col gap-2">
         <SortableContext
           items={semester.courseList.map((c) => c.id)}
           strategy={verticalListSortingStrategy}

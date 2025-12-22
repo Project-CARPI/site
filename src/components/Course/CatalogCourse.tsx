@@ -11,7 +11,7 @@ import CourseBadge from "./shared/CourseBadge";
 
 const findFiltersForCourse = (
   api_list: string[],
-  filterDataType: FilterData[]
+  filterDataType: FilterData[],
 ) => {
   return filterDataType.filter((attr) => api_list.includes(attr.code));
 };

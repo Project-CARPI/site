@@ -11,7 +11,7 @@ import CourseBadge from "./shared/CourseBadge";
 
 const findFiltersForCourse = (
   api_list: string[],
-  filterDataType: FilterData[],
+  filterDataType: FilterData[]
 ) => {
   return filterDataType.filter((attr) => api_list.includes(attr.code));
 };
@@ -60,15 +60,22 @@ const Course: React.FC<CourseProps> = ({ course }) => {
           </div>
         </div>
         <div id="add-button" className={``}>
-          <AddButton addCourse={() => addCourseToToolbox(course)} />
+          <AddButton
+            addCourse={(e) => {
+              e.stopPropagation();
+              addCourseToToolbox(course);
+            }}
+          />
         </div>
       </div>
       <div className={`${isOpen ? "" : "hidden"} mt-2`}>
         <motion.p
           initial={{ height: 0, opacity: 0 }}
-          animate={isOpen ? { height: "auto", opacity: 1 } : {}}
+          animate={
+            isOpen ? { height: "auto", opacity: 1 } : { height: 0, opacity: 0 }
+          }
           className={`text-sm`}
-          transition={{ duration: 0.05 }}
+          transition={{ duration: 0.1 }}
         >
           {course.desc_text.trim() === ""
             ? "Empty Description"

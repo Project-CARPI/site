@@ -52,7 +52,7 @@ export const CourseWorkspaceProvider: React.FC<{ children: ReactNode }> = ({
       toolboxCourses,
       setToolboxCourses,
     }),
-    [plannerCourses, toolboxCourses],
+    [plannerCourses, toolboxCourses]
   );
 
   return (

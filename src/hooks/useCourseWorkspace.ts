@@ -5,7 +5,7 @@ export const useCourseWorkspace = () => {
   const context = useContext(CourseWorkspaceContext);
   if (!context) {
     throw new Error(
-      "useCourseWorkspace must be used within a CourseWorkspaceProvider",
+      "useCourseWorkspace must be used within a CourseWorkspaceProvider"
     );
   }
   return context;

@@ -1,9 +1,10 @@
-import React, { useState, useEffect, useRef, useMemo } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { MdDragIndicator, MdOutlineMoreHoriz } from "react-icons/md";
 import { UserCourse } from "../../types/interfaces/Course.interface";
 import * as RightClickContextMenu from "@radix-ui/react-context-menu";
 import { usePlannerCourse } from "../../hooks/usePlannerCourseOptions";
-import PlannerOptionsPopup, { MenuOption } from "./PlannerCourseOptionsPopup";
+import PlannerOptionsPopup from "./PlannerCourseOptionsPopup";
+import CourseLabel from "./shared/CourseLabel";
 
 interface PlannerCourseProps {
   course: UserCourse;
@@ -21,55 +22,12 @@ const PlannerCourse: React.FC<PlannerCourseProps> = ({
   const [openPopup, setOpenPopup] = useState<boolean>(false);
   const componentRef = useRef<HTMLDivElement>(null);
 
-  const {
-    handleDuplicate,
-    handleMoveNext,
-    handleMovePrev,
-    handleMoveToolbox,
-    handleDelete,
-    toTitleCase,
-  } = usePlannerCourse({
-    course: course,
-    semesterId: semesterId,
+  const menuOptions = usePlannerCourse({
+    course,
+    semesterId,
+    isFirstSemester,
+    isLastSemester,
   });
-
-  // --- 1. DEFINE YOUR MENU CONFIGURATION HERE ---
-  // Using useMemo prevents it from being recreated on every render
-  const menuOptions: MenuOption[] = useMemo(
-    () => [
-      { label: "Duplicate", action: handleDuplicate },
-      {
-        label: "Move to next sem",
-        action: handleMoveNext,
-        disabled: semesterId === null || isLastSemester,
-      },
-      {
-        label: "Move to prev sem",
-        action: handleMovePrev,
-        disabled: semesterId === null || isFirstSemester,
-      },
-      {
-        label: "Move back to toolbox",
-        action: handleMoveToolbox,
-        hasSeparatorBefore: true,
-      },
-      {
-        label: "Delete",
-        action: handleDelete,
-        isDanger: true,
-      },
-    ],
-    [
-      handleDuplicate,
-      handleMoveNext,
-      handleMovePrev,
-      handleMoveToolbox,
-      handleDelete,
-      semesterId,
-      isFirstSemester,
-      isLastSemester,
-    ],
-  );
 
   const togglePopup = (event: React.MouseEvent) => {
     event.stopPropagation();
@@ -100,12 +58,11 @@ const PlannerCourse: React.FC<PlannerCourseProps> = ({
         >
           <div className={`flex gap-2 items-center`}>
             <MdDragIndicator className="text-2xl" />
-            <div className={`text-sm`}>
-              <b>
-                {course.data.subj_code}-{course.data.code_num}
-              </b>
-              <p>{toTitleCase(course.data.title)}</p>
-            </div>
+            <CourseLabel
+              subjCode={course.data.subj_code}
+              codeNum={course.data.code_num}
+              title={course.data.title}
+            />
           </div>
 
           <div className={`flex gap-1 items-center`}>

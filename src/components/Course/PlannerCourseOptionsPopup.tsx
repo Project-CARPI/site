@@ -1,12 +1,5 @@
 import React from "react";
-
-export interface MenuOption {
-  label: string;
-  action: () => void;
-  isDanger?: boolean;
-  disabled?: boolean;
-  hasSeparatorBefore?: boolean;
-}
+import { MenuOption } from "../../hooks/usePlannerCourseOptions";
 
 interface PlannerOptionsPopupProps {
   options: MenuOption[];
@@ -18,7 +11,7 @@ const PlannerOptionsPopup: React.FC<PlannerOptionsPopupProps> = ({
   onClose,
 }) => {
   return (
-    <div className="absolute right-0 top-10 bg-carpipink rounded-xl border border-darkblue text-darkblue text-xs p-1.5 shadow-lg z-50 min-w-[150px]">
+    <div className="absolute right-0 top-10 bg-carpipink flex flex-col rounded-xl border border-darkblue text-darkblue text-xs p-1.5 shadow-lg z-50 min-w-[150px]">
       {options.map((opt) => (
         <React.Fragment key={opt.label}>
           {opt.hasSeparatorBefore && (

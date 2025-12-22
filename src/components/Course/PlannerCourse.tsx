@@ -50,7 +50,7 @@ const PlannerCourse: React.FC<PlannerCourseProps> = ({
       <RightClickContextMenu.Trigger>
         <div
           ref={componentRef}
-          className="relative flex justify-between bg-[#283044] rounded-2xl text-[#F5CECE] gap-4 px-2 py-3"
+          className="relative flex justify-between bg-darkblue rounded-2xl text-carpipink gap-4 px-2 py-3"
         >
           <div className={`flex gap-2 items-center`}>
             <MdDragIndicator className="text-2xl" />

@@ -54,7 +54,7 @@ const Toolbox: React.FC = () => {
       )}
 
       <div
-        className={`w-full bg-[#283044] rounded-t-xl h-auto transition-transform duration-300 ease-in-out pointer-events-auto ${
+        className={`w-full bg-darkblue rounded-t-xl h-auto transition-transform duration-300 ease-in-out pointer-events-auto ${
           isOpen
             ? "transform translate-y-0"
             : isDesktop
@@ -67,9 +67,9 @@ const Toolbox: React.FC = () => {
         {/* Header */}
         <div className="flex items-center gap-4 p-3 mx-2 cursor-pointer">
           <div className="flex items-center">
-            <h2 className="text-[#F5CECE] font-semibold text-xl">TOOLBOX</h2>
+            <h2 className="text-carpipink font-semibold text-xl">TOOLBOX</h2>
             <IoIosArrowUp
-              className={`ml-2 text-2xl text-[#F5CECE] transition-transform duration-300 ${
+              className={`ml-2 text-2xl text-carpipink transition-transform duration-300 ${
                 isOpen ? "rotate-180" : ""
               }`}
               onClick={toggleToolbox}
@@ -102,7 +102,7 @@ const Toolbox: React.FC = () => {
             >
               {toolboxCourses.length === 0 ? (
                 <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
-                  <span className="text-[#F5CECE] opacity-60 text-sm md:text-base font-medium italic">
+                  <span className="text-carpipink opacity-60 text-sm md:text-base font-medium italic">
                     Add courses to plan your semester
                   </span>
                 </div>

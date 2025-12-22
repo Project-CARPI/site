@@ -13,8 +13,8 @@ const ToolboxButton: React.FC<ToolboxButtonProps> = ({
 }) => {
   return (
     <button
-      className={`${isOpen ? "hidden" : ""} bg-[#283044] rounded-full text-[#F5CECE] text-5xl p-4
-        border-[#F5CECE] border-1 m-2 absolute bottom-10 right-0`}
+      className={`${isOpen ? "hidden" : ""} bg-darkblue rounded-full text-carpipink text-5xl p-4
+        border-carpipink border-1 m-2 absolute bottom-10 right-0`}
       onClick={toggleToolbox}
     >
       <div

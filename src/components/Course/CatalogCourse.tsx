@@ -11,7 +11,7 @@ import CourseBadge from "./shared/CourseBadge";
 
 const findFiltersForCourse = (
   api_list: string[],
-  filterDataType: FilterData[],
+  filterDataType: FilterData[]
 ) => {
   return filterDataType.filter((attr) => api_list.includes(attr.code));
 };
@@ -45,11 +45,7 @@ const Course: React.FC<CourseProps> = ({ course }) => {
 
       <div className={`flex items-center justify-between`}>
         <div>
-          <CourseLabel
-            subjCode={course.subj_code}
-            codeNum={course.code_num}
-            title={course.title}
-          />
+          <CourseLabel course={course} showCredits />
           <div className={`flex flex-wrap mt-1 gap-1`}>
             {attrFilters.map((attr, index) => {
               return <Tag key={index} filter={attr} />;

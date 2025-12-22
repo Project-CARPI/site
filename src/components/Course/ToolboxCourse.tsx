@@ -13,12 +13,7 @@ const ToolboxCourse: React.FC<ToolboxCourseProps> = ({ course }) => {
       className={`relative bg-carpipink text-nowrap rounded-md w-fit px-3 py-1`}
     >
       <CourseBadge count={course.count} className="absolute -top-2 -right-2" />
-      <CourseLabel
-        subjCode={course.data.subj_code}
-        codeNum={course.data.code_num}
-        title={course.data.title}
-        horizontal
-      />
+      <CourseLabel course={course.data} horizontal />
     </div>
   );
 };

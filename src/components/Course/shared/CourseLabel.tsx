@@ -1,10 +1,10 @@
 import React from "react";
+import { APICourse } from "../../../types/interfaces/Course.interface";
 
 interface CourseLabelProps {
-  subjCode: string;
-  codeNum: number;
-  title: string;
+  course: APICourse;
   horizontal?: boolean;
+  showCredits?: boolean;
 }
 
 const toTitleCase = (str: string) => {
@@ -16,17 +16,30 @@ const toTitleCase = (str: string) => {
 };
 
 const CourseLabel: React.FC<CourseLabelProps> = ({
-  subjCode,
-  codeNum,
-  title,
+  course,
   horizontal = false,
+  showCredits = false,
 }) => {
   return (
     <div className={`text-sm ${horizontal ? "flex items-center gap-2" : ""}`}>
-      <b>
-        {subjCode}-{codeNum}
-      </b>
-      <p>{toTitleCase(title)}</p>
+      <div className={`flex gap-2 items-baseline`}>
+        <b>
+          {course.subj_code}-{course.code_num}
+        </b>
+        {showCredits && (
+          <i>
+            {course.credit_min !== course.credit_max ? (
+              <span className="text-gray-500">
+                {course.credit_min}–{course.credit_max} credits
+              </span>
+            ) : (
+              <span className="text-gray-500">{course.credit_max} credits</span>
+            )}
+          </i>
+        )}
+      </div>
+
+      <p>{toTitleCase(course.title)}</p>
     </div>
   );
 };

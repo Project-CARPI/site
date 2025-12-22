@@ -54,11 +54,7 @@ const PlannerCourse: React.FC<PlannerCourseProps> = ({
         >
           <div className={`flex gap-2 items-center`}>
             <MdDragIndicator className="text-2xl" />
-            <CourseLabel
-              subjCode={course.data.subj_code}
-              codeNum={course.data.code_num}
-              title={course.data.title}
-            />
+            <CourseLabel course={course.data} showCredits />
           </div>
 
           <div className={`flex gap-1 items-center`}>

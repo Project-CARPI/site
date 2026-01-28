@@ -32,7 +32,7 @@ export const SortableSemester = ({
   const style = {
     transform: CSS.Translate.toString(transform),
     transition,
-    opacity: isDragging ? 0.3 : 1,
+    opacity: isDragging ? 0.5 : 1,
   };
 
   return (

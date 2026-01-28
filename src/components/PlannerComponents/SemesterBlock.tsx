@@ -1,5 +1,6 @@
 import React, { useState, useRef, useEffect } from "react";
 
+import { MdDragIndicator } from "react-icons/md";
 import {
   SemesterSeason,
   SemesterType,
@@ -16,6 +17,7 @@ import PlannerCourseHolder from "./PlannerCourseHolder";
 import { useCourseWorkspace } from "../../hooks/useCourseWorkspace";
 import { MdEdit } from "react-icons/md";
 import PlannerCourse from "../Course/PlannerCourse";
+import { cn } from "../../lib/classname";
 
 const seasons: SemesterSeason[] = ["Fall", "Spring", "Summer"];
 
@@ -77,11 +79,19 @@ const SemesterBlock: React.FC<SemesterBlockProps> = ({ semester }) => {
 
   return (
     <div
-      className={`flex flex-grow flex-col space-y-2 bg-darkblue/10 p-4 rounded-2xl h-full ${
-        over_limit || hasDuplicateCourses ? "border-2 border-rosewood" : ""
-      }`}
+      className={cn(
+        "flex flex-grow flex-col space-y-2 p-4 rounded-2xl h-full",
+        "bg-[color-mix(in_oklab,var(--color-darkblue)_10%,var(--color-carpipink)_90%)]",
+        {
+          "border-2 border-rosewood": over_limit || hasDuplicateCourses,
+        },
+      )}
     >
       <div className="flex justify-between items-center mb-1 h-8">
+        <div className="hover:bg-darkblue/20 py-2 px-1 rounded-lg cursor-grab">
+          <MdDragIndicator className="text-xl" />
+        </div>
+
         {isEditing ? (
           <input
             ref={inputRef}
@@ -96,7 +106,7 @@ const SemesterBlock: React.FC<SemesterBlockProps> = ({ semester }) => {
         ) : (
           <div className="flex items-center gap-2 w-1/2">
             <span
-              className="text-md font-bold truncate cursor-pointer hover:underline decoration-dotted underline-offset-4"
+              className="text-md font-bold truncate cursor-text hover:underline decoration-dotted underline-offset-4"
               onClick={() => setIsEditing(true)}
               title="Click to rename"
             >

@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from "react";
-import api from "../axios.ts";
+import api from "../lib/axios.ts";
 import Course from "../components/Course/CatalogCourse.tsx";
 import SearchBar from "../components/SearchBar/SearchBar";
 import { APICourse } from "../types/interfaces/Course.interface.ts";

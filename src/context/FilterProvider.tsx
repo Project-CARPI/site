@@ -1,5 +1,5 @@
 import React, { useState, useEffect, ReactNode } from "react";
-import api from "../axios.ts";
+import api from "../lib/axios.ts";
 import {
   FilterData,
   FilterCategory,

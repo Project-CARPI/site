@@ -50,7 +50,7 @@ const SemesterBlock: React.FC<SemesterBlockProps> = ({ semester }) => {
   const hasDuplicateCourses = semester.courseList.some((course, index) => {
     return (
       semester.courseList.findIndex(
-        (c) => c.data.title === course.data.title
+        (c) => c.data.title === course.data.title,
       ) !== index
     );
   });

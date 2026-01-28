@@ -26,6 +26,7 @@ export interface CourseWorkspaceContextType {
   ) => void;
   deleteSemester: (semesterId: string) => void;
   addSemester: () => void;
+  moveSemester: (fromIndex: number, toIndex: number) => void;
 
   // toolbox actions
   addCourseToToolbox: (courseData: APICourse) => void; // Smart add (increments count)

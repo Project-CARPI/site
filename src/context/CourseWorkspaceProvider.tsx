@@ -138,6 +138,10 @@ export const CourseWorkspaceProvider: React.FC<{ children: ReactNode }> = ({
     ]);
   }, []);
 
+  const moveSemester = useCallback((fromIndex: number, toIndex: number) => {
+    setPlannerCourses((prev) => arrayMove(prev, fromIndex, toIndex));
+  }, []);
+
   const updateSemesterName = useCallback(
     (semesterId: string, newName: string) => {
       setPlannerCourses((prev) =>
@@ -267,6 +271,7 @@ export const CourseWorkspaceProvider: React.FC<{ children: ReactNode }> = ({
       updateSemesterSeason,
       deleteSemester,
       addSemester,
+      moveSemester,
       // Toolbox Actions
       addCourseToToolbox,
       insertCourseIntoToolbox,
@@ -287,6 +292,7 @@ export const CourseWorkspaceProvider: React.FC<{ children: ReactNode }> = ({
       updateSemesterSeason,
       deleteSemester,
       addSemester,
+      moveSemester,
       addCourseToToolbox,
       insertCourseIntoToolbox,
       removeCourseFromToolbox,

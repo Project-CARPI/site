@@ -4,6 +4,8 @@ import AddSemester from "../components/PlannerComponents/AddSemester";
 import { useCourseWorkspace } from "../hooks/useCourseWorkspace";
 import { useNavigate } from "react-router-dom";
 import useIsDesktop from "../hooks/useIsDesktop";
+import { SortableContext, rectSortingStrategy } from "@dnd-kit/sortable";
+import { SortableSemester } from "../components/dnd/SortableSemester"; // Import this
 
 const Planner: React.FC = () => {
   const navigate = useNavigate();
@@ -38,18 +40,27 @@ const Planner: React.FC = () => {
           </div>
         ) : (
           <div className="md:overflow-y-auto grid md:grid-cols-2 gap-4 pr-4 pb-30">
-            {plannerCourses.map((semester, index) => (
-              <div
-                key={semester.semesterID}
-                className="md:h-full flex flex-col justify-between"
-              >
-                <SemesterBlock
-                  index={index}
+            {/* WRAP IN SORTABLE CONTEXT */}
+            <SortableContext
+              items={plannerCourses.map((s) => "sem-" + s.semesterID)}
+              strategy={rectSortingStrategy}
+            >
+              {plannerCourses.map((semester, index) => (
+                <SortableSemester
                   key={semester.semesterID}
-                  semester={semester}
-                />
-              </div>
-            ))}
+                  id={"sem-" + semester.semesterID}
+                  data={semester}
+                >
+                  <div className="md:h-full flex flex-col justify-between">
+                    <SemesterBlock
+                      index={index}
+                      key={semester.semesterID}
+                      semester={semester}
+                    />
+                  </div>
+                </SortableSemester>
+              ))}
+            </SortableContext>
           </div>
         )}
       </section>

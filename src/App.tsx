@@ -10,6 +10,8 @@ import { DndContext, DragOverlay } from "@dnd-kit/core";
 import { useDndLogic } from "./hooks/useDragAndDrop.ts";
 import { createPortal } from "react-dom";
 import PlannerCourse from "./components/Course/PlannerCourse.tsx";
+import SemesterBlock from "./components/PlannerComponents/SemesterBlock.tsx"; // Import
+import { UserCourse } from "./types/interfaces/Course.interface.ts";
 
 const AppDragDropContext: React.FC<{ children: React.ReactNode }> = ({
   children,
@@ -36,8 +38,16 @@ const AppDragDropContext: React.FC<{ children: React.ReactNode }> = ({
       {createPortal(
         <DragOverlay>
           {activeItem ? (
-            // Render the component appearance while dragging
-            <PlannerCourse course={activeItem} semesterId={null} />
+            "semesterID" in activeItem ? (
+              <div className="opacity-90 scale-95 origin-top-left w-[400px]">
+                <SemesterBlock semester={activeItem} index={0} />
+              </div>
+            ) : (
+              <PlannerCourse
+                course={activeItem as UserCourse}
+                semesterId={null}
+              />
+            )
           ) : null}
         </DragOverlay>,
         document.body,

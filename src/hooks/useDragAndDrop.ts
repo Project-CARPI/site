@@ -19,6 +19,10 @@ import {
 import { sortableKeyboardCoordinates } from "@dnd-kit/sortable";
 import { useCourseWorkspace } from "./useCourseWorkspace";
 import { UserCourse } from "../types/interfaces/Course.interface";
+import { SemesterType } from "../types/interfaces/Semester.interface";
+
+// Union type for active item
+type ActiveItemType = UserCourse | SemesterType | null;
 
 export const useDndLogic = () => {
   const {
@@ -29,6 +33,7 @@ export const useDndLogic = () => {
     addCourseToSemester,
     removeCourseFromSemester,
     moveCourseInSemester,
+    moveSemester, // Import the new action
 
     // Toolbox Actions
     insertCourseIntoToolbox,
@@ -38,7 +43,7 @@ export const useDndLogic = () => {
     resetToolbox,
   } = useCourseWorkspace();
 
-  const [activeItem, setActiveItem] = useState<UserCourse | null>(null);
+  const [activeItem, setActiveItem] = useState<ActiveItemType>(null);
 
   // Snapshot of toolbox before drag starts. Used for "Cancel" (Esc/Drop nowhere).
   const [originalToolboxState, setOriginalToolboxState] = useState<
@@ -84,14 +89,18 @@ export const useDndLogic = () => {
   // --- Collision Strategy ---
   const collisionDetectionStrategy: CollisionDetection = useCallback(
     (args) => {
+      // If dragging a Semester, use simple intersection
+      if (activeItem && "semesterID" in activeItem) {
+        return closestCenter(args);
+      }
+
       // Prioritize Toolbox if active item started there
       if (
         activeItem &&
-        findContainer(activeItem.id) === "toolbox" &&
+        findContainer((activeItem as UserCourse).id) === "toolbox" &&
         args.droppableContainers.find((c) => c.id === "toolbox")
       ) {
-        // Optional: Add logic here if you want to bias towards toolbox
-        // return [{ id: "toolbox" }];
+        // Bias logic
       }
 
       const pointerIntersections = pointerWithin(args);
@@ -124,7 +133,7 @@ export const useDndLogic = () => {
       }
 
       if (recentlyMovedToNewContainer.current) {
-        lastOverId.current = activeItem?.id || null;
+        lastOverId.current = (activeItem as UserCourse)?.id || null;
       }
 
       return lastOverId.current ? [{ id: lastOverId.current }] : [];
@@ -135,11 +144,18 @@ export const useDndLogic = () => {
   // --- 1. Drag Start ---
   const onDragStart = (event: DragStartEvent) => {
     const { active } = event;
-    const item = active.data.current as UserCourse;
-    setActiveItem(item);
 
-    if (findContainer(active.id) === "toolbox") {
-      setOriginalToolboxState([...toolboxCourses]);
+    // Check if it's a Semester
+    if (active.data.current?.type === "Semester") {
+      setActiveItem(active.data.current as SemesterType);
+    } else {
+      // It's a course
+      const item = active.data.current as UserCourse;
+      setActiveItem(item);
+
+      if (findContainer(active.id) === "toolbox") {
+        setOriginalToolboxState([...toolboxCourses]);
+      }
     }
 
     document.body.classList.add("no-scroll-during-drag");
@@ -149,6 +165,10 @@ export const useDndLogic = () => {
   const onDragOver = useCallback(
     (event: DragOverEvent) => {
       const { active, over } = event;
+
+      // If dragging a semester, do nothing during dragOver (we only reorder on dragEnd)
+      if (active.data.current?.type === "Semester") return;
+
       const overId = over?.id;
 
       if (!overId || active.id === overId) return;
@@ -254,10 +274,32 @@ export const useDndLogic = () => {
   // --- 3. Drag End (Cleanup & Merging) ---
   const onDragEnd = (event: DragEndEvent) => {
     const { active, over } = event;
-    const activeContainer = findContainer(active.id);
 
     // Cleanup
     document.body.classList.remove("no-scroll-during-drag");
+
+    // HANDLE SEMESTER DRAG END
+    if (active.data.current?.type === "Semester") {
+      if (over && active.id !== over.id) {
+        // We assume we are dragging over another SortableSemester
+        // which has the same parent SortableContext
+        const oldIndex = active.data.current.sortable.index;
+        const newIndex = over.data.current?.sortable?.index;
+
+        if (
+          oldIndex !== undefined &&
+          newIndex !== undefined &&
+          oldIndex !== newIndex
+        ) {
+          moveSemester(oldIndex, newIndex);
+        }
+      }
+      setActiveItem(null);
+      return;
+    }
+
+    const activeContainer = findContainer(active.id);
+
     setActiveItem(null);
     lastOverId.current = null;
 

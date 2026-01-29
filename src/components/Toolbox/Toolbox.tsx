@@ -62,7 +62,7 @@ const Toolbox: React.FC = () => {
               : "transform translate-y-full"
         }`}
       >
-        <GarbageBin />
+        {/* <GarbageBin /> */}
 
         {/* Header */}
         <div className="flex items-center gap-4 p-3 mx-2 cursor-pointer">

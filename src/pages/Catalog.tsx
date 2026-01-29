@@ -1,164 +1,60 @@
-import React, { useState, useRef, useEffect } from "react";
-import api from "../lib/axios.ts";
-import Course from "../components/Course/CatalogCourse.tsx";
+import { useState } from "react";
+import { useDroppable } from "@dnd-kit/core";
 import SearchBar from "../components/SearchBar/SearchBar";
-import { APICourse } from "../types/interfaces/Course.interface.ts";
-import DepartmentFilters from "../components/Department-Filters.tsx";
 import { useFilterData } from "../hooks/useFilters.ts";
 import useIsDesktop from "../hooks/useIsDesktop.ts";
 import Tag from "../components/Tag.tsx";
+import TrashDropZone from "../components/Catalog/TrashDropZone.tsx";
+import CatalogResults from "../components/Catalog/CatalogResults.tsx";
+import { useCatalogSearch } from "../hooks/useCatalogSeach.ts";
 
 const Catalog: React.FC = () => {
+  const { setNodeRef, isOver } = useDroppable({ id: "garbage" });
   const { selectedFilters } = useFilterData();
   const isDesktop = useIsDesktop();
 
-  const [searchResults, setSearchResults] = React.useState<APICourse[]>([]);
-  const [searchPrompt, setSearchPrompt] = useState("");
-  const [isLoading, setIsLoading] = useState(false);
-  const [hasSearched, setHasSearched] = useState(false);
+  const searchLogic = useCatalogSearch(selectedFilters);
   const [showFilter, setShowFilter] = useState(false);
 
-  const debounceTimeout = useRef<ReturnType<typeof setTimeout> | null>(null);
-  const lastNoResultQuery = useRef<string | null>(null);
-
-  useEffect(() => {
-    if (debounceTimeout.current) {
-      clearTimeout(debounceTimeout.current);
-    }
-
-    if (searchPrompt.length === 0 && selectedFilters.length === 0) {
-      setHasSearched(false);
-      setSearchResults([]);
-      setIsLoading(false);
-      lastNoResultQuery.current = null;
-      return;
-    }
-
-    setIsLoading(true);
-    setHasSearched(true);
-
-    debounceTimeout.current = setTimeout(async () => {
-      const subjFilters = selectedFilters
-        .filter((filter) => filter.type === "Subject")
-        .map((filter) => filter.code);
-      const attrFilters = selectedFilters
-        .filter((filter) => filter.type === "Attribute")
-        .map((filter) => filter.code);
-      const semFilters = selectedFilters
-        .filter((filter) => filter.type === "Semester")
-        .map((filter) => filter.code);
-
-      if (searchPrompt.length < 3) {
-        lastNoResultQuery.current = null;
-      }
-
-      if (
-        lastNoResultQuery.current &&
-        searchPrompt.startsWith(lastNoResultQuery.current)
-      ) {
-        console.log("Skipping redundant no-result query");
-        return;
-      }
-
-      try {
-        const response = await api.get(
-          "course/search?searchPrompt=" +
-            searchPrompt +
-            "&subjFilters=" +
-            subjFilters +
-            "&attrFilters=" +
-            attrFilters +
-            "&semFilters=" +
-            semFilters,
-        );
-
-        const data = response.data;
-        setSearchResults(data);
-        setIsLoading(false);
-
-        if (data.length === 0 && searchPrompt.length >= 3) {
-          lastNoResultQuery.current = searchPrompt;
-        } else {
-          lastNoResultQuery.current = null;
-        }
-      } catch (error) {
-        console.error("Search error:", error);
-      }
-    }, 300);
-
-    return () => {
-      if (debounceTimeout.current) clearTimeout(debounceTimeout.current);
-    };
-  }, [selectedFilters, searchPrompt, setSearchResults]);
+  const showTrashZone = isOver && isDesktop;
 
   return (
-    <section className="flex flex-col gap-2 md:h-[calc(100vh-10rem)] md:overflow-hidden">
-      <div className="sticky z-10 flex flex-col gap-2">
-        <h1 className="font-bold text-xl">Courses</h1>
-        <SearchBar
-          setSearchPrompt={setSearchPrompt}
-          searchPrompt={searchPrompt}
-          showFilter={showFilter}
-          setShowFilter={setShowFilter}
-        />
+    <section
+      ref={setNodeRef}
+      className="flex flex-col gap-2 md:h-[calc(100vh-10rem)] md:overflow-hidden"
+    >
+      {showTrashZone ? (
+        <TrashDropZone />
+      ) : (
+        <>
+          <div className="sticky z-10 flex flex-col gap-2">
+            <h1 className="font-bold text-xl">Courses</h1>
+            <SearchBar
+              setSearchPrompt={searchLogic.setSearchPrompt}
+              searchPrompt={searchLogic.searchPrompt}
+              showFilter={showFilter}
+              setShowFilter={setShowFilter}
+            />
 
-        {isDesktop && (
-          <div className="flex flex-wrap w-full items-start gap-1">
-            {selectedFilters.map((filter) => (
-              <Tag key={filter.id} filter={filter} isRemovable={true} />
-            ))}
-          </div>
-        )}
-      </div>
-
-      {(isDesktop || !showFilter) && (
-        <div className="overflow-y-auto flex-grow">
-          {searchResults.length > 0 ? (
-            <div className="h-full overflow-y-auto flex flex-wrap justify-center gap-4 pr-3 pt-3">
-              {searchResults?.map((course: APICourse, index: number) => (
-                <Course key={index} course={course} />
-              ))}
-
-              <div className="h-15" />
-            </div>
-          ) : isLoading ? (
-            Array.from({ length: 6 }).map((_, i) => (
-              <div
-                key={i}
-                className="mb-4 animate-pulse h-fit border-1 border-darkblue/20 rounded-xl p-4 flex items-center gap-2 justify-between"
-              >
-                <div className="flex gap-2 flex-col justify-between">
-                  <div className="h-5 w-25 bg-darkblue/20 rounded-sm"></div>
-                  <div className="h-5 w-50 bg-darkblue/20 rounded-sm"></div>
-
-                  <div className="flex flex-wrap gap-2">
-                    {Array.from({ length: 4 }).map((_, j) => (
-                      <div
-                        key={j}
-                        className="h-6 w-15 bg-darkblue/20 rounded-full"
-                      ></div>
-                    ))}
-                  </div>
-                </div>
-
-                <div className="h-15 w-15 bg-darkblue/20 rounded-full"></div>
+            {isDesktop && (
+              <div className="flex flex-wrap w-full items-start gap-1">
+                {selectedFilters.map((filter) => (
+                  <Tag key={filter.id} filter={filter} isRemovable={true} />
+                ))}
               </div>
-            ))
-          ) : hasSearched ? (
-            <div className="flex text-darkblue/70 text-center gap-2 items-center flex-col justify-center h-50">
-              <h3 className="text-[75px] font-bold">D:</h3>
-              <p className="ml-2 text-xl">
-                No courses found for "{searchPrompt}"
-              </p>
-              <p className="text-sm">
-                Try searching for another course. <br />
-                Maybe "CSCI 1100" or "Computer Science I"
-              </p>
-            </div>
-          ) : (
-            selectedFilters.length === 0 && <DepartmentFilters />
+            )}
+          </div>
+
+          {(isDesktop || !showFilter) && (
+            <CatalogResults
+              searchResults={searchLogic.searchResults}
+              isLoading={searchLogic.isLoading}
+              hasSearched={searchLogic.hasSearched}
+              searchPrompt={searchLogic.searchPrompt}
+              selectedFilters={selectedFilters}
+            />
           )}
-        </div>
+        </>
       )}
     </section>
   );

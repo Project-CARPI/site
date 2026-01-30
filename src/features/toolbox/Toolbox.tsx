@@ -13,6 +13,7 @@ import GarbageBin from "@/features/toolbox/GarbageBin";
 import NavButton from "@/features/toolbox/NavButton";
 import ToolboxButton from "@/features/toolbox/ToolboxButton";
 import ToolboxCourse from "@/features/toolbox/ToolboxCourse";
+import { cn } from "@/lib/classnames";
 import useIsDesktop from "@/lib/hooks/useIsDesktop";
 
 const Toolbox: React.FC = () => {
@@ -85,15 +86,17 @@ const Toolbox: React.FC = () => {
         >
           <div
             ref={setNodeRef}
-            className="courses gap-4 pt-3 md:h-[75px] h-[100px] md:min-h-[50px] scrollbar-none flex justify-items-center w-full overflow-x-auto px-4 pb-2 transition-colors relative"
+            className={cn(
+              "gap-4 scrollbar-none flex justify-items-center w-full overflow-x-auto p-4 mb-10 transition-colors relative",
+              "md:h-[75px] h-[100px] md:min-h-[50px] md:pb-0 md:mb-0",
+            )}
           >
-            {/* 2. Provide the sorting context */}
             <SortableContext
               items={toolboxCourses.map((c) => c.id)}
               strategy={horizontalListSortingStrategy}
             >
               {toolboxCourses.length === 0 ? (
-                <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
+                <div className=" absolute inset-0 flex items-center justify-center pointer-events-none">
                   <span className="text-carpipink opacity-60 text-sm md:text-base font-medium italic">
                     Add courses to plan your semester
                   </span>

@@ -1,3 +1,4 @@
+import { cn } from "@/lib/classnames";
 import { APICourse } from "@/lib/types";
 
 interface CourseLabelProps {
@@ -20,7 +21,7 @@ export default function CourseLabel({
   showCredits = false,
 }: CourseLabelProps) {
   return (
-    <div className={`text-sm ${horizontal ? "flex items-center gap-2" : ""}`}>
+    <div className={cn(horizontal ? "flex gap-1" : "text-sm")}>
       <div className={`flex gap-2 items-baseline`}>
         <b>
           {course.subj_code}-{course.code_num}

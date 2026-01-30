@@ -313,15 +313,19 @@ export const useDndLogic = () => {
           return;
         }
 
-        const remainder: UserCourse = {
-          ...itemToMove,
-          id: uuidv4(),
-          count: itemToMove.count - 1,
-        };
+        if (itemToMove.count > 1) {
+          const remainder: UserCourse = {
+            ...itemToMove,
+            id: uuidv4(),
+            count: itemToMove.count - 1,
+          };
 
-        const index = toolboxCourses.findIndex((c) => c.id === active.id);
-        removeCourseFromToolbox(active.id as string);
-        insertCourseIntoToolbox(remainder, index);
+          const index = toolboxCourses.findIndex((c) => c.id === active.id);
+          removeCourseFromToolbox(active.id as string);
+          insertCourseIntoToolbox(remainder, index);
+        } else {
+          removeCourseFromToolbox(active.id as string);
+        }
       } else if (activeContainer) {
         removeCourseFromSemester(
           activeContainer as string,

@@ -19,15 +19,8 @@ const Toolbox: React.FC = () => {
 
   const isDesktop = useIsDesktop();
   const [isOpen, setIsOpen] = useState(isDesktop);
-  const [count, setCount] = useState(0);
 
-  const { toolboxCourses } = useCourseWorkspace();
-
-  useEffect(() => {
-    setCount(
-      toolboxCourses.reduce((total, course) => total + (course.count || 0), 0),
-    );
-  }, [toolboxCourses]);
+  const { toolboxCourses, toolboxCourseCount } = useCourseWorkspace();
 
   useEffect(() => {
     setIsOpen(isDesktop);
@@ -47,7 +40,7 @@ const Toolbox: React.FC = () => {
         <ToolboxButton
           isOpen={isOpen}
           toggleToolbox={toggleToolbox}
-          count={count}
+          count={toolboxCourseCount}
         />
       )}
 
@@ -77,9 +70,9 @@ const Toolbox: React.FC = () => {
             />
           </div>
 
-          {count > 0 && (
+          {toolboxCourseCount > 0 && (
             <div className="flex h-6 w-6 items-center justify-center rounded-full bg-steelblue text-sm font-medium text-white">
-              {count}
+              {toolboxCourseCount}
             </div>
           )}
         </div>
@@ -95,7 +88,7 @@ const Toolbox: React.FC = () => {
           >
             {/* 2. Provide the sorting context */}
             <SortableContext
-              items={toolboxCourses.map((c) => c.name)}
+              items={toolboxCourses.map((c) => c.id)}
               strategy={horizontalListSortingStrategy}
             >
               {toolboxCourses.length === 0 ? (

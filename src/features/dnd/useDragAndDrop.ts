@@ -40,7 +40,7 @@ export const useDndLogic = () => {
     insertCourseIntoToolbox,
     removeCourseFromToolbox,
     moveCourseInToolbox,
-    consolidateToolboxCourses,
+    consolidateToolbox,
     resetToolbox,
   } = useCourseWorkspace();
 
@@ -355,7 +355,7 @@ export const useDndLogic = () => {
 
     // D. Merge Logic (If dropped in Toolbox)
     if (activeContainer === "toolbox") {
-      consolidateToolboxCourses();
+      consolidateToolbox();
     }
 
     // Clear snapshot after successful drop

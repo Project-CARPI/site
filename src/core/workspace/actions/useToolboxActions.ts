@@ -1,0 +1,98 @@
+import { useCallback } from "react";
+
+import { v4 as uuidv4 } from "uuid";
+
+import { ToolboxAction } from "@/core/workspace/reducers/toolbox";
+import { UserCourse, APICourse } from "@/lib/types";
+
+export const useToolboxActions = (
+  dispatch: React.Dispatch<ToolboxAction>,
+  toolboxCourses: UserCourse[],
+) => {
+  const addCourseToToolbox = useCallback(
+    (courseData: APICourse) => {
+      const existingCourse = toolboxCourses.find(
+        (c) =>
+          c.data.subj_code === courseData.subj_code &&
+          c.data.code_num === courseData.code_num,
+      );
+
+      if (existingCourse) {
+        dispatch({
+          type: "UPDATE_COURSE",
+          payload: {
+            courseID: existingCourse.id,
+            updatedCourse: {
+              ...existingCourse,
+              count: existingCourse.count + 1,
+            },
+          },
+        });
+      } else {
+        const newCourse: UserCourse = {
+          id: uuidv4(),
+          name: `${courseData.subj_code} ${courseData.code_num}`,
+          count: 1,
+          data: courseData,
+        };
+
+        dispatch({
+          type: "INSERT_COURSE",
+          payload: { course: newCourse, index: toolboxCourses.length },
+        });
+      }
+    },
+    [toolboxCourses, dispatch],
+  );
+
+  // 2. Wrap simple dnd-kit actions to keep the component API clean
+  const insertCourseIntoToolbox = useCallback(
+    (course: UserCourse, index: number) => {
+      dispatch({ type: "INSERT_COURSE", payload: { course, index } });
+    },
+    [dispatch],
+  );
+
+  const removeCourseFromToolbox = useCallback(
+    (courseID: string) => {
+      dispatch({ type: "REMOVE_COURSE", payload: { courseID } });
+    },
+    [dispatch],
+  );
+
+  const moveCourseInToolbox = useCallback(
+    (fromIndex: number, toIndex: number) => {
+      dispatch({ type: "MOVE_COURSE", payload: { fromIndex, toIndex } });
+    },
+    [dispatch],
+  );
+
+  const consolidateToolbox = useCallback(() => {
+    dispatch({ type: "CONSOLIDATE_COURSES" });
+  }, [dispatch]);
+
+  const resetToolbox = useCallback(
+    (courses: UserCourse[]) => {
+      dispatch({ type: "SET_COURSES", payload: { courses } });
+    },
+    [dispatch],
+  );
+
+  // 3. Helper (Selector) - Doesn't dispatch, just reads data
+  const getCourseCount = useCallback(
+    (courseID: string) => {
+      return toolboxCourses.find((c) => c.id === courseID)?.count || 0;
+    },
+    [toolboxCourses],
+  );
+
+  return {
+    getCourseCount,
+    addCourseToToolbox,
+    insertCourseIntoToolbox,
+    moveCourseInToolbox,
+    removeCourseFromToolbox,
+    consolidateToolbox,
+    resetToolbox,
+  };
+};

@@ -1,17 +1,17 @@
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-import Catalog from "./pages/Catalog";
-import Planner from "./pages/Planner";
-import Toolbox from "./components/Toolbox/Toolbox";
-import HomePage from "./pages/HomePage";
-import { CourseWorkspaceProvider } from "./context/CourseWorkspaceProvider.tsx";
-import { FilterProvider } from "./context/FilterProvider.tsx";
-
 import { DndContext, DragOverlay } from "@dnd-kit/core";
-import { useDndLogic } from "./hooks/useDragAndDrop.ts";
 import { createPortal } from "react-dom";
-import PlannerCourse from "./components/Course/PlannerCourse.tsx";
-import SemesterBlock from "./components/PlannerComponents/SemesterBlock.tsx"; // Import
-import { UserCourse } from "./types/interfaces/Course.interface.ts";
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+
+import { CourseWorkspaceProvider } from "@/core/workspace/provider";
+import { FilterProvider } from "@/features/catalog/search/filters/provider";
+import PlannerCourse from "@/features/course/components/PlannerCourse";
+import { UserCourse } from "@/features/course/interfaces";
+import { useDndLogic } from "@/features/dnd/useDragAndDrop";
+import SemesterBlock from "@/features/planner/components/SemesterBlock";
+import Toolbox from "@/features/toolbox/Toolbox";
+import Catalog from "@/pages/Catalog";
+import HomePage from "@/pages/HomePage";
+import Planner from "@/pages/Planner";
 
 const AppDragDropContext: React.FC<{ children: React.ReactNode }> = ({
   children,
@@ -40,7 +40,7 @@ const AppDragDropContext: React.FC<{ children: React.ReactNode }> = ({
           {activeItem ? (
             "semesterID" in activeItem ? (
               <div className="opacity-90 scale-95 origin-top-left w-[400px]">
-                <SemesterBlock semester={activeItem} index={0} />
+                <SemesterBlock semester={activeItem} />
               </div>
             ) : (
               <PlannerCourse

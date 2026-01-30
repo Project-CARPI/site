@@ -1,11 +1,13 @@
-import React, { useEffect } from "react";
-import SemesterBlock from "../components/PlannerComponents/SemesterBlock";
-import AddSemester from "../components/PlannerComponents/AddSemester";
-import { useCourseWorkspace } from "../hooks/useCourseWorkspace";
-import { useNavigate } from "react-router-dom";
-import useIsDesktop from "../hooks/useIsDesktop";
+import { useEffect } from "react";
+
 import { SortableContext, rectSortingStrategy } from "@dnd-kit/sortable";
-import { SortableSemester } from "../components/dnd/SortableSemester"; // Import this
+import { useNavigate } from "react-router-dom";
+
+import { useCourseWorkspace } from "@/core/workspace/useCourseWorkspace";
+import { SortableItem } from "@/features/dnd/components/SortableItem";
+import AddSemester from "@/features/planner/components/AddSemester";
+import SemesterBlock from "@/features/planner/components/SemesterBlock";
+import useIsDesktop from "@/lib/hooks/useIsDesktop";
 
 const Planner: React.FC = () => {
   const navigate = useNavigate();
@@ -44,20 +46,20 @@ const Planner: React.FC = () => {
               items={plannerCourses.map((s) => "sem-" + s.semesterID)}
               strategy={rectSortingStrategy}
             >
-              {plannerCourses.map((semester, index) => (
-                <SortableSemester
+              {plannerCourses.map((semester) => (
+                <SortableItem
                   key={semester.semesterID}
                   id={"sem-" + semester.semesterID}
                   data={semester}
+                  type="Semester"
                 >
                   <div className="md:h-full flex flex-col justify-between">
                     <SemesterBlock
-                      index={index}
                       key={semester.semesterID}
                       semester={semester}
                     />
                   </div>
-                </SortableSemester>
+                </SortableItem>
               ))}
             </SortableContext>
           </div>

@@ -1,7 +1,6 @@
-import useIsDesktop from "../hooks/useIsDesktop";
-
-import Catalog from "./Catalog";
-import Planner from "./Planner";
+import useIsDesktop from "@/lib/hooks/useIsDesktop";
+import Catalog from "@/pages/Catalog";
+import Planner from "@/pages/Planner";
 
 const HomePage = () => {
   const isDesktop = useIsDesktop();

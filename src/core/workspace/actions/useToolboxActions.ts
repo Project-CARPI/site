@@ -80,8 +80,8 @@ export const useToolboxActions = (
 
   // 3. Helper (Selector) - Doesn't dispatch, just reads data
   const getCourseCount = useCallback(
-    (courseID: string) => {
-      return toolboxCourses.find((c) => c.id === courseID)?.count || 0;
+    (courseName: string) => {
+      return toolboxCourses.find((c) => c.name === courseName)?.count || 0;
     },
     [toolboxCourses],
   );

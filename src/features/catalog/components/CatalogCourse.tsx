@@ -24,8 +24,7 @@ interface CourseProps {
 const Course: React.FC<CourseProps> = ({ course }) => {
   const { addCourseToToolbox } = useCourseWorkspace();
   const { filters } = useCatalog();
-
-  const [count, setCount] = useState(0);
+  const { getCourseCount } = useCourseWorkspace();
 
   const attrFilters = findFiltersForCourse(
     course.attr_list || [],
@@ -47,7 +46,10 @@ const Course: React.FC<CourseProps> = ({ course }) => {
       className="relative bg-carpipink hover:cursor-pointer hover:bg-darkblue/10 border-1 border-black rounded-xl w-full p-4"
       onClick={toggleOpen}
     >
-      <CourseBadge count={count} className="absolute -top-2 -right-2" />
+      <CourseBadge
+        count={getCourseCount(`${course.subj_code} ${course.code_num}`)}
+        className="absolute -top-2 -right-2"
+      />
 
       <div className={`flex items-center justify-between`}>
         <div>
@@ -66,7 +68,6 @@ const Course: React.FC<CourseProps> = ({ course }) => {
             addCourse={(e) => {
               e.stopPropagation();
               addCourseToToolbox(course);
-              setCount((prev) => prev + 1);
             }}
           />
         </div>

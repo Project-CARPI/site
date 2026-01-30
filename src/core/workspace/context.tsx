@@ -32,7 +32,7 @@ export interface CourseWorkspaceContextType {
 
   // toolbox actions
   toolboxCourseCount: number;
-  getCourseCount: (courseID: string) => number;
+  getCourseCount: (courseName: string) => number;
   addCourseToToolbox: (courseData: APICourse) => void; // Smart add (increments count)
   insertCourseIntoToolbox: (course: UserCourse, index: number) => void; // Raw insert (for DnD)
   removeCourseFromToolbox: (courseID: string) => void;

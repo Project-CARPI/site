@@ -1,4 +1,11 @@
-import { DndContext, DragOverlay } from "@dnd-kit/core";
+import React, { useState } from "react";
+
+import {
+  DndContext,
+  DragOverlay,
+  DragStartEvent,
+  DragEndEvent,
+} from "@dnd-kit/core";
 import { createPortal } from "react-dom";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 
@@ -11,6 +18,7 @@ import { UserCourse } from "@/lib/types";
 import Catalog from "@/pages/Catalog";
 import HomePage from "@/pages/HomePage";
 import Planner from "@/pages/Planner";
+import { cn } from "@/lib/classnames";
 
 const AppDragDropContext: React.FC<{ children: React.ReactNode }> = ({
   children,
@@ -24,13 +32,25 @@ const AppDragDropContext: React.FC<{ children: React.ReactNode }> = ({
     activeItem,
   } = useDndLogic();
 
+  const [isDragging, setIsDragging] = useState(false);
+
+  const handleDragStart = (event: DragStartEvent) => {
+    setIsDragging(true);
+    onDragStart(event); // Your existing logic
+  };
+
+  const handleDragEnd = (event: DragEndEvent) => {
+    setIsDragging(false);
+    onDragEnd(event); // Your existing logic
+  };
+
   return (
     <DndContext
       sensors={sensors}
       collisionDetection={collisionDetectionStrategy}
-      onDragStart={onDragStart}
+      onDragStart={handleDragStart}
       onDragOver={onDragOver}
-      onDragEnd={onDragEnd}
+      onDragEnd={handleDragEnd}
     >
       {children}
 
@@ -38,13 +58,19 @@ const AppDragDropContext: React.FC<{ children: React.ReactNode }> = ({
         <DragOverlay>
           {activeItem ? (
             "semesterID" in activeItem ? (
-              <div className="opacity-90 scale-95 origin-top-left w-[400px]">
-                <SemesterBlock semester={activeItem} />
+              <div
+                className={cn(
+                  "opacity-90 scale-95 origin-top-left w-[400px]",
+                  isDragging ? "cursor-grabbing" : "cursor-grab",
+                )}
+              >
+                <SemesterBlock semester={activeItem} isDragging />
               </div>
             ) : (
               <PlannerCourse
                 course={activeItem as UserCourse}
                 semesterId={null}
+                isDragging
               />
             )
           ) : null}

@@ -18,9 +18,13 @@ const seasons: SemesterSeason[] = ["Fall", "Spring", "Summer"];
 
 export interface SemesterBlockProps {
   semester: SemesterType;
+  isDragging?: boolean;
 }
 
-export default function SemesterBlock({ semester }: SemesterBlockProps) {
+export default function SemesterBlock({
+  semester,
+  isDragging,
+}: SemesterBlockProps) {
   const { setNodeRef, isOver } = useDroppable({
     id: semester.semesterID,
   });
@@ -82,7 +86,12 @@ export default function SemesterBlock({ semester }: SemesterBlockProps) {
       )}
     >
       <div className="flex justify-between items-center mb-1 h-8">
-        <div className="hover:bg-darkblue/20 py-2 px-1 rounded-lg cursor-grab">
+        <div
+          className={cn(
+            "hover:bg-darkblue/20 py-2 px-1 rounded-lg",
+            isDragging ? "cursor-grabbing" : "cursor-grab",
+          )}
+        >
           <MdDragIndicator className="text-xl" />
         </div>
 

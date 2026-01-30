@@ -6,6 +6,7 @@ import { MdDragIndicator, MdOutlineMoreHoriz } from "react-icons/md";
 import CourseLabel from "@/components/course/CourseLabel";
 import PlannerOptionsPopup from "@/features/planner/components/PlannerOptionsPopup";
 import { usePlannerCourse } from "@/features/planner/usePlannerCourse";
+import { cn } from "@/lib/classnames";
 import { UserCourse } from "@/lib/types";
 
 interface PlannerCourseProps {
@@ -13,11 +14,13 @@ interface PlannerCourseProps {
   semesterId: string | null;
   isFirstSemester?: boolean;
   isLastSemester?: boolean;
+  isDragging?: boolean;
 }
 
 export default function PlannerCourse({
   course,
   semesterId,
+  isDragging,
 }: PlannerCourseProps) {
   const [openPopup, setOpenPopup] = useState<boolean>(false);
   const componentRef = useRef<HTMLDivElement>(null);
@@ -52,7 +55,10 @@ export default function PlannerCourse({
       <RightClickContextMenu.Trigger>
         <div
           ref={componentRef}
-          className="relative flex justify-between bg-darkblue rounded-2xl text-carpipink gap-4 px-2 py-3 e"
+          className={cn(
+            "relative flex justify-between bg-darkblue rounded-2xl text-carpipink gap-4 px-2 py-3 e",
+            isDragging ? "cursor-grabbing" : "cursor-grab",
+          )}
         >
           <div className={`flex gap-2 items-center`}>
             <MdDragIndicator className="text-2xl" />

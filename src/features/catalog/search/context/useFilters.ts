@@ -1,8 +1,7 @@
-import { useState, useEffect, ReactNode } from "react";
+import { useState, useEffect } from "react";
 
-import { FilterContext } from "@/features/filters/context";
-import { FilterData, FilterCategory } from "@/features/filters/types";
 import api from "@/lib/axios";
+import { FilterData, FilterCategory } from "@/lib/types";
 
 const formatApiData = (type: FilterCategory, data: Record<string, string>) => {
   return Object.entries(data).map(([code, value], index) => ({
@@ -13,10 +12,7 @@ const formatApiData = (type: FilterCategory, data: Record<string, string>) => {
   }));
 };
 
-export const FilterProvider: React.FC<{ children: ReactNode }> = ({
-  children,
-}) => {
-  // all states
+export const useFilters = () => {
   const [subjects, setSubjects] = useState<FilterData[]>([]);
   const [attributes, setAttributes] = useState<FilterData[]>([]);
   const [semesters, setSemesters] = useState<FilterData[]>([]);
@@ -42,7 +38,6 @@ export const FilterProvider: React.FC<{ children: ReactNode }> = ({
     fetchAllFilters();
   }, []);
 
-  // selected filter state
   const [selectedFilters, setSelectedFilters] = useState<FilterData[]>([]);
 
   const toggleFilter = (filter: FilterData) => {
@@ -60,15 +55,16 @@ export const FilterProvider: React.FC<{ children: ReactNode }> = ({
     });
   };
 
-  const value = {
-    subjects,
-    attributes,
-    semesters,
+  return {
     selectedFilters,
+    filters: {
+      subjects,
+      attributes,
+      semesters,
+    },
     toggleFilter,
+    clearFilters: () => {
+      setSelectedFilters([]);
+    },
   };
-
-  return (
-    <FilterContext.Provider value={value}>{children}</FilterContext.Provider>
-  );
 };

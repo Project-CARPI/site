@@ -1,8 +1,8 @@
-import FilterSection from "@/features/filters/components/FilterSection";
-import { useFilterData } from "@/features/filters/useFilterData";
+import { useCatalog } from "@/features/catalog/search/context/context";
+import FilterSection from "@/features/catalog/search/filters/FilterSection";
 
 export default function FilterPanel() {
-  const { selectedFilters, subjects, attributes, semesters } = useFilterData();
+  const { selectedFilters, filters } = useCatalog();
 
   const selectedSubjects = selectedFilters
     .filter((f) => f.type === "Subject")
@@ -19,18 +19,18 @@ export default function FilterPanel() {
       <h1 className="font-bold">Filter By</h1>
       <FilterSection
         sectionName="Subject"
-        tags={subjects}
+        tags={filters.subjects}
         selected={selectedSubjects}
         showCode
       />
       <FilterSection
         sectionName="Attribute"
-        tags={attributes}
+        tags={filters.attributes}
         selected={selectedAttributes}
       />
       <FilterSection
         sectionName="Semester"
-        tags={semesters}
+        tags={filters.semesters}
         selected={selectedSemesters}
       />
       <div className="h-20 md:h-5" />

@@ -6,8 +6,8 @@ import { IoAdd } from "react-icons/io5";
 import CourseBadge from "@/components/course/CourseBadge";
 import CourseLabel from "@/components/course/CourseLabel";
 import { useCourseWorkspace } from "@/core/workspace/useCourseWorkspace";
+import { useCatalog } from "@/features/catalog/search/context/context";
 import Tag from "@/features/catalog/Tag";
-import { useFilterData } from "@/features/filters/useFilterData";
 import { APICourse, FilterData } from "@/lib/types";
 
 const findFiltersForCourse = (
@@ -23,10 +23,16 @@ interface CourseProps {
 
 const Course: React.FC<CourseProps> = ({ course }) => {
   const { addCourseToToolbox, getCourseCountInToolbox } = useCourseWorkspace();
-  const { attributes, semesters } = useFilterData();
+  const { filters } = useCatalog();
 
-  const attrFilters = findFiltersForCourse(course.attr_list || [], attributes);
-  const semFilters = findFiltersForCourse(course.sem_list || [], semesters);
+  const attrFilters = findFiltersForCourse(
+    course.attr_list || [],
+    filters.attributes,
+  );
+  const semFilters = findFiltersForCourse(
+    course.sem_list || [],
+    filters.semesters,
+  );
 
   const [isOpen, setIsOpen] = useState(false);
   const toggleOpen = (e: React.MouseEvent<HTMLDivElement>) => {

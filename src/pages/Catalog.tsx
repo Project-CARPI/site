@@ -1,22 +1,27 @@
-import { useState } from "react";
-
 import { useDroppable } from "@dnd-kit/core";
 
 import CatalogResults from "@/features/catalog/components/CatalogResults";
 import TrashDropZone from "@/features/catalog/components/TrashDropzone";
+import {
+  CatalogProvider,
+  useCatalog,
+} from "@/features/catalog/search/context/context";
 import SearchBar from "@/features/catalog/search/SearchBar";
-import { useCatalogSearch } from "@/features/catalog/search/useCatalogSearch";
 import Tag from "@/features/catalog/Tag";
-import { useFilterData } from "@/features/filters/useFilterData";
 import useIsDesktop from "@/lib/hooks/useIsDesktop";
 
-const Catalog: React.FC = () => {
-  const { setNodeRef, isOver } = useDroppable({ id: "garbage" });
-  const { selectedFilters } = useFilterData();
-  const isDesktop = useIsDesktop();
+export default function Catalog() {
+  return (
+    <CatalogProvider>
+      <CatalogContent />
+    </CatalogProvider>
+  );
+}
 
-  const searchLogic = useCatalogSearch(selectedFilters);
-  const [showFilter, setShowFilter] = useState(false);
+function CatalogContent() {
+  const { setNodeRef, isOver } = useDroppable({ id: "garbage" });
+  const { selectedFilters, showFilterPanel } = useCatalog();
+  const isDesktop = useIsDesktop();
 
   const showTrashZone = isOver && isDesktop;
 
@@ -31,12 +36,7 @@ const Catalog: React.FC = () => {
         <>
           <div className="sticky z-10 flex flex-col gap-2">
             <h1 className="font-bold text-xl">Courses</h1>
-            <SearchBar
-              setSearchPrompt={searchLogic.setSearchPrompt}
-              searchPrompt={searchLogic.searchPrompt}
-              showFilter={showFilter}
-              setShowFilter={setShowFilter}
-            />
+            <SearchBar />
 
             {isDesktop && (
               <div className="flex flex-wrap w-full items-start gap-1">
@@ -47,19 +47,9 @@ const Catalog: React.FC = () => {
             )}
           </div>
 
-          {(isDesktop || !showFilter) && (
-            <CatalogResults
-              searchResults={searchLogic.searchResults}
-              isLoading={searchLogic.isLoading}
-              hasSearched={searchLogic.hasSearched}
-              searchPrompt={searchLogic.searchPrompt}
-              selectedFilters={selectedFilters}
-            />
-          )}
+          {(isDesktop || !showFilterPanel) && <CatalogResults />}
         </>
       )}
     </section>
   );
-};
-
-export default Catalog;
+}

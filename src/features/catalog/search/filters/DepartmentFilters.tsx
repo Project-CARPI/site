@@ -1,11 +1,11 @@
-import { useFilterData } from "@/features/filters/useFilterData";
+import { useCatalog } from "@/features/catalog/search/context/context";
 
 export default function DepartmentFilters() {
-  const { toggleFilter, subjects } = useFilterData();
+  const { toggleFilter, filters } = useCatalog();
 
   return (
     <div className="md:overflow-y-auto flex flex-wrap justify-center gap-1">
-      {subjects.map((subject) => (
+      {filters.subjects.map((subject) => (
         <button
           key={subject.code}
           className={`

@@ -1,6 +1,6 @@
 import { IoClose } from "react-icons/io5";
 
-import { useFilterData } from "@/features/filters/useFilterData";
+import { useCatalog } from "@/features/catalog/search/context/context";
 import useIsDesktop from "@/lib/hooks/useIsDesktop.ts";
 import { FilterData } from "@/lib/types";
 
@@ -60,7 +60,7 @@ export default function Tag({
   isSelected = false,
   isRemovable = false,
 }: TagProps) {
-  const { toggleFilter } = useFilterData();
+  const { toggleFilter } = useCatalog();
   const isDesktop = useIsDesktop();
 
   // Determine content: value or code

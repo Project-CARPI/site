@@ -4,7 +4,6 @@ import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 
 import { CourseWorkspaceProvider } from "@/core/workspace/provider";
 import { useDndLogic } from "@/features/dnd/useDragAndDrop";
-import { FilterProvider } from "@/features/filters/provider";
 import PlannerCourse from "@/features/planner/components/PlannerCourse";
 import SemesterBlock from "@/features/planner/components/SemesterBlock";
 import Toolbox from "@/features/toolbox/Toolbox";
@@ -60,16 +59,14 @@ export default function App() {
   return (
     <CourseWorkspaceProvider>
       <AppDragDropContext>
-        <FilterProvider>
-          <Router>
-            <Routes>
-              <Route path="/" element={<HomePage />} />
-              <Route path="/catalog" element={<Catalog />} />
-              <Route path="/planner" element={<Planner />} />
-            </Routes>
-            <Toolbox />
-          </Router>
-        </FilterProvider>
+        <Router>
+          <Routes>
+            <Route path="/" element={<HomePage />} />
+            <Route path="/catalog" element={<Catalog />} />
+            <Route path="/planner" element={<Planner />} />
+          </Routes>
+          <Toolbox />
+        </Router>
       </AppDragDropContext>
     </CourseWorkspaceProvider>
   );

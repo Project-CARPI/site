@@ -2,32 +2,27 @@ import { useEffect, useRef } from "react";
 
 import { IoClose, IoSearchOutline, IoFilter } from "react-icons/io5";
 
+import { useCatalog } from "@/features/catalog/search/context/context";
+import FilterPanel from "@/features/catalog/search/filters/FilterPanel";
+import FilterPanelPopup from "@/features/catalog/search/filters/FilterPopup";
 import Tag from "@/features/catalog/Tag";
-import FilterPanel from "@/features/filters/components/FilterPanel";
-import FilterPanelPopup from "@/features/filters/components/FilterPopup";
-import { useFilterData } from "@/features/filters/useFilterData";
 import useIsDesktop from "@/lib/hooks/useIsDesktop";
 
-interface SearchBarProps {
-  searchPrompt: string;
-  setSearchPrompt: React.Dispatch<React.SetStateAction<string>>;
-  showFilter: boolean;
-  setShowFilter: React.Dispatch<React.SetStateAction<boolean>>;
-}
-
-const SearchBar: React.FC<SearchBarProps> = ({
-  searchPrompt,
-  setSearchPrompt,
-  showFilter,
-  setShowFilter,
-}) => {
-  const { selectedFilters } = useFilterData();
+export default function SearchBar() {
   const isDesktop = useIsDesktop();
+  const {
+    selectedFilters,
+    searchPrompt,
+    setSearchPrompt,
+    showFilterPanel,
+    setShowFilterPanel,
+  } = useCatalog();
+
   const componentRef = useRef<HTMLDivElement>(null);
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setSearchPrompt(e.target.value);
-    setShowFilter(false);
+    setShowFilterPanel(false);
   };
 
   useEffect(() => {
@@ -36,7 +31,7 @@ const SearchBar: React.FC<SearchBarProps> = ({
         componentRef.current &&
         !componentRef.current.contains(event.target as Node)
       ) {
-        setShowFilter(false);
+        setShowFilterPanel(false);
       }
     };
 
@@ -44,7 +39,7 @@ const SearchBar: React.FC<SearchBarProps> = ({
     return () => {
       document.removeEventListener("mousedown", handleClickOutside);
     };
-  }, [setShowFilter]);
+  }, [setShowFilterPanel]);
 
   return (
     <div
@@ -61,14 +56,14 @@ const SearchBar: React.FC<SearchBarProps> = ({
           className="flex-grow text-base placeholder-darkblue-40 focus:placeholder-transparent focus:outline-none focus:ring-0"
           value={searchPrompt}
           enterKeyHint="search"
-          onClick={() => setShowFilter(false)}
+          onClick={() => setShowFilterPanel(false)}
           onChange={handleInputChange}
         />
 
-        {showFilter ? (
+        {showFilterPanel ? (
           <IoClose
             onClick={() => {
-              setShowFilter(false); // Uses prop
+              setShowFilterPanel(false); // Uses prop
               setSearchPrompt(""); // Uses prop
             }}
             className="w-5 h-5 hover:cursor-pointer"
@@ -76,13 +71,13 @@ const SearchBar: React.FC<SearchBarProps> = ({
         ) : (
           <IoFilter
             onClick={() => {
-              setShowFilter(true); // Uses prop
+              setShowFilterPanel(true); // Uses prop
             }}
             className="w-5 h-5 hover:cursor-pointer"
           />
         )}
 
-        {showFilter && isDesktop && <FilterPanelPopup />}
+        {showFilterPanel && isDesktop && <FilterPanelPopup />}
       </div>
 
       {!isDesktop && selectedFilters.length > 0 && (
@@ -92,9 +87,7 @@ const SearchBar: React.FC<SearchBarProps> = ({
           ))}
         </div>
       )}
-      {showFilter && !isDesktop && <FilterPanel />}
+      {showFilterPanel && !isDesktop && <FilterPanel />}
     </div>
   );
-};
-
-export default SearchBar;
+}

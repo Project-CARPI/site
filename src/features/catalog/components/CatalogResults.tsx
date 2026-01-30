@@ -1,20 +1,16 @@
 import Course from "@/features/catalog/components/CatalogCourse";
-import DepartmentFilters from "@/features/filters/components/DepartmentFilters";
-import { APICourse, FilterData } from "@/lib/types";
+import { useCatalog } from "@/features/catalog/search/context/context";
+import DepartmentFilters from "@/features/catalog/search/filters/DepartmentFilters";
 
-export default function CatalogResults({
-  searchResults,
-  isLoading,
-  hasSearched,
-  searchPrompt,
-  selectedFilters,
-}: {
-  searchResults: APICourse[];
-  isLoading: boolean;
-  hasSearched: boolean;
-  searchPrompt: string;
-  selectedFilters: FilterData[];
-}) {
+export default function CatalogResults() {
+  const {
+    searchResults,
+    isLoading,
+    hasSearched,
+    searchPrompt,
+    selectedFilters,
+  } = useCatalog();
+
   return (
     <div className="overflow-y-auto flex-grow">
       {searchResults.length > 0 ? (

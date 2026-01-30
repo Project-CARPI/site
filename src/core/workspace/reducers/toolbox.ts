@@ -40,11 +40,17 @@ export const ToolboxReducer = (
       );
 
     case "CONSOLIDATE_COURSES": {
-      const courseMap: Record<string, UserCourse> = {};
-      state.forEach((course) => {
-        courseMap[course.id] = course;
-      });
-      return Object.values(courseMap);
+      const uniqueMap = new Map<string, UserCourse>();
+
+      for (const course of state) {
+        if (uniqueMap.has(course.name)) {
+          const existing = uniqueMap.get(course.name)!;
+          existing.count += course.count;
+        } else {
+          uniqueMap.set(course.name, { ...course });
+        }
+      }
+      return Array.from(uniqueMap.values());
     }
 
     case "SET_COURSES":

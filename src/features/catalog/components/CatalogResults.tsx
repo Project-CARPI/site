@@ -1,7 +1,6 @@
 import Course from "@/features/catalog/components/CatalogCourse";
-import DepartmentFilters from "@/features/catalog/DepartmentFilters";
-import { FilterData } from "@/features/catalog/search/filters/types";
-import { APICourse } from "@/lib/types";
+import DepartmentFilters from "@/features/filters/components/DepartmentFilters";
+import { APICourse, FilterData } from "@/lib/types";
 
 export default function CatalogResults({
   searchResults,

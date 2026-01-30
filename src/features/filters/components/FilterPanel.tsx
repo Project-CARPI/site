@@ -1,5 +1,5 @@
-import FilterSection from "@/features/catalog/search/filters/components/FilterSection";
-import { useFilterData } from "@/features/catalog/search/filters/useFilterData";
+import FilterSection from "@/features/filters/components/FilterSection";
+import { useFilterData } from "@/features/filters/useFilterData";
 
 export default function FilterPanel() {
   const { selectedFilters, subjects, attributes, semesters } = useFilterData();

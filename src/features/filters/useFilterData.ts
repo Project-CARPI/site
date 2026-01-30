@@ -1,6 +1,6 @@
 import { useContext } from "react";
 
-import { FilterContext } from "@/features/catalog/search/filters/context.tsx";
+import { FilterContext } from "@/features/filters/context";
 
 export const useFilterData = () => {
   const context = useContext(FilterContext);

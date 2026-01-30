@@ -1,4 +1,4 @@
-import FilterPanel from "@/features/catalog/search/filters/components/FilterPanel";
+import FilterPanel from "@/features/filters/components/FilterPanel";
 
 export default function FilterPopup() {
   return (

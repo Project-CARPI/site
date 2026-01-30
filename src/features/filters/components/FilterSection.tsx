@@ -2,12 +2,9 @@ import { useState } from "react";
 
 import { motion } from "framer-motion";
 
-import {
-  FilterCategory,
-  FilterData,
-} from "@/features/catalog/search/filters/types";
 import Tag from "@/features/catalog/Tag";
 import useIsDesktop from "@/lib/hooks/useIsDesktop";
+import { FilterCategory, FilterData } from "@/lib/types";
 
 interface FilterSectionProps {
   sectionName: FilterCategory;

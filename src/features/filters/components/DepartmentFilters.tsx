@@ -1,4 +1,4 @@
-import { useFilterData } from "@/features/catalog/search/filters/useFilterData";
+import { useFilterData } from "@/features/filters/useFilterData";
 
 export default function DepartmentFilters() {
   const { toggleFilter, subjects } = useFilterData();

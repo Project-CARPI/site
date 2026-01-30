@@ -1,8 +1,8 @@
 import { IoClose } from "react-icons/io5";
 
-import { FilterData } from "@/features/catalog/search/filters/types.ts";
-import { useFilterData } from "@/features/catalog/search/filters/useFilterData";
+import { useFilterData } from "@/features/filters/useFilterData";
 import useIsDesktop from "@/lib/hooks/useIsDesktop.ts";
+import { FilterData } from "@/lib/types";
 
 interface ColorClass {
   selected_border: string;

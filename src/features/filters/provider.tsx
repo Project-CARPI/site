@@ -1,10 +1,7 @@
 import { useState, useEffect, ReactNode } from "react";
 
-import { FilterContext } from "@/features/catalog/search/filters/context";
-import {
-  FilterData,
-  FilterCategory,
-} from "@/features/catalog/search/filters/types";
+import { FilterContext } from "@/features/filters/context";
+import { FilterData, FilterCategory } from "@/features/filters/types";
 import api from "@/lib/axios";
 
 const formatApiData = (type: FilterCategory, data: Record<string, string>) => {

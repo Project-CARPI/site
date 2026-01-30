@@ -6,10 +6,9 @@ import { IoAdd } from "react-icons/io5";
 import CourseBadge from "@/components/course/CourseBadge";
 import CourseLabel from "@/components/course/CourseLabel";
 import { useCourseWorkspace } from "@/core/workspace/useCourseWorkspace";
-import { FilterData } from "@/features/catalog/search/filters/types";
-import { useFilterData } from "@/features/catalog/search/filters/useFilterData";
 import Tag from "@/features/catalog/Tag";
-import { APICourse } from "@/lib/types";
+import { useFilterData } from "@/features/filters/useFilterData";
+import { APICourse, FilterData } from "@/lib/types";
 
 const findFiltersForCourse = (
   api_list: string[],

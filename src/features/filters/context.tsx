@@ -1,6 +1,6 @@
 import { createContext } from "react";
 
-import { FilterData } from "@/features/catalog/search/filters/types";
+import { FilterData } from "@/lib/types";
 
 export interface FilterContextType {
   // available filter options

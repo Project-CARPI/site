@@ -3,8 +3,8 @@ import { createPortal } from "react-dom";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 
 import { CourseWorkspaceProvider } from "@/core/workspace/provider";
-import { FilterProvider } from "@/features/catalog/search/filters/provider";
 import { useDndLogic } from "@/features/dnd/useDragAndDrop";
+import { FilterProvider } from "@/features/filters/provider";
 import PlannerCourse from "@/features/planner/components/PlannerCourse";
 import SemesterBlock from "@/features/planner/components/SemesterBlock";
 import Toolbox from "@/features/toolbox/Toolbox";

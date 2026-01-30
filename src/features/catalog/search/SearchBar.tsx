@@ -2,10 +2,10 @@ import { useEffect, useRef } from "react";
 
 import { IoClose, IoSearchOutline, IoFilter } from "react-icons/io5";
 
-import FilterPanel from "@/features/catalog/search/filters/components/FilterPanel";
-import FilterPanelPopup from "@/features/catalog/search/filters/components/FilterPopup";
-import { useFilterData } from "@/features/catalog/search/filters/useFilterData";
 import Tag from "@/features/catalog/Tag";
+import FilterPanel from "@/features/filters/components/FilterPanel";
+import FilterPanelPopup from "@/features/filters/components/FilterPopup";
+import { useFilterData } from "@/features/filters/useFilterData";
 import useIsDesktop from "@/lib/hooks/useIsDesktop";
 
 interface SearchBarProps {

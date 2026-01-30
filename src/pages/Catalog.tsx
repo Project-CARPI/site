@@ -4,10 +4,10 @@ import { useDroppable } from "@dnd-kit/core";
 
 import CatalogResults from "@/features/catalog/components/CatalogResults";
 import TrashDropZone from "@/features/catalog/components/TrashDropzone";
-import { useFilterData } from "@/features/catalog/search/filters/useFilterData";
 import SearchBar from "@/features/catalog/search/SearchBar";
 import { useCatalogSearch } from "@/features/catalog/search/useCatalogSearch";
 import Tag from "@/features/catalog/Tag";
+import { useFilterData } from "@/features/filters/useFilterData";
 import useIsDesktop from "@/lib/hooks/useIsDesktop";
 
 const Catalog: React.FC = () => {

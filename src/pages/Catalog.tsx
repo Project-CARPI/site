@@ -1,7 +1,7 @@
-import { useDroppable } from "@dnd-kit/core";
+// import { useDroppable } from "@dnd-kit/core";
 
 import CatalogResults from "@/features/catalog/components/CatalogResults";
-import TrashDropZone from "@/features/catalog/components/TrashDropzone";
+// import TrashDropZone from "@/features/catalog/components/TrashDropzone";
 import {
   CatalogProvider,
   useCatalog,
@@ -19,37 +19,31 @@ export default function Catalog() {
 }
 
 function CatalogContent() {
-  const { setNodeRef, isOver } = useDroppable({ id: "garbage" });
+  // const { setNodeRef, isOver } = useDroppable({ id: "garbage" });
   const { selectedFilters, showFilterPanel } = useCatalog();
   const isDesktop = useIsDesktop();
 
-  const showTrashZone = isOver && isDesktop;
+  // const showTrashZone = isOver && isDesktop;
 
   return (
     <section
-      ref={setNodeRef}
+      // ref={setNodeRef}
       className="flex flex-col gap-2 md:h-[calc(100vh-10rem)] md:overflow-hidden"
     >
-      {showTrashZone ? (
-        <TrashDropZone />
-      ) : (
-        <>
-          <div className="sticky z-10 flex flex-col gap-2">
-            <h1 className="font-bold text-xl">Courses</h1>
-            <SearchBar />
+      <div className="sticky z-10 flex flex-col gap-2">
+        <h1 className="font-bold text-xl">Courses</h1>
+        <SearchBar />
 
-            {isDesktop && (
-              <div className="flex flex-wrap w-full items-start gap-1">
-                {selectedFilters.map((filter) => (
-                  <Tag key={filter.id} filter={filter} isRemovable={true} />
-                ))}
-              </div>
-            )}
+        {isDesktop && (
+          <div className="flex flex-wrap w-full items-start gap-1">
+            {selectedFilters.map((filter) => (
+              <Tag key={filter.id} filter={filter} isRemovable={true} />
+            ))}
           </div>
+        )}
+      </div>
 
-          {(isDesktop || !showFilterPanel) && <CatalogResults />}
-        </>
-      )}
+      {(isDesktop || !showFilterPanel) && <CatalogResults />}
     </section>
   );
 }

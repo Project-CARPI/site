@@ -9,6 +9,7 @@ import { IoIosArrowUp } from "react-icons/io";
 
 import { useCourseWorkspace } from "@/core/workspace/useCourseWorkspace";
 import { SortableItem } from "@/features/dnd/components/SortableItem";
+import GarbageBin from "@/features/toolbox/GarbageBin";
 import NavButton from "@/features/toolbox/NavButton";
 import ToolboxButton from "@/features/toolbox/ToolboxButton";
 import ToolboxCourse from "@/features/toolbox/ToolboxCourse";
@@ -53,7 +54,7 @@ const Toolbox: React.FC = () => {
               : "transform translate-y-full"
         }`}
       >
-        {/* <GarbageBin /> */}
+        <GarbageBin />
 
         {/* Header */}
         <div className="flex items-center gap-4 p-3 mx-2 cursor-pointer">

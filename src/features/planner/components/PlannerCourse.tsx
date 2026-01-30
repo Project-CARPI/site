@@ -52,7 +52,7 @@ export default function PlannerCourse({
       <RightClickContextMenu.Trigger>
         <div
           ref={componentRef}
-          className="relative flex justify-between bg-darkblue rounded-2xl text-carpipink gap-4 px-2 py-3"
+          className="relative flex justify-between bg-darkblue rounded-2xl text-carpipink gap-4 px-2 py-3 e"
         >
           <div className={`flex gap-2 items-center`}>
             <MdDragIndicator className="text-2xl" />

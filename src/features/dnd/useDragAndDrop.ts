@@ -307,7 +307,21 @@ export const useDndLogic = () => {
     // A. Handle Garbage Drop
     if (over?.id === "garbage") {
       if (activeContainer === "toolbox") {
+        const itemToMove = toolboxCourses.find((c) => c.id === active.id);
+        if (!itemToMove) {
+          setOriginalToolboxState(null);
+          return;
+        }
+
+        const remainder: UserCourse = {
+          ...itemToMove,
+          id: uuidv4(),
+          count: itemToMove.count - 1,
+        };
+
+        const index = toolboxCourses.findIndex((c) => c.id === active.id);
         removeCourseFromToolbox(active.id as string);
+        insertCourseIntoToolbox(remainder, index);
       } else if (activeContainer) {
         removeCourseFromSemester(
           activeContainer as string,

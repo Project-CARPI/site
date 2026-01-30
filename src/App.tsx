@@ -14,11 +14,11 @@ import { useDndLogic } from "@/features/dnd/useDragAndDrop";
 import PlannerCourse from "@/features/planner/components/PlannerCourse";
 import SemesterBlock from "@/features/planner/components/SemesterBlock";
 import Toolbox from "@/features/toolbox/Toolbox";
+import { cn } from "@/lib/classnames";
 import { UserCourse } from "@/lib/types";
 import Catalog from "@/pages/Catalog";
 import HomePage from "@/pages/HomePage";
 import Planner from "@/pages/Planner";
-import { cn } from "@/lib/classnames";
 
 const AppDragDropContext: React.FC<{ children: React.ReactNode }> = ({
   children,

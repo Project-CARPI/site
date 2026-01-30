@@ -156,7 +156,7 @@ export default function SemesterBlock({
         </div>
       )}
 
-      <div ref={setNodeRef} className="flex flex-col gap-2">
+      <div ref={setNodeRef} className="flex flex-col gap-2 h-full">
         <SortableContext
           items={semester.courseList.map((c) => c.id)}
           strategy={verticalListSortingStrategy}

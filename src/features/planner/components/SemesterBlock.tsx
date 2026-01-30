@@ -5,6 +5,7 @@ import {
   SortableContext,
   verticalListSortingStrategy,
 } from "@dnd-kit/sortable";
+import { motion } from "framer-motion";
 import { MdDragIndicator, MdEdit } from "react-icons/md";
 
 import { useCourseWorkspace } from "@/core/workspace/useCourseWorkspace";
@@ -76,7 +77,8 @@ export default function SemesterBlock({
   };
 
   return (
-    <div
+    <motion.div
+      layout
       className={cn(
         "flex flex-grow flex-col space-y-2 p-4 rounded-2xl h-full",
         "bg-[color-mix(in_oklab,var(--color-darkblue)_10%,var(--color-carpipink)_90%)]",
@@ -85,7 +87,7 @@ export default function SemesterBlock({
         },
       )}
     >
-      <div className="flex justify-between items-center mb-1 h-8">
+      <motion.div layout className="flex justify-between items-center mb-1 h-8">
         <div
           className={cn(
             "hover:bg-darkblue/20 py-2 px-1 rounded-lg",
@@ -140,20 +142,26 @@ export default function SemesterBlock({
 
           <div className="">{semester.creditsTotal} credits</div>
         </div>
-      </div>
+      </motion.div>
 
       {over_limit && (
-        <div className="text-darkblue text-sm bg-rosewood/20 rounded-2xl p-4 text-center">
+        <motion.div
+          layout
+          className="text-darkblue text-sm bg-rosewood/20 rounded-2xl p-4 text-center"
+        >
           You are over the maximum credit limit of{" "}
           {over_hard_limit ? CREDIT_LIMIT : CREDIT_LIMIT_WITHOUT_APPROVAL}{" "}
           credits! <b>Check with your advisor before proceeding.</b>
-        </div>
+        </motion.div>
       )}
 
       {hasDuplicateCourses && (
-        <div className="text-darkblue text-sm bg-rosewood/20 rounded-2xl p-4 text-center">
+        <motion.div
+          layout
+          className="text-darkblue text-sm bg-rosewood/20 rounded-2xl p-4 text-center"
+        >
           There are duplicate courses in this semester!
-        </div>
+        </motion.div>
       )}
 
       <div ref={setNodeRef} className="flex flex-col gap-2 h-full">
@@ -181,14 +189,14 @@ export default function SemesterBlock({
         </SortableContext>
       </div>
 
-      <div className="flex justify-end">
+      <motion.div layout className="flex justify-end">
         <button
           onClick={() => handleDeleteSemester(semester.semesterID)}
           className="border border-black rounded-full px-3 py-0 h-fit font-medium text-sm hover:cursor-pointer hover:bg-darkblue hover:text-carpipink transition-colors duration-200"
         >
           Delete
         </button>
-      </div>
-    </div>
+      </motion.div>
+    </motion.div>
   );
 }

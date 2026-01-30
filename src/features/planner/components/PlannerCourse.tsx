@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from "react";
 
 import * as RightClickContextMenu from "@radix-ui/react-context-menu";
+import { motion } from "framer-motion";
 import { MdDragIndicator, MdOutlineMoreHoriz } from "react-icons/md";
 
 import CourseLabel from "@/components/course/CourseLabel";
@@ -53,7 +54,8 @@ export default function PlannerCourse({
   return (
     <RightClickContextMenu.Root>
       <RightClickContextMenu.Trigger>
-        <div
+        <motion.div
+          layout
           ref={componentRef}
           className={cn(
             "relative flex justify-between bg-darkblue rounded-2xl text-carpipink gap-4 px-2 py-3 e",
@@ -78,7 +80,7 @@ export default function PlannerCourse({
               onClose={() => setOpenPopup(false)}
             />
           )}
-        </div>
+        </motion.div>
       </RightClickContextMenu.Trigger>
 
       <RightClickContextMenu.Portal>

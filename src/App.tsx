@@ -4,11 +4,11 @@ import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 
 import { CourseWorkspaceProvider } from "@/core/workspace/provider";
 import { FilterProvider } from "@/features/catalog/search/filters/provider";
-import PlannerCourse from "@/features/course/components/PlannerCourse";
-import { UserCourse } from "@/features/course/interfaces";
 import { useDndLogic } from "@/features/dnd/useDragAndDrop";
+import PlannerCourse from "@/features/planner/components/PlannerCourse";
 import SemesterBlock from "@/features/planner/components/SemesterBlock";
 import Toolbox from "@/features/toolbox/Toolbox";
+import { UserCourse } from "@/lib/types";
 import Catalog from "@/pages/Catalog";
 import HomePage from "@/pages/HomePage";
 import Planner from "@/pages/Planner";

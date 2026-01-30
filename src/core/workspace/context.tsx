@@ -1,7 +1,6 @@
 import { createContext } from "react";
 
-import { APICourse, UserCourse } from "@/features/course/interfaces";
-import { SemesterType } from "@/features/planner/interfaces";
+import { APICourse, UserCourse, SemesterType } from "@/lib/types";
 
 export interface CourseWorkspaceContextType {
   // data

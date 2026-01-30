@@ -1,8 +1,8 @@
 import { useEffect, useRef, useState } from "react";
 
 import { FilterData } from "@/features/catalog/search/filters/types";
-import { APICourse } from "@/features/course/interfaces";
 import api from "@/lib/axios";
+import { APICourse } from "@/lib/types";
 
 export const useCatalogSearch = (selectedFilters: FilterData[]) => {
   const [searchResults, setSearchResults] = useState<APICourse[]>([]);

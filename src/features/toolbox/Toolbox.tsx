@@ -8,10 +8,10 @@ import {
 import { IoIosArrowUp } from "react-icons/io";
 
 import { useCourseWorkspace } from "@/core/workspace/useCourseWorkspace";
-import ToolboxCourse from "@/features/course/components/ToolboxCourse";
 import { SortableItem } from "@/features/dnd/components/SortableItem";
 import NavButton from "@/features/toolbox/NavButton";
 import ToolboxButton from "@/features/toolbox/ToolboxButton";
+import ToolboxCourse from "@/features/toolbox/ToolboxCourse";
 import useIsDesktop from "@/lib/hooks/useIsDesktop";
 
 const Toolbox: React.FC = () => {

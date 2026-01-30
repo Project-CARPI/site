@@ -3,13 +3,13 @@ import { useState } from "react";
 import { motion } from "framer-motion";
 import { IoAdd } from "react-icons/io5";
 
+import CourseBadge from "@/components/course/CourseBadge";
+import CourseLabel from "@/components/course/CourseLabel";
 import { useCourseWorkspace } from "@/core/workspace/useCourseWorkspace";
 import { FilterData } from "@/features/catalog/search/filters/types";
 import { useFilterData } from "@/features/catalog/search/filters/useFilterData";
 import Tag from "@/features/catalog/Tag";
-import CourseBadge from "@/features/course/components/layout/CourseBadge";
-import CourseLabel from "@/features/course/components/layout/CourseLabel";
-import { APICourse } from "@/features/course/interfaces";
+import { APICourse } from "@/lib/types";
 
 const findFiltersForCourse = (
   api_list: string[],

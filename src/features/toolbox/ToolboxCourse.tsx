@@ -1,6 +1,6 @@
-import CourseBadge from "@/features/course/components/layout/CourseBadge";
-import CourseLabel from "@/features/course/components/layout/CourseLabel";
-import { UserCourse } from "@/features/course/interfaces";
+import CourseBadge from "@/components/course/CourseBadge";
+import CourseLabel from "@/components/course/CourseLabel";
+import { UserCourse } from "@/lib/types";
 
 interface ToolboxCourseProps {
   course: UserCourse;

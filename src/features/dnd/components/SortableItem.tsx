@@ -1,8 +1,7 @@
 import { useSortable } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
 
-import { UserCourse } from "@/features/course/interfaces";
-import { SemesterType } from "@/features/planner/interfaces";
+import { UserCourse, SemesterType } from "@/lib/types";
 
 interface SortableItemProps {
   id: string;

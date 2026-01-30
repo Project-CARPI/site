@@ -3,7 +3,7 @@ import { useCallback, useMemo } from "react";
 import { v4 as uuidv4 } from "uuid";
 
 import { useCourseWorkspace } from "@/core/workspace/useCourseWorkspace";
-import { UserCourse } from "@/features/course/interfaces";
+import { UserCourse } from "@/lib/types";
 
 export interface MenuOption {
   label: string;

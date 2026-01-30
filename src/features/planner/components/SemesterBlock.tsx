@@ -8,9 +8,9 @@ import {
 import { MdDragIndicator, MdEdit } from "react-icons/md";
 
 import { useCourseWorkspace } from "@/core/workspace/useCourseWorkspace";
-import PlannerCourse from "@/features/course/components/PlannerCourse";
 import { SortableItem } from "@/features/dnd/components/SortableItem";
 import CourseDropzone from "@/features/planner/components/CourseDropzone";
+import PlannerCourse from "@/features/planner/components/PlannerCourse";
 import { SemesterType, SemesterSeason } from "@/features/planner/interfaces";
 import { cn } from "@/lib/classnames";
 

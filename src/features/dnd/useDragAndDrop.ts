@@ -20,8 +20,7 @@ import { sortableKeyboardCoordinates } from "@dnd-kit/sortable";
 import { v4 as uuidv4 } from "uuid";
 
 import { useCourseWorkspace } from "@/core/workspace/useCourseWorkspace";
-import { UserCourse } from "@/features/course/interfaces";
-import { SemesterType } from "@/features/planner/interfaces";
+import { UserCourse, SemesterType } from "@/lib/types";
 
 // Union type for active item
 type ActiveItemType = UserCourse | SemesterType | null;

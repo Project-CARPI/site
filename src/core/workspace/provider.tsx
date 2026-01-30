@@ -4,8 +4,7 @@ import { arrayMove } from "@dnd-kit/sortable";
 import { v4 as uuidv4 } from "uuid";
 
 import { CourseWorkspaceContext } from "@/core/workspace/context";
-import { APICourse, UserCourse } from "@/features/course/interfaces";
-import { SemesterType } from "@/features/planner/interfaces";
+import { APICourse, UserCourse, SemesterType } from "@/lib/types";
 
 export function CourseWorkspaceProvider({ children }: { children: ReactNode }) {
   const [toolboxCourses, setToolboxCourses] = useState<UserCourse[]>([]);

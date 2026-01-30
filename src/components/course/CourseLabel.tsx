@@ -1,4 +1,4 @@
-import { APICourse } from "@/features/course/interfaces";
+import { APICourse } from "@/lib/types";
 
 interface CourseLabelProps {
   course: APICourse;

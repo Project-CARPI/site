@@ -3,10 +3,10 @@ import React, { useState, useEffect, useRef } from "react";
 import * as RightClickContextMenu from "@radix-ui/react-context-menu";
 import { MdDragIndicator, MdOutlineMoreHoriz } from "react-icons/md";
 
-import CourseLabel from "@/features/course/components/layout/CourseLabel";
-import PlannerOptionsPopup from "@/features/course/components/PlannerOptionsPopup";
-import { UserCourse } from "@/features/course/interfaces";
+import CourseLabel from "@/components/course/CourseLabel";
+import PlannerOptionsPopup from "@/features/planner/components/PlannerOptionsPopup";
 import { usePlannerCourse } from "@/features/planner/usePlannerCourse";
+import { UserCourse } from "@/lib/types";
 
 interface PlannerCourseProps {
   course: UserCourse;

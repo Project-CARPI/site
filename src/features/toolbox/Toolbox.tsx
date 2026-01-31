@@ -83,7 +83,7 @@ export default function Toolbox() {
       >
         <button
           onClick={toggleToolbox}
-          className="flex items-center w-full gap-4 pt-3 px-5 mb-2 cursor-pointer text-left"
+          className="flex items-center w-full gap-4 pt-3 px-5 mb-4 cursor-pointer text-left"
         >
           <div className="flex items-center">
             <h2 className="text-carpipink font-semibold text-xl">TOOLBOX</h2>

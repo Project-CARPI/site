@@ -58,14 +58,18 @@ export default function Toolbox() {
       )}
     >
       {!isDesktop && !isOpen && (
-        <ToolboxButton
-          isOpen={isOpen}
-          toggleToolbox={toggleToolbox}
-          count={toolboxCourseCount}
-        />
+        <div className="absolute bottom-0 right-0 pointer-events-auto">
+          <ToolboxButton
+            isOpen={isOpen}
+            toggleToolbox={toggleToolbox}
+            count={toolboxCourseCount}
+          />
+        </div>
       )}
 
-      <GarbageBin />
+      <div className="pointer-events-none w-full">
+        <GarbageBin />
+      </div>
 
       <motion.div
         animate={controls}
@@ -79,7 +83,7 @@ export default function Toolbox() {
       >
         <button
           onClick={toggleToolbox}
-          className="flex items-center w-full gap-4 p-3 px-5 cursor-pointer text-left"
+          className="flex items-center w-full gap-4 pt-3 px-5 mb-2 cursor-pointer text-left"
         >
           <div className="flex items-center">
             <h2 className="text-carpipink font-semibold text-xl">TOOLBOX</h2>
@@ -116,7 +120,7 @@ export default function Toolbox() {
               strategy={horizontalListSortingStrategy}
             >
               {toolboxCourses.length === 0 ? (
-                <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
+                <div className="md:absolute w-full h-full inset-0 flex items-center justify-center pointer-events-none">
                   <span className="text-carpipink opacity-60 text-sm md:text-base font-medium italic">
                     Add courses to plan your semester
                   </span>

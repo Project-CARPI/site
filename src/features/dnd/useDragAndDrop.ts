@@ -113,7 +113,12 @@ export const useDndLogic = () => {
       let overId = getFirstCollision(intersections, "id");
 
       if (overId != null) {
-        if (overId === "garbage" || overId === "toolbox") return intersections;
+        if (
+          overId === "garbage" ||
+          overId === "toolbox" ||
+          overId === "toolbox-button"
+        )
+          return intersections;
 
         const semester = plannerCourses.find((s) => s.semesterID === overId);
         if (semester) {
@@ -334,6 +339,26 @@ export const useDndLogic = () => {
       }
       setOriginalToolboxState(null);
       return;
+    } else if (over?.id === "toolbox-button") {
+      // add back into the toolbox and consolidate where needed
+      if (activeContainer) {
+        const sem = plannerCourses.find(
+          (s) => s.semesterID === activeContainer,
+        );
+        const itemToMove = sem?.courseList.find((c) => c.id === active.id);
+        if (itemToMove) {
+          // Remove from planner
+          removeCourseFromSemester(
+            activeContainer as string,
+            active.id as string,
+          );
+          // Insert into toolbox
+          insertCourseIntoToolbox(itemToMove, toolboxCourses.length);
+          // Consolidate duplicates
+          consolidateToolbox();
+        }
+        setOriginalToolboxState(null);
+      }
     }
 
     // B. Handle Cancel / Drop Nowhere

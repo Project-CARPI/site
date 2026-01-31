@@ -1,13 +1,15 @@
 import { useSortable } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
 
+import { SortableItemContext } from "@/features/dnd/useSortableItem";
 import { UserCourse, SemesterType } from "@/lib/types";
 
 interface SortableItemProps {
   id: string;
   children: React.ReactNode;
   data: UserCourse | SemesterType;
-  type: "Course" | "Semester";
+  type?: "Course" | "Semester";
+  useHandle?: boolean;
 }
 
 export const SortableItem = ({
@@ -15,6 +17,7 @@ export const SortableItem = ({
   children,
   data,
   type,
+  useHandle = false,
 }: SortableItemProps) => {
   const {
     attributes,
@@ -26,20 +29,24 @@ export const SortableItem = ({
   } = useSortable({
     id,
     data: {
-      type,
       ...data,
+      type: type || ("semesterID" in data ? "Semester" : "Course"),
     },
   });
 
-  const style = {
+  const style: React.CSSProperties = {
     transform: CSS.Translate.toString(transform),
     transition,
     opacity: isDragging ? 0.5 : 1,
   };
 
+  const listenersProp = useHandle ? {} : listeners;
+
   return (
-    <div ref={setNodeRef} style={style} {...attributes} {...listeners}>
-      {children}
-    </div>
+    <SortableItemContext.Provider value={{ listeners, attributes }}>
+      <div ref={setNodeRef} style={style} {...attributes} {...listenersProp}>
+        {children}
+      </div>
+    </SortableItemContext.Provider>
   );
 };

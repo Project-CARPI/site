@@ -10,6 +10,7 @@ import { MdDragIndicator, MdEdit } from "react-icons/md";
 
 import { useCourseWorkspace } from "@/core/workspace/useCourseWorkspace";
 import { SortableItem } from "@/features/dnd/components/SortableItem";
+import { useSortableItem } from "@/features/dnd/useSortableItem";
 import CourseDropzone from "@/features/planner/components/CourseDropzone";
 import PlannerCourse from "@/features/planner/components/PlannerCourse";
 import { SemesterType, SemesterSeason } from "@/features/planner/interfaces";
@@ -29,6 +30,7 @@ export default function SemesterBlock({
   const { setNodeRef, isOver } = useDroppable({
     id: semester.semesterID,
   });
+  const { listeners, attributes } = useSortableItem();
 
   const { updateSemesterName, updateSemesterSeason, deleteSemester } =
     useCourseWorkspace();
@@ -90,11 +92,15 @@ export default function SemesterBlock({
       <motion.div layout className="flex justify-between items-center mb-1 h-8">
         <div
           className={cn(
-            "hover:bg-darkblue/20 py-2 px-1 rounded-lg",
-            isDragging ? "cursor-grabbing" : "cursor-grab",
+            "hover:bg-darkblue/20 py-2 px-1 rounded-lg flex-shrink-0 ",
+            isDragging
+              ? "cursor-grabbing"
+              : "cursor-grab active:cursor-grabbing",
           )}
+          {...listeners}
+          {...attributes}
         >
-          <MdDragIndicator className="text-xl" />
+          <MdDragIndicator size={20} />
         </div>
 
         {isEditing ? (

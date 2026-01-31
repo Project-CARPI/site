@@ -52,6 +52,7 @@ const Planner: React.FC = () => {
                   id={"sem-" + semester.semesterID}
                   data={semester}
                   type="Semester"
+                  useHandle={true}
                 >
                   <div className="md:h-full flex flex-col justify-between">
                     <SemesterBlock

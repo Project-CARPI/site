@@ -6,7 +6,7 @@ import { IoAdd } from "react-icons/io5";
 import CourseBadge from "@/components/course/CourseBadge";
 import CourseLabel from "@/components/course/CourseLabel";
 import { useCourseWorkspace } from "@/core/workspace/useCourseWorkspace";
-import { useCatalog } from "@/features/catalog/search/context/context";
+import { useCatalog } from "@/features/catalog/search/context/useCatalog";
 import Tag from "@/features/catalog/Tag";
 import { APICourse, FilterData } from "@/lib/types";
 

@@ -44,7 +44,7 @@ export default function FilterSection({
         >
           {tags.map((tag) => (
             <Tag
-              key={tag.id}
+              key={`${tag.type}-${tag.code}`}
               filter={tag}
               isSelectable={true}
               isSelected={selected.includes(tag.code)}

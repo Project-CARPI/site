@@ -2,10 +2,8 @@
 
 import CatalogResults from "@/features/catalog/components/CatalogResults";
 // import TrashDropZone from "@/features/catalog/components/TrashDropzone";
-import {
-  CatalogProvider,
-  useCatalog,
-} from "@/features/catalog/search/context/context";
+import { CatalogProvider } from "@/features/catalog/search/context/provider";
+import { useCatalog } from "@/features/catalog/search/context/useCatalog";
 import SearchBar from "@/features/catalog/search/SearchBar";
 import Tag from "@/features/catalog/Tag";
 import useIsDesktop from "@/lib/hooks/useIsDesktop";

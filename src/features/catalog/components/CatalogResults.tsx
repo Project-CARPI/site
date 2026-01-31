@@ -1,5 +1,5 @@
 import Course from "@/features/catalog/components/CatalogCourse";
-import { useCatalog } from "@/features/catalog/search/context/context";
+import { useCatalog } from "@/features/catalog/search/context/useCatalog";
 import DepartmentFilters from "@/features/catalog/search/filters/DepartmentFilters";
 
 export default function CatalogResults() {

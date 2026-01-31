@@ -7,7 +7,7 @@ export default function CourseBadge({
   count,
   className = "",
 }: CourseBadgeProps) {
-  if (!count || count <= 1) return null;
+  if (!count) return null;
 
   return (
     <div

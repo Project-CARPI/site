@@ -1,4 +1,4 @@
-import { useCatalog } from "@/features/catalog/search/context/context";
+import { useCatalog } from "@/features/catalog/search/context/useCatalog";
 import FilterSection from "@/features/catalog/search/filters/FilterSection";
 
 export default function FilterPanel() {

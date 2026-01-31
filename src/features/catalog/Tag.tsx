@@ -1,6 +1,6 @@
 import { IoClose } from "react-icons/io5";
 
-import { useCatalog } from "@/features/catalog/search/context/context";
+import { useCatalog } from "@/features/catalog/search/context/useCatalog";
 import useIsDesktop from "@/lib/hooks/useIsDesktop.ts";
 import { FilterData } from "@/lib/types";
 

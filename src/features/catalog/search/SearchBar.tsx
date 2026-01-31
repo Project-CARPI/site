@@ -2,7 +2,7 @@ import { useEffect, useRef } from "react";
 
 import { IoClose, IoSearchOutline, IoFilter } from "react-icons/io5";
 
-import { useCatalog } from "@/features/catalog/search/context/context";
+import { useCatalog } from "@/features/catalog/search/context/useCatalog";
 import FilterPanel from "@/features/catalog/search/filters/FilterPanel";
 import FilterPanelPopup from "@/features/catalog/search/filters/FilterPopup";
 import Tag from "@/features/catalog/Tag";

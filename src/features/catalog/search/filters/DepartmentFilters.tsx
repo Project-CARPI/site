@@ -1,4 +1,4 @@
-import { useCatalog } from "@/features/catalog/search/context/context";
+import { useCatalog } from "@/features/catalog/search/context/useCatalog";
 
 export default function DepartmentFilters() {
   const { toggleFilter, filters } = useCatalog();

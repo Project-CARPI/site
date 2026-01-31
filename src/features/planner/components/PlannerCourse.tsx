@@ -58,12 +58,13 @@ export default function PlannerCourse({
           layout
           ref={componentRef}
           className={cn(
-            "relative flex justify-between bg-darkblue rounded-2xl text-carpipink gap-4 px-2 py-3 e",
+            "relative flex justify-between bg-darkblue rounded-2xl text-carpipink gap-4 px-2 py-3",
+            "hover:shadow-lg",
             isDragging ? "cursor-grabbing" : "cursor-grab",
           )}
         >
           <div className={`flex gap-2 items-center`}>
-            <MdDragIndicator className="text-2xl" />
+            <MdDragIndicator size={22} />
             <CourseLabel course={course.data} showCredits />
           </div>
 

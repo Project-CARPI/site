@@ -81,7 +81,7 @@ export default function SemesterBlock({
         },
       )}
     >
-      <motion.div layout className="flex items-center">
+      <motion.div layout className="flex items-center gap-2">
         <div
           className={cn(
             "hover:bg-darkblue/20 py-2 px-1 rounded-lg flex-shrink-0 ",
@@ -92,7 +92,7 @@ export default function SemesterBlock({
           {...listeners}
           {...attributes}
         >
-          <MdDragIndicator size={20} />
+          <MdDragIndicator size={22} />
         </div>
 
         {isEditing ? (

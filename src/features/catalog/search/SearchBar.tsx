@@ -5,18 +5,13 @@ import { IoClose, IoSearchOutline, IoFilter } from "react-icons/io5";
 import { useCatalog } from "@/features/catalog/search/context/useCatalog";
 import FilterPanel from "@/features/catalog/search/filters/FilterPanel";
 import FilterPanelPopup from "@/features/catalog/search/filters/FilterPopup";
-import Tag from "@/features/catalog/Tag";
+import SelectedFiltersList from "@/features/catalog/search/filters/SelectedFilters";
 import useIsDesktop from "@/lib/hooks/useIsDesktop";
 
 export default function SearchBar() {
   const isDesktop = useIsDesktop();
-  const {
-    selectedFilters,
-    searchPrompt,
-    setSearchPrompt,
-    showFilterPanel,
-    setShowFilterPanel,
-  } = useCatalog();
+  const { searchPrompt, setSearchPrompt, showFilterPanel, setShowFilterPanel } =
+    useCatalog();
 
   const componentRef = useRef<HTMLDivElement>(null);
 
@@ -79,18 +74,7 @@ export default function SearchBar() {
 
         {showFilterPanel && isDesktop && <FilterPanelPopup />}
       </div>
-
-      {!isDesktop && selectedFilters.length > 0 && (
-        <div className="flex flex-wrap w-full items-start gap-1">
-          {selectedFilters.map((filter) => (
-            <Tag
-              key={`${filter.type}-${filter.code}`}
-              filter={filter}
-              isRemovable={true}
-            />
-          ))}
-        </div>
-      )}
+      {!isDesktop && <SelectedFiltersList />}
       {showFilterPanel && !isDesktop && <FilterPanel />}
     </div>
   );

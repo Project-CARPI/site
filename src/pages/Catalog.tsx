@@ -4,8 +4,8 @@ import CatalogResults from "@/features/catalog/components/CatalogResults";
 // import TrashDropZone from "@/features/catalog/components/TrashDropzone";
 import { CatalogProvider } from "@/features/catalog/search/context/provider";
 import { useCatalog } from "@/features/catalog/search/context/useCatalog";
+import SelectedFiltersList from "@/features/catalog/search/filters/SelectedFilters";
 import SearchBar from "@/features/catalog/search/SearchBar";
-import Tag from "@/features/catalog/Tag";
 import useIsDesktop from "@/lib/hooks/useIsDesktop";
 
 export default function Catalog() {
@@ -18,7 +18,7 @@ export default function Catalog() {
 
 function CatalogContent() {
   // const { setNodeRef, isOver } = useDroppable({ id: "garbage" });
-  const { selectedFilters, showFilterPanel } = useCatalog();
+  const { showFilterPanel } = useCatalog();
   const isDesktop = useIsDesktop();
 
   // const showTrashZone = isOver && isDesktop;
@@ -32,17 +32,7 @@ function CatalogContent() {
         <h1 className="font-bold text-xl">Courses</h1>
         <SearchBar />
 
-        {isDesktop && (
-          <div className="flex flex-wrap w-full items-start gap-1">
-            {selectedFilters.map((filter) => (
-              <Tag
-                key={`${filter.type}-${filter.code}`}
-                filter={filter}
-                isRemovable={true}
-              />
-            ))}
-          </div>
-        )}
+        {isDesktop && <SelectedFiltersList />}
       </div>
 
       {(isDesktop || !showFilterPanel) && <CatalogResults />}

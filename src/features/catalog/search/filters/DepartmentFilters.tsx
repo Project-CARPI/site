@@ -5,7 +5,7 @@ export default function DepartmentFilters() {
   const { toggleFilter, filters, selectedFilters } = useCatalog();
 
   return (
-    <div className="md:overflow-y-auto flex flex-wrap justify-center gap-1">
+    <div className="md:overflow-y-auto flex flex-wrap justify-center gap-1 mt-2">
       {filters.subjects.map((subject) => {
         const isSelected = selectedFilters.some(
           (sf) => sf.code === subject.code && sf.type === subject.type,

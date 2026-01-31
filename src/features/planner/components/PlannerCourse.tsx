@@ -1,11 +1,12 @@
-import React, { useState, useEffect, useRef } from "react";
+import { useState } from "react";
 
-import * as RightClickContextMenu from "@radix-ui/react-context-menu";
+import * as ContextMenu from "@radix-ui/react-context-menu";
+import * as Popover from "@radix-ui/react-popover";
 import { motion } from "framer-motion";
-import { MdDragIndicator, MdOutlineMoreHoriz } from "react-icons/md";
+import { MdOutlineMoreHoriz, MdDragIndicator } from "react-icons/md";
 
 import CourseLabel from "@/components/course/CourseLabel";
-import PlannerOptionsPopup from "@/features/planner/components/PlannerOptionsPopup";
+import PlannerMenuContent from "@/features/planner/components/PlannerMenu";
 import { usePlannerCourse } from "@/features/planner/usePlannerCourse";
 import { cn } from "@/lib/classnames";
 import { UserCourse } from "@/lib/types";
@@ -23,90 +24,62 @@ export default function PlannerCourse({
   semesterId,
   isDragging,
 }: PlannerCourseProps) {
-  const [openPopup, setOpenPopup] = useState<boolean>(false);
-  const componentRef = useRef<HTMLDivElement>(null);
+  const menuOptions = usePlannerCourse({ course, semesterId });
+  const [popoverOpen, setPopoverOpen] = useState(false);
 
-  const menuOptions = usePlannerCourse({
-    course,
-    semesterId,
-  });
-
-  const togglePopup = (event: React.MouseEvent) => {
-    event.stopPropagation();
-    setOpenPopup((prev) => !prev);
-  };
-
-  useEffect(() => {
-    const handleClickOutside = (event: MouseEvent) => {
-      if (
-        componentRef.current &&
-        !componentRef.current.contains(event.target as Node)
-      ) {
-        setOpenPopup(false);
-      }
-    };
-    document.addEventListener("mousedown", handleClickOutside);
-    return () => {
-      document.removeEventListener("mousedown", handleClickOutside);
-    };
-  }, []);
+  const menuClassName =
+    "bg-carpipink rounded-xl border border-darkblue text-darkblue text-xs p-1.5 shadow-lg z-50 flex flex-col w-fit";
 
   return (
-    <RightClickContextMenu.Root>
-      <RightClickContextMenu.Trigger>
+    <ContextMenu.Root>
+      <ContextMenu.Trigger>
         <motion.div
           layout
-          ref={componentRef}
           className={cn(
             "relative flex justify-between bg-darkblue rounded-2xl text-carpipink gap-4 px-2 py-3",
             "hover:shadow-lg",
             isDragging ? "cursor-grabbing" : "cursor-grab",
           )}
         >
-          <div className={`flex gap-2 items-center`}>
+          <div className="flex gap-2 items-center">
             <MdDragIndicator size={22} />
             <CourseLabel course={course.data} showCredits />
           </div>
 
-          <div className={`flex gap-1 items-center`}>
-            <MdOutlineMoreHoriz
-              onClick={togglePopup}
-              className="cursor-pointer text-2xl"
-            />
-          </div>
-
-          {openPopup && (
-            <PlannerOptionsPopup
-              options={menuOptions}
-              onClose={() => setOpenPopup(false)}
-            />
-          )}
+          <Popover.Root
+            open={popoverOpen && !isDragging}
+            onOpenChange={setPopoverOpen}
+          >
+            <Popover.Trigger asChild>
+              <button className="outline-none">
+                <MdOutlineMoreHoriz className="cursor-pointer text-2xl" />
+              </button>
+            </Popover.Trigger>
+            <Popover.Content
+              className={menuClassName}
+              side="bottom"
+              align="end"
+            >
+              <PlannerMenuContent
+                options={menuOptions}
+                onItemSelect={() => setPopoverOpen(false)}
+                ItemComponent="button"
+                SeparatorComponent="div"
+              />
+            </Popover.Content>
+          </Popover.Root>
         </motion.div>
-      </RightClickContextMenu.Trigger>
+      </ContextMenu.Trigger>
 
-      <RightClickContextMenu.Portal>
-        <RightClickContextMenu.Content className="bg-carpipink rounded-xl border border-darkblue text-darkblue text-xs p-1.5 shadow-lg z-50 min-w-[150px]">
-          {menuOptions.map((opt) => (
-            <React.Fragment key={opt.label}>
-              {opt.hasSeparatorBefore && (
-                <RightClickContextMenu.Separator className="h-px bg-darkblue my-1 mx-3" />
-              )}
-              <RightClickContextMenu.Item
-                className={`px-3 py-1 rounded-lg w-full text-left outline-none cursor-pointer ${
-                  opt.disabled
-                    ? "opacity-50 cursor-not-allowed"
-                    : opt.isDanger
-                      ? "hover:bg-rosewood hover:text-carpipink cursor-pointer"
-                      : "hover:bg-slategray hover:text-carpipink cursor-pointer"
-                }`}
-                onSelect={opt.action}
-              >
-                {opt.label}
-              </RightClickContextMenu.Item>
-            </React.Fragment>
-          ))}
-        </RightClickContextMenu.Content>
-      </RightClickContextMenu.Portal>
-    </RightClickContextMenu.Root>
+      <ContextMenu.Portal>
+        <ContextMenu.Content className={menuClassName}>
+          <PlannerMenuContent
+            options={menuOptions}
+            ItemComponent={ContextMenu.Item}
+            SeparatorComponent={ContextMenu.Separator}
+          />
+        </ContextMenu.Content>
+      </ContextMenu.Portal>
+    </ContextMenu.Root>
   );
 }

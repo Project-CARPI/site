@@ -14,27 +14,21 @@ const formatApiData = (type: FilterCategory, data: Record<string, string>) => {
 };
 
 export function CatalogProvider({ children }: { children: ReactNode }) {
-  // --- UI State ---
   const [showFilterPanel, setShowFilterPanel] = useState(false);
-
-  // --- Filter State ---
   const [filters, setFilters] = useState({
     subjects: [] as FilterData[],
     attributes: [] as FilterData[],
     semesters: [] as FilterData[],
   });
   const [selectedFilters, setSelectedFilters] = useState<FilterData[]>([]);
-
-  // --- Search State ---
   const [searchResults, setSearchResults] = useState<APICourse[]>([]);
   const [searchPrompt, setSearchPrompt] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [hasSearched, setHasSearched] = useState(false);
 
   const debounceTimeout = useRef<ReturnType<typeof setTimeout> | null>(null);
-  const lastNoResultQuery = useRef<string | null>(null);
+  // const lastNoResultQuery = useRef<string | null>(null);
 
-  // 1. Fetch initial filters
   useEffect(() => {
     const fetchAllFilters = async () => {
       try {
@@ -55,24 +49,24 @@ export function CatalogProvider({ children }: { children: ReactNode }) {
     fetchAllFilters();
   }, []);
 
-  // 2. Robust Toggle Logic (Fixed Duplicate Bug)
   const toggleFilter = (filter: FilterData) => {
     setSelectedFilters((prev) => {
       const isAlreadySelected = prev.some(
         (f) => f.code === filter.code && f.type === filter.type,
       );
-      return isAlreadySelected
-        ? prev.filter(
-            (f) => !(f.code === filter.code && f.type === filter.type),
-          )
-        : [...prev, filter];
+
+      if (isAlreadySelected) {
+        return prev.filter(
+          (f) => !(f.code === filter.code && f.type === filter.type),
+        );
+      } else {
+        return [...prev, filter];
+      }
     });
   };
 
-  // 3. Debounced Search Logic
   useEffect(() => {
     if (debounceTimeout.current) clearTimeout(debounceTimeout.current);
-
     if (searchPrompt.length === 0 && selectedFilters.length === 0) {
       setHasSearched(false);
       setSearchResults([]);
@@ -84,15 +78,6 @@ export function CatalogProvider({ children }: { children: ReactNode }) {
     setHasSearched(true);
 
     debounceTimeout.current = setTimeout(async () => {
-      if (searchPrompt.length < 3) lastNoResultQuery.current = null;
-      if (
-        lastNoResultQuery.current &&
-        searchPrompt.startsWith(lastNoResultQuery.current)
-      ) {
-        setIsLoading(false);
-        return;
-      }
-
       const getCodes = (type: string) =>
         selectedFilters.filter((f) => f.type === type).map((f) => f.code);
 
@@ -101,10 +86,6 @@ export function CatalogProvider({ children }: { children: ReactNode }) {
           `course/search?searchPrompt=${searchPrompt}&subjFilters=${getCodes("Subject")}&attrFilters=${getCodes("Attribute")}&semFilters=${getCodes("Semester")}`,
         );
         setSearchResults(response.data);
-        lastNoResultQuery.current =
-          response.data.length === 0 && searchPrompt.length >= 3
-            ? searchPrompt
-            : null;
       } catch (error) {
         console.error("Search error:", error);
       } finally {
@@ -117,7 +98,6 @@ export function CatalogProvider({ children }: { children: ReactNode }) {
     };
   }, [selectedFilters, searchPrompt]);
 
-  // Combine everything into the context value
   const value = useMemo(
     () => ({
       filters,

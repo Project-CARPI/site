@@ -83,7 +83,11 @@ export default function SearchBar() {
       {!isDesktop && selectedFilters.length > 0 && (
         <div className="flex flex-wrap w-full items-start gap-1">
           {selectedFilters.map((filter) => (
-            <Tag key={filter.id} filter={filter} isRemovable={true} />
+            <Tag
+              key={`${filter.type}-${filter.code}`}
+              filter={filter}
+              isRemovable={true}
+            />
           ))}
         </div>
       )}

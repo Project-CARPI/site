@@ -2,6 +2,7 @@ import { useState } from "react";
 
 import { motion } from "framer-motion";
 
+import { useCatalog } from "@/features/catalog/search/context/useCatalog";
 import Tag from "@/features/catalog/Tag";
 import useIsDesktop from "@/lib/hooks/useIsDesktop";
 import { FilterCategory, FilterData } from "@/lib/types";
@@ -9,16 +10,16 @@ import { FilterCategory, FilterData } from "@/lib/types";
 interface FilterSectionProps {
   sectionName: FilterCategory;
   tags: FilterData[];
-  selected: string[];
   showCode?: boolean;
 }
 
 export default function FilterSection({
   sectionName,
   tags,
-  selected,
   showCode = false,
 }: FilterSectionProps) {
+  const { selectedFilters } = useCatalog();
+
   const isDesktop = useIsDesktop();
   const [isExpanded, setIsExpanded] = useState(false);
 
@@ -47,7 +48,9 @@ export default function FilterSection({
               key={`${tag.type}-${tag.code}`}
               filter={tag}
               isSelectable={true}
-              isSelected={selected.includes(tag.code)}
+              isSelected={selectedFilters.some(
+                (sf) => sf.code === tag.code && sf.type === tag.type,
+              )}
               showCode={showCode}
             />
           ))}

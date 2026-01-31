@@ -13,10 +13,9 @@ import { SortableItem } from "@/features/dnd/components/SortableItem";
 import { useSortableItem } from "@/features/dnd/useSortableItem";
 import CourseDropzone from "@/features/planner/components/CourseDropzone";
 import PlannerCourse from "@/features/planner/components/PlannerCourse";
-import { SemesterType, SemesterSeason } from "@/features/planner/interfaces";
+import SeasonSelector from "@/features/planner/components/SeasonSelector";
+import { SemesterType } from "@/features/planner/interfaces";
 import { cn } from "@/lib/classnames";
-
-const seasons: SemesterSeason[] = ["Fall", "Spring", "Summer"];
 
 export interface SemesterBlockProps {
   semester: SemesterType;
@@ -32,8 +31,7 @@ export default function SemesterBlock({
   });
   const { listeners, attributes } = useSortableItem();
 
-  const { updateSemesterName, updateSemesterSeason, deleteSemester } =
-    useCourseWorkspace();
+  const { updateSemesterName, deleteSemester } = useCourseWorkspace();
   const [isEditing, setIsEditing] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
 
@@ -63,12 +61,6 @@ export default function SemesterBlock({
     updateSemesterName(semester.semesterID, e.target.value);
   };
 
-  // handle season dropdown
-  const seasonDropdown = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    const newSeason = e.target.value as SemesterSeason;
-    updateSemesterSeason(semester.semesterID, newSeason);
-  };
-
   const handleDeleteSemester = (semesterId: string) => {
     deleteSemester(semesterId);
   };
@@ -89,7 +81,7 @@ export default function SemesterBlock({
         },
       )}
     >
-      <motion.div layout className="flex justify-between items-center mb-1 h-8">
+      <motion.div layout className="flex items-center">
         <div
           className={cn(
             "hover:bg-darkblue/20 py-2 px-1 rounded-lg flex-shrink-0 ",
@@ -111,11 +103,11 @@ export default function SemesterBlock({
             onChange={handleTitleChange}
             onBlur={finishEditing}
             onKeyDown={handleKeyDown}
-            className="text-md font-bold bg-transparent border-b border-black focus:outline-none w-1/2 placeholder:opacity-60"
+            className="text-md font-bold bg-transparent border-b border-black focus:outline-none w-full placeholder:opacity-60"
             placeholder={`Semester ${semester.semesterNumber}`}
           />
         ) : (
-          <div className="flex items-center gap-2 w-1/2">
+          <div className="flex items-center gap-2 w-full">
             <span
               className="text-md font-bold truncate cursor-text hover:underline decoration-dotted underline-offset-4"
               onClick={() => setIsEditing(true)}
@@ -133,20 +125,15 @@ export default function SemesterBlock({
           </div>
         )}
 
-        <div className="flex space-x-2 items-center">
-          <select
-            value={semester.season}
-            onChange={seasonDropdown}
-            className="border-1 border-black rounded-full px-2 py-0 h-fit w-fit min-w-0 font-medium text-sm"
-          >
-            {seasons.map((season) => (
-              <option key={season} value={season}>
-                {season}
-              </option>
-            ))}
-          </select>
+        <div className="gap-2 flex">
+          <SeasonSelector
+            season={semester.season}
+            semesterID={semester.semesterID}
+          />
 
-          <div className="">{semester.creditsTotal} credits</div>
+          <div className="whitespace-nowrap">
+            {semester.creditsTotal} credits
+          </div>
         </div>
       </motion.div>
 

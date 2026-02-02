@@ -15,6 +15,14 @@ export default function PlannerMenuContent({
   ItemComponent,
   SeparatorComponent,
 }: PlannerMenuContentProps) {
+  const handleAction = (opt: MenuOption) => {
+    if (opt.disabled) return;
+    opt.action();
+    onItemSelect?.();
+  };
+
+  const isNative = typeof ItemComponent === "string";
+
   return (
     <>
       {options.map((opt) => (
@@ -31,17 +39,18 @@ export default function PlannerMenuContent({
                   ? "hover:bg-rosewood hover:text-carpipink"
                   : "hover:bg-slategray hover:text-carpipink"
             }`}
+            // for radix component
             onSelect={
-              opt.disabled
-                ? (e: React.SyntheticEvent) => e.preventDefault()
-                : opt.action
+              !isNative
+                ? opt.disabled
+                  ? (e: Event) => e.preventDefault()
+                  : () => handleAction(opt)
+                : undefined
             }
-            onClick={() => {
-              if (!opt.disabled) {
-                opt.action();
-                onItemSelect?.();
-              }
-            }}
+            // for popover
+            onClick={
+              isNative && !opt.disabled ? () => handleAction(opt) : undefined
+            }
           >
             {opt.label}
           </ItemComponent>

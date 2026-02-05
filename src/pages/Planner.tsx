@@ -1,9 +1,13 @@
-import React, { useEffect } from "react";
-import SemesterBlock from "../components/PlannerComponents/SemesterBlock";
-import AddSemester from "../components/PlannerComponents/AddSemester";
-import { useCourseWorkspace } from "../hooks/useCourseWorkspace";
+import { useEffect } from "react";
+
+import { SortableContext, rectSortingStrategy } from "@dnd-kit/sortable";
 import { useNavigate } from "react-router-dom";
-import useIsDesktop from "../hooks/useIsDesktop";
+
+import { useCourseWorkspace } from "@/core/workspace/useCourseWorkspace";
+import { SortableItem } from "@/features/dnd/components/SortableItem";
+import AddSemester from "@/features/planner/components/AddSemester";
+import SemesterBlock from "@/features/planner/components/SemesterBlock";
+import useIsDesktop from "@/lib/hooks/useIsDesktop";
 
 const Planner: React.FC = () => {
   const navigate = useNavigate();
@@ -23,26 +27,44 @@ const Planner: React.FC = () => {
         <img src="/carpi-black.png" alt="Carpi Logo" className="h-full" />
       </header>
 
-      <section className="h-full w-full md:overflow-y-auto scrollbar-hide pr-4 flex flex-col gap-4">
+      <section className="h-full w-full flex flex-col gap-4">
         <div className="flex justify-between sticky top-0 z-10 bg-carpipink pt-4">
           <h1 className="font-bold text-xl">Planner</h1>
           <AddSemester />
         </div>
 
-        <div className="flex flex-col gap-4 md:grid md:grid-cols-2 md:gap-4">
-          {plannerCourses.map((semester, index) => (
-            <div
-              key={semester.semesterNumber}
-              className="md:h-full flex flex-col justify-between"
+        {plannerCourses.length === 0 ? (
+          <div className="flex flex-col justify-center text-center opacity-60 italic">
+            <p>
+              No semesters added yet. <br></br>
+              Click "Add Semester Block" to get started!
+            </p>
+          </div>
+        ) : (
+          <div className="md:overflow-y-auto grid md:grid-cols-2 gap-4 md:pr-4 pb-30">
+            <SortableContext
+              items={plannerCourses.map((s) => "sem-" + s.semesterID)}
+              strategy={rectSortingStrategy}
             >
-              <SemesterBlock
-                index={index}
-                key={semester.semesterNumber}
-                semester={semester}
-              />
-            </div>
-          ))}
-        </div>
+              {plannerCourses.map((semester) => (
+                <SortableItem
+                  key={semester.semesterID}
+                  id={"sem-" + semester.semesterID}
+                  data={semester}
+                  type="Semester"
+                  useHandle={true}
+                >
+                  <div className="md:h-full flex flex-col justify-between">
+                    <SemesterBlock
+                      key={semester.semesterID}
+                      semester={semester}
+                    />
+                  </div>
+                </SortableItem>
+              ))}
+            </SortableContext>
+          </div>
+        )}
       </section>
     </div>
   );

@@ -77,13 +77,17 @@ export const usePlannerActions = (
   );
 
   const addSemester = useCallback(() => {
+    const maxSemesterNumber = plannerSemesters.reduce(
+      (max, s) => Math.max(max, s.semesterNumber),
+      0,
+    );
     dispatch({
       type: "ADD_SEMESTER",
       payload: {
-        semester: generateEmptySemester(plannerSemesters.length + 1),
+        semester: generateEmptySemester(maxSemesterNumber + 1),
       },
     });
-  }, [dispatch, plannerSemesters.length]);
+  }, [dispatch, plannerSemesters]);
 
   const moveSemester = useCallback(
     (fromIndex: number, toIndex: number) => {

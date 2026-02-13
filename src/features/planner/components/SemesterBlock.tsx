@@ -14,8 +14,8 @@ import { useSortableItem } from "@/features/dnd/useSortableItem";
 import CourseDropzone from "@/features/planner/components/CourseDropzone";
 import PlannerCourse from "@/features/planner/components/PlannerCourse";
 import SeasonSelector from "@/features/planner/components/SeasonSelector";
-import { SemesterType } from "@/features/planner/interfaces";
 import { cn } from "@/lib/classnames";
+import { SemesterType } from "@/lib/types";
 
 export interface SemesterBlockProps {
   semester: SemesterType;

@@ -34,7 +34,8 @@ export const useDndLogic = () => {
     addCourseToSemester,
     removeCourseFromSemester,
     moveCourseInSemester,
-    moveSemester, // Import the new action
+    moveSemester,
+    deleteSemester,
 
     // Toolbox Actions
     insertCourseIntoToolbox,
@@ -95,7 +96,9 @@ export const useDndLogic = () => {
         return closestCenter({
           ...args,
           droppableContainers: args.droppableContainers.filter(
-            (container) => container.data.current?.type === "Semester",
+            (container) =>
+              container.data.current?.type === "Semester" ||
+              container.id === "garbage",
           ),
         });
       }
@@ -291,7 +294,9 @@ export const useDndLogic = () => {
 
     // HANDLE SEMESTER DRAG END
     if (active.data.current?.type === "Semester") {
-      if (over && active.id !== over.id) {
+      if (over?.id === "garbage") {
+        deleteSemester(active.data.current.semesterID as string);
+      } else if (over && active.id !== over.id) {
         // We assume we are dragging over another SortableSemester
         // which has the same parent SortableContext
         const oldIndex = active.data.current.sortable.index;

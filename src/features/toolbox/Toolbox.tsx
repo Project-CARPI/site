@@ -131,7 +131,7 @@ export default function Toolbox() {
                     key={course.id}
                     id={course.id}
                     data={course}
-                    type="Course"
+                    type="course"
                   >
                     <ToolboxCourse course={course} />
                   </SortableItem>

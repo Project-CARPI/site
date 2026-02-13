@@ -3,12 +3,13 @@ import { CSS } from "@dnd-kit/utilities";
 
 import { SortableItemContext } from "@/features/dnd/useSortableItem";
 import { UserCourse, SemesterType } from "@/lib/types";
+import { DraggableData } from "@/lib/types/dnd";
 
 interface SortableItemProps {
   id: string;
   children: React.ReactNode;
   data: UserCourse | SemesterType;
-  type?: "Course" | "Semester";
+  type?: "course" | "semester";
   useHandle?: boolean;
 }
 
@@ -19,6 +20,11 @@ export const SortableItem = ({
   type,
   useHandle = false,
 }: SortableItemProps) => {
+  const dndData = {
+    type: type || ("semesterID" in data ? "semester" : "course"),
+    payload: data,
+  } as DraggableData;
+
   const {
     attributes,
     listeners,
@@ -28,10 +34,7 @@ export const SortableItem = ({
     isDragging,
   } = useSortable({
     id,
-    data: {
-      ...data,
-      type: type || ("semesterID" in data ? "Semester" : "Course"),
-    },
+    data: dndData,
   });
 
   const style: React.CSSProperties = {

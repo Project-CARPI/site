@@ -55,9 +55,28 @@ export const useToolboxActions = (
 
   const removeCourseFromToolbox = useCallback(
     (courseID: string) => {
-      dispatch({ type: "REMOVE_COURSE", payload: { courseID } });
+      const index = toolboxCourses.findIndex((c) => c.id === courseID);
+      const course = toolboxCourses[index];
+      if (!course) return;
+
+      if (course.count > 1) {
+        // if there are multiple copies of this course, create a new
+        // entry with count - 1 instead of removing entirely
+        dispatch({ type: "REMOVE_COURSE", payload: { courseID } });
+        const updatedCourse: UserCourse = {
+          ...course,
+          id: uuidv4(),
+          count: course.count - 1,
+        };
+        dispatch({
+          type: "INSERT_COURSE",
+          payload: { course: updatedCourse, index: index },
+        });
+      } else {
+        dispatch({ type: "REMOVE_COURSE", payload: { courseID } });
+      }
     },
-    [dispatch],
+    [dispatch, toolboxCourses],
   );
 
   const moveCourseInToolbox = useCallback(

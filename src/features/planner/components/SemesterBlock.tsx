@@ -170,7 +170,7 @@ export default function SemesterBlock({
                 key={course.id}
                 id={course.id}
                 data={course}
-                type="Course"
+                type="course"
               >
                 <PlannerCourse
                   course={course}

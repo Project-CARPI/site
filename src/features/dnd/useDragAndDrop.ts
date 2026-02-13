@@ -92,7 +92,12 @@ export const useDndLogic = () => {
     (args) => {
       // If dragging a Semester, use simple intersection
       if (activeItem && "semesterID" in activeItem) {
-        return closestCenter(args);
+        return closestCenter({
+          ...args,
+          droppableContainers: args.droppableContainers.filter(
+            (container) => container.data.current?.type === "Semester",
+          ),
+        });
       }
 
       // Prioritize Toolbox if active item started there

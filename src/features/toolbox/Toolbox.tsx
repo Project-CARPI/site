@@ -113,15 +113,15 @@ export default function Toolbox() {
               ).current = node;
             }}
             onWheel={handleWheel}
-            className="gap-4 scrollbar-none flex items-center w-full overflow-x-auto p-4 mb-14 h-fit md:mb-0"
+            className="gap-4 scrollbar-none flex items-center w-full overflow-x-auto p-4 -mt-4 mb-14 h-fit md:mb-0"
           >
             <SortableContext
               items={courseIds}
               strategy={horizontalListSortingStrategy}
             >
               {toolboxCourses.length === 0 ? (
-                <div className="md:absolute w-full h-full inset-0 flex items-center justify-center pointer-events-none">
-                  <span className="text-carpipink opacity-60 text-sm md:text-base font-medium italic">
+                <div className="w-full h-full flex items-center justify-center pointer-events-none">
+                  <span className="text-carpipink opacity-60 text-base font-medium italic mb-4">
                     Add courses to plan your semester
                   </span>
                 </div>

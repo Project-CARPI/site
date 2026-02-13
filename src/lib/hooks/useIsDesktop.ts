@@ -1,9 +1,9 @@
 import { useState, useEffect } from "react";
 
-const DESKTOP_BREAKPOINT = 1024;
+const DESKTOP_BREAKPOINT = 768;
 const useIsDesktop = () => {
   const [isDesktop, setIsDesktop] = useState(
-    window.innerWidth > DESKTOP_BREAKPOINT,
+    window.innerWidth >= DESKTOP_BREAKPOINT,
   );
 
   useEffect(() => {

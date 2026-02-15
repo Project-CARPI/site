@@ -22,7 +22,7 @@ export default function CourseLabel({
 }: CourseLabelProps) {
   return (
     <div className={cn(horizontal ? "flex space-x-2" : "text-sm")}>
-      <div className="flex items-baseline flex-wrap space-x-2">
+      <div className="flex items-baseline flex-wrap gap-x-2">
         <b>
           {course.subj_code}-{course.code_num}
         </b>

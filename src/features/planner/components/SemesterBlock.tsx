@@ -135,10 +135,10 @@ export default function SemesterBlock({
             season={semester.season}
             semesterID={semester.semesterID}
           />
-          <SeasonSelector
+          {/* <SeasonSelector
             season={semester.season}
             semesterID={semester.semesterID}
-          />
+          /> */}
         </div>
       </motion.div>
 

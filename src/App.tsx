@@ -9,6 +9,7 @@ import {
 import { createPortal } from "react-dom";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 
+import ButtonTray from "@/components/header/ButtonTray";
 import { CourseWorkspaceProvider } from "@/core/workspace/provider";
 import { useDndLogic } from "@/features/dnd/useDragAndDrop";
 import PlannerCourse from "@/features/planner/components/PlannerCourse";
@@ -86,8 +87,9 @@ export default function App() {
     <CourseWorkspaceProvider>
       <AppDragDropContext>
         <div className="m-4 md:m-8 md:max-h-dvh overflow-hidden">
-          <header className="sticky top-0 flex h-20 items-center justify-center bg-carpipink">
+          <header className="top-0 flex h-20 items-center justify-center bg-carpipink relative z-10">
             <img src="/carpi-black.png" alt="Carpi Logo" className="h-full" />
+            <ButtonTray />
           </header>
 
           <Router>

@@ -213,7 +213,7 @@ export const useDndLogic = () => {
         );
       }
 
-      // add coures to the destination container
+      // add course to the destination container
       const item = { ...itemToMove!, count: 1 };
       if (overContainer === "toolbox") {
         const overIndex =
@@ -352,7 +352,7 @@ export const useDndLogic = () => {
         }
       }
 
-      // merge duplicates (Always run this if we touched the toolbox)
+      // merge duplicates if into toolbox or dropped outside and comes back to the toolbox
       if (activeContainer === "toolbox" || over?.id === "toolbox") {
         consolidateToolbox();
       }

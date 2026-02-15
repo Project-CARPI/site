@@ -81,59 +81,64 @@ export default function SemesterBlock({
         },
       )}
     >
-      <motion.div layout className="flex items-center gap-2">
-        <div
-          className={cn(
-            "hover:bg-darkblue/20 py-2 px-1 rounded-lg flex-shrink-0 ",
-            isDragging
-              ? "cursor-grabbing"
-              : "cursor-grab active:cursor-grabbing",
+      <motion.div layout>
+        <div className="flex items-center gap-2">
+          <div
+            className={cn(
+              "hover:bg-darkblue/20 py-2 px-1 rounded-lg flex-shrink-0 ",
+              isDragging
+                ? "cursor-grabbing"
+                : "cursor-grab active:cursor-grabbing",
+            )}
+            {...listeners}
+            {...attributes}
+          >
+            <MdDragIndicator size={22} />
+          </div>
+          {isEditing ? (
+            <input
+              ref={inputRef}
+              type="text"
+              value={semester.semesterTitle}
+              onChange={handleTitleChange}
+              onBlur={finishEditing}
+              onKeyDown={handleKeyDown}
+              className="text-md font-bold bg-transparent border-b border-black focus:outline-none flex-1 min-w-0 placeholder:opacity-60"
+              placeholder={`Semester ${semester.semesterNumber}`}
+            />
+          ) : (
+            <div className="flex items-center gap-2 flex-1 min-w-0">
+              <span
+                className="text-md font-bold truncate cursor-text hover:underline decoration-dotted underline-offset-4"
+                onClick={() => setIsEditing(true)}
+                title="Click to rename"
+              >
+                {semester.semesterTitle ||
+                  `Semester ${semester.semesterNumber}`}
+              </span>
+              <button
+                onClick={() => setIsEditing(true)}
+                className="text-black transition-colors flex-shrink-0"
+                title="Edit Semester Name"
+              >
+                <MdEdit size={18} />
+              </button>
+            </div>
           )}
-          {...listeners}
-          {...attributes}
-        >
-          <MdDragIndicator size={22} />
+          <div className="whitespace-nowrap flex-shrink-0">
+            {semester.creditsTotal} credits
+          </div>
         </div>
 
-        {isEditing ? (
-          <input
-            ref={inputRef}
-            type="text"
-            value={semester.semesterTitle}
-            onChange={handleTitleChange}
-            onBlur={finishEditing}
-            onKeyDown={handleKeyDown}
-            className="text-md font-bold bg-transparent border-b border-black focus:outline-none w-full placeholder:opacity-60"
-            placeholder={`Semester ${semester.semesterNumber}`}
-          />
-        ) : (
-          <div className="flex items-center gap-2 w-full">
-            <span
-              className="text-md font-bold truncate cursor-text hover:underline decoration-dotted underline-offset-4"
-              onClick={() => setIsEditing(true)}
-              title="Click to rename"
-            >
-              {semester.semesterTitle || `Semester ${semester.semesterNumber}`}
-            </span>
-            <button
-              onClick={() => setIsEditing(true)}
-              className="text-black transition-colors"
-              title="Edit Semester Name"
-            >
-              <MdEdit size={18} />
-            </button>
-          </div>
-        )}
-
-        <div className="gap-2 flex">
+        <div className="flex gap-1 ml-2">
           <SeasonSelector
             season={semester.season}
             semesterID={semester.semesterID}
           />
-
-          <div className="whitespace-nowrap">
-            {semester.creditsTotal} credits
-          </div>
+          <SeasonSelector
+            season={semester.season}
+            semesterID={semester.semesterID}
+          />
         </div>
       </motion.div>
 

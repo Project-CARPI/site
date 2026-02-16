@@ -37,7 +37,7 @@ const Planner: React.FC = () => {
             </p>
           </div>
         ) : (
-          <div className="md:overflow-y-auto grid md:grid-cols-2 gap-4 md:pr-4 pb-30 overflow-x-hidden">
+          <div className="md:overflow-y-auto grid lg:grid-cols-2 gap-4 md:pr-4 pb-30 overflow-x-hidden">
             <SortableContext
               items={plannerCourses.map((s) => "sem-" + s.semesterID)}
               strategy={rectSortingStrategy}

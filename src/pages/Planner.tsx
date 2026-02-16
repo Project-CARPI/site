@@ -37,7 +37,7 @@ const Planner: React.FC = () => {
             </p>
           </div>
         ) : (
-          <div className="md:overflow-y-auto grid md:grid-cols-2 gap-4 md:pr-4 pb-30">
+          <div className="md:overflow-y-auto grid md:grid-cols-2 gap-4 md:pr-4 pb-30 overflow-x-hidden">
             <SortableContext
               items={plannerCourses.map((s) => "sem-" + s.semesterID)}
               strategy={rectSortingStrategy}
@@ -50,7 +50,7 @@ const Planner: React.FC = () => {
                   type="Semester"
                   useHandle={true}
                 >
-                  <div className="md:h-full flex flex-col justify-between">
+                  <div className="md:h-full flex flex-col justify-between min-w-0 w-full">
                     <SemesterBlock
                       key={semester.semesterID}
                       semester={semester}

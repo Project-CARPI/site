@@ -74,15 +74,15 @@ export default function SemesterBlock({
     <motion.div
       layout
       className={cn(
-        "flex flex-grow flex-col space-y-2 p-4 rounded-2xl h-full",
+        "flex flex-col space-y-2 p-4 rounded-2xl h-full w-full max-w-full overflow-hidden",
         "bg-[color-mix(in_oklab,var(--color-darkblue)_10%,var(--color-carpipink)_90%)]",
         {
           "border-2 border-rosewood": over_limit || hasDuplicateCourses,
         },
       )}
     >
-      <motion.div layout>
-        <div className="flex items-center gap-2">
+      <motion.div layout className="w-full">
+        <div className="flex items-center gap-2 min-w-0 w-full">
           <div
             className={cn(
               "hover:bg-darkblue/20 py-2 px-1 rounded-lg flex-shrink-0 ",
@@ -95,6 +95,7 @@ export default function SemesterBlock({
           >
             <MdDragIndicator size={22} />
           </div>
+
           {isEditing ? (
             <input
               ref={inputRef}
@@ -103,13 +104,13 @@ export default function SemesterBlock({
               onChange={handleTitleChange}
               onBlur={finishEditing}
               onKeyDown={handleKeyDown}
-              className="text-md font-bold bg-transparent border-b border-black focus:outline-none flex-1 min-w-0 placeholder:opacity-60"
+              className="text-md font-bold bg-transparent border-b border-black focus:outline-none flex-1 w-0 min-w-0 placeholder:opacity-60"
               placeholder={`Semester ${semester.semesterNumber}`}
             />
           ) : (
-            <div className="flex items-center gap-2 flex-1 min-w-0">
+            <div className="flex items-center gap-2 overflow-hidden flex-1 w-0 min-w-0">
               <span
-                className="text-md font-bold truncate cursor-text hover:underline decoration-dotted underline-offset-4"
+                className="text-md font-bold truncate cursor-text hover:underline decoration-dotted underline-offset-4 block w-full"
                 onClick={() => setIsEditing(true)}
                 title="Click to rename"
               >
@@ -135,10 +136,6 @@ export default function SemesterBlock({
             season={semester.season}
             semesterID={semester.semesterID}
           />
-          {/* <SeasonSelector
-            season={semester.season}
-            semesterID={semester.semesterID}
-          /> */}
         </div>
       </motion.div>
 

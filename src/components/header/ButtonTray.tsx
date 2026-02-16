@@ -8,6 +8,8 @@ import {
   BiDotsVerticalRounded,
 } from "react-icons/bi";
 
+import { useCourseWorkspace } from "@/core/workspace/useCourseWorkspace";
+
 function HeaderButton({
   onClick,
   children,
@@ -27,10 +29,11 @@ function HeaderButton({
 
 export default function ButtonTray() {
   const [isOpen, setIsOpen] = useState(false);
+  const { resetWorkspace } = useCourseWorkspace();
 
   const buttonList = (
     <>
-      <HeaderButton>
+      <HeaderButton onClick={resetWorkspace}>
         <BiReset className="w-5 h-5" />
       </HeaderButton>
       <HeaderButton>

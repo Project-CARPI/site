@@ -12,6 +12,9 @@ export interface CourseWorkspaceContextType {
   plannerCourses: SemesterType[];
   toolboxCourses: UserCourse[];
 
+  // utils
+  resetWorkspace: () => void;
+
   // planner actions
   addCourseToSemester: (
     semesterID: string,

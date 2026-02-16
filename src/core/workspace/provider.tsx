@@ -1,4 +1,11 @@
-import { ReactNode, useEffect, useMemo, useReducer, useRef } from "react";
+import {
+  ReactNode,
+  useCallback,
+  useEffect,
+  useMemo,
+  useReducer,
+  useRef,
+} from "react";
 
 import { usePlannerActions } from "@/core/workspace/actions/usePlannerActions";
 import { useToolboxActions } from "@/core/workspace/actions/useToolboxActions";
@@ -74,6 +81,12 @@ export function CourseWorkspaceProvider({ children }: { children: ReactNode }) {
   const plannerActions = usePlannerActions(dispatchPlanner, plannerCourses);
   const toolboxActions = useToolboxActions(dispatchToolbox, toolboxCourses);
 
+  const resetWorkspace = useCallback(() => {
+    const emptyPlanner = createInitialPlannerState(6);
+    plannerActions.resetPlanner(emptyPlanner);
+    toolboxActions.resetToolbox([]);
+  }, [plannerActions, toolboxActions]);
+
   const value = useMemo(
     () => ({
       plannerCourses,
@@ -82,10 +95,17 @@ export function CourseWorkspaceProvider({ children }: { children: ReactNode }) {
         (acc, course) => acc + course.count,
         0,
       ),
+      resetWorkspace,
       ...plannerActions,
       ...toolboxActions,
     }),
-    [plannerCourses, toolboxCourses, plannerActions, toolboxActions],
+    [
+      plannerCourses,
+      toolboxCourses,
+      plannerActions,
+      toolboxActions,
+      resetWorkspace,
+    ],
   );
 
   return (

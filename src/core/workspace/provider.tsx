@@ -25,7 +25,7 @@ export function CourseWorkspaceProvider({ children }: { children: ReactNode }) {
     (initialState) => {
       try {
         const stored = localStorage.getItem(TOOLBOX_KEY);
-        return stored ? JSON.parse(stored) : initialState;
+        return stored && stored.trim() ? JSON.parse(stored) : initialState;
       } catch (e) {
         console.error("Failed to load toolbox from localStorage", e);
         return initialState;
@@ -39,7 +39,7 @@ export function CourseWorkspaceProvider({ children }: { children: ReactNode }) {
     (defaultSemesterCount) => {
       try {
         const stored = localStorage.getItem(PLANNER_KEY);
-        return stored
+        return stored && stored.trim()
           ? JSON.parse(stored)
           : createInitalPlannerState(defaultSemesterCount);
       } catch (e) {

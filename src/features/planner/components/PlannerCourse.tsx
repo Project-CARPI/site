@@ -6,6 +6,7 @@ import { motion } from "framer-motion";
 import { MdOutlineMoreHoriz, MdDragIndicator } from "react-icons/md";
 
 import CourseLabel from "@/components/course/CourseLabel";
+import CreditSelector from "@/features/planner/components/CreditSelector";
 import PlannerMenuContent from "@/features/planner/components/PlannerMenu";
 import { usePlannerCourse } from "@/features/planner/usePlannerCourse";
 import { cn } from "@/lib/classnames";
@@ -41,9 +42,16 @@ export default function PlannerCourse({
             isDragging ? "cursor-grabbing" : "cursor-grab",
           )}
         >
-          <div className="flex gap-2 items-center">
-            <MdDragIndicator size={22} />
+          <div className="flex gap-2 items-center flex-1">
+            <MdDragIndicator size={22} className="shrink-0" />
             <CourseLabel course={course.data} showCredits />
+            <CreditSelector
+              semesterId={semesterId}
+              courseId={course.id}
+              currentCredits={course.credits}
+              minCredits={course.data.credit_min}
+              maxCredits={course.data.credit_max}
+            />
           </div>
 
           <Popover.Root

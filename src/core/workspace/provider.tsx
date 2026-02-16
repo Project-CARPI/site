@@ -10,9 +10,9 @@ import generateEmptySemester from "@/core/workspace/utils/generateEmptySemester"
 const PLANNER_KEY = "carpi_planner_data";
 const TOOLBOX_KEY = "carpi_toolbox_data";
 
-function createInitalPlannerState(numSemsters: number) {
+function createInitialPlannerState(numSemesters: number) {
   const semesters = [];
-  for (let i = 1; i <= numSemsters; i++) {
+  for (let i = 1; i <= numSemesters; i++) {
     semesters.push(generateEmptySemester(i));
   }
   return semesters;
@@ -41,10 +41,10 @@ export function CourseWorkspaceProvider({ children }: { children: ReactNode }) {
         const stored = localStorage.getItem(PLANNER_KEY);
         return stored && stored.trim()
           ? JSON.parse(stored)
-          : createInitalPlannerState(defaultSemesterCount);
+          : createInitialPlannerState(defaultSemesterCount);
       } catch (e) {
         console.error("Failed to load planner from localStorage", e);
-        return createInitalPlannerState(defaultSemesterCount);
+        return createInitialPlannerState(defaultSemesterCount);
       }
     },
   );

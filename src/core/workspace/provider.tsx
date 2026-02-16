@@ -10,6 +10,10 @@ import {
   ToolboxStorageSchema,
   PlannerStorageSchema,
 } from "@/core/workspace/utils/schemas";
+import {
+  loadVersionedData,
+  saveVersionedData,
+} from "@/core/workspace/utils/storage";
 
 const PLANNER_KEY = "carpi_planner_data";
 const TOOLBOX_KEY = "carpi_toolbox_data";
@@ -28,24 +32,8 @@ export function CourseWorkspaceProvider({ children }: { children: ReactNode }) {
     ToolboxReducer,
     [],
     (initialState) => {
-      try {
-        const stored = localStorage.getItem(TOOLBOX_KEY);
-        if (!stored || !stored.trim()) return initialState;
-
-        const parsed = JSON.parse(stored);
-
-        // validate parsed data
-        const validation = ToolboxStorageSchema.safeParse(parsed);
-        if (validation.success) {
-          return validation.data;
-        } else {
-          console.warn("Toolbox data corrupted, resetting:", validation.error);
-          return initialState;
-        }
-      } catch (e) {
-        console.error("Failed to load toolbox from localStorage", e);
-        return initialState;
-      }
+      const loaded = loadVersionedData(TOOLBOX_KEY, ToolboxStorageSchema);
+      return loaded !== null ? loaded : initialState;
     },
   );
 
@@ -53,26 +41,10 @@ export function CourseWorkspaceProvider({ children }: { children: ReactNode }) {
     PlannerReducer,
     6,
     (defaultSemesterCount) => {
-      try {
-        const stored = localStorage.getItem(PLANNER_KEY);
-        if (!stored || !stored.trim()) {
-          return createInitialPlannerState(defaultSemesterCount);
-        }
-
-        const parsed = JSON.parse(stored);
-
-        // validate parsed data
-        const validation = PlannerStorageSchema.safeParse(parsed);
-        if (validation.success) {
-          return validation.data;
-        } else {
-          console.warn("Planner data corrupted, resetting:", validation.error);
-          return createInitialPlannerState(defaultSemesterCount);
-        }
-      } catch (e) {
-        console.error("Failed to load planner from localStorage", e);
-        return createInitialPlannerState(defaultSemesterCount);
-      }
+      const loaded = loadVersionedData(PLANNER_KEY, PlannerStorageSchema);
+      return loaded !== null
+        ? loaded
+        : createInitialPlannerState(defaultSemesterCount);
     },
   );
 
@@ -86,13 +58,7 @@ export function CourseWorkspaceProvider({ children }: { children: ReactNode }) {
       return;
     }
 
-    // sometimes localStorage can throw (e.g. quota exceeded, private mode),
-    // we catch errors to avoid crashing the app
-    try {
-      localStorage.setItem(TOOLBOX_KEY, JSON.stringify(toolboxCourses));
-    } catch (e) {
-      console.error("Failed to save toolbox to localStorage", e);
-    }
+    saveVersionedData(TOOLBOX_KEY, toolboxCourses);
   }, [toolboxCourses]);
 
   useEffect(() => {
@@ -101,13 +67,7 @@ export function CourseWorkspaceProvider({ children }: { children: ReactNode }) {
       return;
     }
 
-    // sometimes localStorage can throw (e.g. quota exceeded, private mode),
-    // we catch errors to avoid crashing the app
-    try {
-      localStorage.setItem(PLANNER_KEY, JSON.stringify(plannerCourses));
-    } catch (e) {
-      console.error("Failed to save planner to localStorage", e);
-    }
+    saveVersionedData(PLANNER_KEY, plannerCourses);
   }, [plannerCourses]);
 
   /* ACTIONS */

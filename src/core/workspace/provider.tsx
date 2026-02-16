@@ -1,4 +1,4 @@
-import { ReactNode, useEffect, useMemo, useReducer } from "react";
+import { ReactNode, useEffect, useMemo, useReducer, useRef } from "react";
 
 import { usePlannerActions } from "@/core/workspace/actions/usePlannerActions";
 import { useToolboxActions } from "@/core/workspace/actions/useToolboxActions";
@@ -23,6 +23,7 @@ function createInitialPlannerState(numSemesters: number) {
 }
 
 export function CourseWorkspaceProvider({ children }: { children: ReactNode }) {
+  /* INITIALIZATION */
   const [toolboxCourses, dispatchToolbox] = useReducer(
     ToolboxReducer,
     [],
@@ -75,16 +76,41 @@ export function CourseWorkspaceProvider({ children }: { children: ReactNode }) {
     },
   );
 
-  // Persist Toolbox changes
+  /* LOCAL STORAGE PERSISTENCE */
+  const isToolboxMounted = useRef(false);
+  const isPlannerMounted = useRef(false);
+
   useEffect(() => {
-    localStorage.setItem(TOOLBOX_KEY, JSON.stringify(toolboxCourses));
+    if (!isToolboxMounted.current) {
+      isToolboxMounted.current = true;
+      return;
+    }
+
+    // sometimes localStorage can throw (e.g. quota exceeded, private mode),
+    // we catch errors to avoid crashing the app
+    try {
+      localStorage.setItem(TOOLBOX_KEY, JSON.stringify(toolboxCourses));
+    } catch (e) {
+      console.error("Failed to save toolbox to localStorage", e);
+    }
   }, [toolboxCourses]);
 
-  // Persist Planner changes
   useEffect(() => {
-    localStorage.setItem(PLANNER_KEY, JSON.stringify(plannerCourses));
+    if (!isPlannerMounted.current) {
+      isPlannerMounted.current = true;
+      return;
+    }
+
+    // sometimes localStorage can throw (e.g. quota exceeded, private mode),
+    // we catch errors to avoid crashing the app
+    try {
+      localStorage.setItem(PLANNER_KEY, JSON.stringify(plannerCourses));
+    } catch (e) {
+      console.error("Failed to save planner to localStorage", e);
+    }
   }, [plannerCourses]);
 
+  /* ACTIONS */
   const plannerActions = usePlannerActions(dispatchPlanner, plannerCourses);
   const toolboxActions = useToolboxActions(dispatchToolbox, toolboxCourses);
 

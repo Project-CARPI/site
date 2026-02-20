@@ -7,6 +7,7 @@ import {
   DragEndEvent,
 } from "@dnd-kit/core";
 import { createPortal } from "react-dom";
+import { Helmet, HelmetProvider } from "react-helmet-async";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 
 import { CourseWorkspaceProvider } from "@/core/workspace/provider";
@@ -83,17 +84,85 @@ const AppDragDropContext: React.FC<{ children: React.ReactNode }> = ({
 
 export default function App() {
   return (
-    <CourseWorkspaceProvider>
-      <AppDragDropContext>
-        <Router>
-          <Routes>
-            <Route path="/" element={<HomePage />} />
-            <Route path="/catalog" element={<Catalog />} />
-            <Route path="/planner" element={<Planner />} />
-          </Routes>
-          <Toolbox />
-        </Router>
-      </AppDragDropContext>
-    </CourseWorkspaceProvider>
+    <HelmetProvider>
+      <CourseWorkspaceProvider>
+        <AppDragDropContext>
+          <Router>
+            <Routes>
+              <Route
+                path="/"
+                element={
+                  <>
+                    <Helmet>
+                      <title>CARPI Course Planner</title>
+                      <meta
+                        name="description"
+                        content="Plan your RPI courses with CARPI — browse the course catalog and build your semester schedule."
+                      />
+                      <meta
+                        property="og:title"
+                        content="CARPI Course Planner"
+                      />
+                      <meta
+                        property="og:description"
+                        content="Plan your RPI courses with CARPI — browse the course catalog and build your semester schedule."
+                      />
+                      <meta property="og:type" content="website" />
+                    </Helmet>
+                    <HomePage />
+                  </>
+                }
+              />
+              <Route
+                path="/catalog"
+                element={
+                  <>
+                    <Helmet>
+                      <title>Course Catalog | CARPI</title>
+                      <meta
+                        name="description"
+                        content="Search and browse RPI courses by name, subject, or credit hours."
+                      />
+                      <meta
+                        property="og:title"
+                        content="Course Catalog | CARPI"
+                      />
+                      <meta
+                        property="og:description"
+                        content="Search and browse RPI courses by name, subject, or credit hours."
+                      />
+                      <meta property="og:type" content="website" />
+                    </Helmet>
+                    <Catalog />
+                  </>
+                }
+              />
+              <Route
+                path="/planner"
+                element={
+                  <>
+                    <Helmet>
+                      <title>My Planner | CARPI</title>
+                      <meta
+                        name="description"
+                        content="Build and manage your RPI semester plan — add courses, organize semesters, and track your progress."
+                      />
+                      <meta property="og:title" content="My Planner | CARPI" />
+                      <meta
+                        property="og:description"
+                        content="Build and manage your RPI semester plan — add courses, organize semesters, and track your progress."
+                      />
+                      <meta property="og:type" content="website" />
+                    </Helmet>
+                    <Planner />
+                  </>
+                }
+              />
+            </Routes>
+            <Toolbox />
+          </Router>
+        </AppDragDropContext>
+      </CourseWorkspaceProvider>
+    </HelmetProvider>
   );
 }

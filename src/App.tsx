@@ -83,23 +83,95 @@ const AppDragDropContext: React.FC<{ children: React.ReactNode }> = ({
 
 export default function App() {
   return (
-    <CourseWorkspaceProvider>
-      <AppDragDropContext>
-        <div className="m-4 md:m-8 md:max-h-dvh overflow-hidden">
-          <header className="sticky top-0 flex h-20 items-center justify-center bg-carpipink">
-            <img src="/carpi-black.png" alt="Carpi Logo" className="h-full" />
-          </header>
+    <HelmetProvider>
+      <CourseWorkspaceProvider>
+        <AppDragDropContext>
+          <div className="m-4 md:m-8 md:max-h-dvh overflow-hidden">
+            <header className="sticky top-0 flex h-20 items-center justify-center bg-carpipink">
+              <img
+                src="/carpi-black.png"
+                alt="Carpi Logo"
+                className="h-full"
+              />
+            </header>
 
-          <Router>
-            <Routes>
-              <Route path="/" element={<HomePage />} />
-              <Route path="/catalog" element={<Catalog />} />
-              <Route path="/planner" element={<Planner />} />
-            </Routes>
-            <Toolbox />
-          </Router>
-        </div>
-      </AppDragDropContext>
-    </CourseWorkspaceProvider>
+            <Router>
+              <Routes>
+                <Route
+                  path="/"
+                  element={
+                    <>
+                      <Helmet>
+                        <title>CARPI Course Planner</title>
+                        <meta
+                          name="description"
+                          content="Plan your RPI courses with CARPI — browse the course catalog and build your semester schedule."
+                        />
+                        <meta property="og:title" content="CARPI" />
+                        <meta
+                          property="og:description"
+                          content="Plan smarter. Build your RPI schedule with ease."
+                        />
+                        <meta property="og:type" content="website" />
+                      </Helmet>
+                      <HomePage />
+                    </>
+                  }
+                />
+                <Route
+                  path="/catalog"
+                  element={
+                    <>
+                      <Helmet>
+                        <title>Course Catalog | CARPI</title>
+                        <meta
+                          name="description"
+                          content="Search and browse RPI courses by name, subject, or credit hours."
+                        />
+                        <meta
+                          property="og:title"
+                          content="RPI Course Catalog"
+                        />
+                        <meta
+                          property="og:description"
+                          content="Every RPI course, all in one place."
+                        />
+                        <meta property="og:type" content="website" />
+                      </Helmet>
+                      <Catalog />
+                    </>
+                  }
+                />
+                <Route
+                  path="/planner"
+                  element={
+                    <>
+                      <Helmet>
+                        <title>My Planner | CARPI</title>
+                        <meta
+                          name="description"
+                          content="Build and manage your RPI semester plan — add courses, organize semesters, and track your progress."
+                        />
+                        <meta
+                          property="og:title"
+                          content="RPI Semester Planner"
+                        />
+                        <meta
+                          property="og:description"
+                          content="Drag, drop, and plan your perfect RPI semester."
+                        />
+                        <meta property="og:type" content="website" />
+                      </Helmet>
+                      <Planner />
+                    </>
+                  }
+                />
+              </Routes>
+              <Toolbox />
+            </Router>
+          </div>
+        </AppDragDropContext>
+      </CourseWorkspaceProvider>
+    </HelmetProvider>
   );
 }

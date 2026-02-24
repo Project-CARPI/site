@@ -6,7 +6,7 @@ import {
   verticalListSortingStrategy,
 } from "@dnd-kit/sortable";
 import { motion } from "framer-motion";
-import { MdDragIndicator, MdEdit } from "react-icons/md";
+import { MdDragIndicator, MdDeleteOutline } from "react-icons/md";
 
 import { useCourseWorkspace } from "@/core/workspace/useCourseWorkspace";
 import { SortableItem } from "@/features/dnd/components/SortableItem";
@@ -74,68 +74,75 @@ export default function SemesterBlock({
     <motion.div
       layout
       className={cn(
-        "flex flex-col space-y-2 p-4 rounded-2xl h-full w-full max-w-full overflow-hidden",
+        "flex flex-col p-4 rounded-2xl h-full w-full max-w-full overflow-hidden relative group",
         "bg-[color-mix(in_oklab,var(--color-darkblue)_10%,var(--color-carpipink)_90%)]",
-        {
-          "border-2 border-rosewood": over_limit || hasDuplicateCourses,
-        },
+        { "border-2 border-rosewood": over_limit },
       )}
     >
-      <motion.div layout className="w-full">
-        <div className="flex items-center gap-2 min-w-0 w-full">
-          <div
-            className={cn(
-              "hover:bg-darkblue/20 py-2 px-1 rounded-lg flex-shrink-0 ",
-              isDragging
-                ? "cursor-grabbing"
-                : "cursor-grab active:cursor-grabbing",
-            )}
-            {...listeners}
-            {...attributes}
-          >
-            <MdDragIndicator size={22} />
-          </div>
+      <motion.div layout className="flex flex-col gap-1 mb-3 w-full">
+        <div className="flex items-center justify-between w-full">
+          <div className="flex items-center gap-2 flex-1 min-w-0">
+            <div
+              className={cn(
+                "hover:bg-darkblue/20 py-1.5 px-0.75 rounded-lg flex-shrink-0 ",
+                isDragging
+                  ? "cursor-grabbing"
+                  : "cursor-grab active:cursor-grabbing",
+              )}
+              {...listeners}
+              {...attributes}
+            >
+              <MdDragIndicator size={22} />
+            </div>
 
-          {isEditing ? (
-            <input
-              ref={inputRef}
-              type="text"
-              value={semester.semesterTitle}
-              onChange={handleTitleChange}
-              onBlur={finishEditing}
-              onKeyDown={handleKeyDown}
-              className="text-md font-bold bg-transparent border-b border-black focus:outline-none flex-1 w-0 min-w-0 placeholder:opacity-60"
-              placeholder={`Semester ${semester.semesterNumber}`}
-            />
-          ) : (
-            <div className="flex items-center gap-2 overflow-hidden flex-1 w-0 min-w-0">
+            {isEditing ? (
+              <input
+                ref={inputRef}
+                value={semester.semesterTitle}
+                onChange={handleTitleChange}
+                onBlur={finishEditing}
+                onKeyDown={handleKeyDown}
+                className="font-bold text-md bg-transparent border-b border-darkblue/20 w-full min-w-0 focus:outline-none"
+                placeholder={`Semester ${semester.semesterNumber}`}
+              />
+            ) : (
               <span
-                className="text-md font-bold truncate cursor-text hover:underline decoration-dotted underline-offset-4 block w-full"
                 onClick={() => setIsEditing(true)}
-                title="Click to rename"
+                className="font-bold text-md truncate cursor-text hover:text-darkblue/70 transition-colors w-full"
               >
                 {semester.semesterTitle ||
                   `Semester ${semester.semesterNumber}`}
               </span>
-              <button
-                onClick={() => setIsEditing(true)}
-                className="text-black transition-colors flex-shrink-0"
-                title="Edit Semester Name"
-              >
-                <MdEdit size={18} />
-              </button>
-            </div>
-          )}
-          <div className="whitespace-nowrap flex-shrink-0">
-            {semester.creditsTotal} credits
+            )}
           </div>
+
+          <button
+            onClick={() => handleDeleteSemester(semester.semesterID)}
+            className="text-darkblue/40 hover:text-rosewood transition-colors p-1 hover:bg-rosewood/10 rounded-lg hover:cursor-pointer"
+            title="Delete Semester"
+          >
+            <MdDeleteOutline size={22} />
+          </button>
         </div>
 
-        <div className="flex gap-1 ml-2">
-          <SeasonSelector
-            season={semester.season}
-            semesterID={semester.semesterID}
-          />
+        <div className="flex items-center gap-2 pl-7 text-sm">
+          <div className="scale-90 origin-left">
+            <SeasonSelector
+              season={semester.season}
+              semesterID={semester.semesterID}
+            />
+          </div>
+
+          <div
+            className={cn(
+              "px-3 py-1 rounded-full font-medium text-xs",
+              over_limit
+                ? "bg-rosewood text-white"
+                : "bg-darkblue/10 text-darkblue",
+            )}
+          >
+            {semester.creditsTotal} Credits
+          </div>
         </div>
       </motion.div>
 
@@ -183,15 +190,6 @@ export default function SemesterBlock({
           )}
         </SortableContext>
       </div>
-
-      <motion.div layout className="flex justify-end">
-        <button
-          onClick={() => handleDeleteSemester(semester.semesterID)}
-          className="border border-black rounded-full px-3 py-0 h-fit font-medium text-sm hover:cursor-pointer hover:bg-darkblue hover:text-carpipink transition-colors duration-200"
-        >
-          Delete
-        </button>
-      </motion.div>
     </motion.div>
   );
 }

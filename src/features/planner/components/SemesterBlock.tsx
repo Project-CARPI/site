@@ -181,12 +181,9 @@ export default function SemesterBlock({
         </div>
       </motion.div>
 
-      <AnimatePresence initial={false}>
+      <AnimatePresence initial={!isCollapsed}>
         {!isCollapsed && (
-          <motion.div
-            key="course-list"
-            className="overflow-hidden space-y-2 flex-1"
-          >
+          <motion.div className="overflow-hidden space-y-2 flex-1">
             {over_limit && (
               <motion.div
                 layout

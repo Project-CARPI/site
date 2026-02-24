@@ -45,6 +45,9 @@ export default function PlannerCourse({
           <div className="flex gap-2 items-center flex-1">
             <MdDragIndicator size={22} className="shrink-0" />
             <CourseLabel course={course.data} showCredits />
+          </div>
+
+          <div className="items-center flex">
             <CreditSelector
               semesterId={semesterId}
               courseId={course.id}

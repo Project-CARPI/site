@@ -11,6 +11,11 @@
   --color-slategray: oklch(54.39% 0.0444 212.21); /* #51777F */
   --color-copperwood: oklch(53.68% 0.1081 63.18); /* #AA6822 */
   --color-rosewood: oklch(54.14% 0.206 10.45); /* #c91752 */
+
+  --text-tiny: 0.625rem;
+  /* --text-tiny--line-height: 1.5rem; */
+  /* --text-tiny--letter-spacing: 0.125rem; */
+  --text-tiny--font-weight: 500;
 }
 
 body {

@@ -74,7 +74,7 @@ export default function SemesterBlock({
     <motion.div
       layout
       className={cn(
-        "flex flex-col p-4 rounded-2xl h-full w-full max-w-full overflow-hidden relative group",
+        "flex flex-col p-4 rounded-2xl h-full w-full max-w-full relative group",
         "bg-[color-mix(in_oklab,var(--color-darkblue)_10%,var(--color-carpipink)_90%)]",
         { "border-2 border-rosewood": over_limit },
       )}
@@ -116,13 +116,23 @@ export default function SemesterBlock({
             )}
           </div>
 
-          <button
-            onClick={() => handleDeleteSemester(semester.semesterID)}
-            className="text-darkblue/40 hover:text-rosewood transition-colors p-1 hover:bg-rosewood/10 rounded-lg hover:cursor-pointer"
-            title="Delete Semester"
-          >
-            <MdDeleteOutline size={22} />
-          </button>
+          <div className="relative group/delete-btn flex flex-col items-center">
+            <button
+              onClick={() => handleDeleteSemester(semester.semesterID)}
+              className="text-darkblue/40 hover:text-rosewood transition-colors p-1 hover:bg-rosewood/10 rounded-lg hover:cursor-pointer"
+              aria-label="Delete Semester"
+            >
+              <MdDeleteOutline size={22} />
+            </button>
+
+            {/* Tooltip */}
+            <div className="absolute -bottom-7 z-50 hidden group-hover/delete-btn:flex flex-col items-center">
+              <div className="w-2 h-2 bg-darkblue rotate-45"></div>
+              <div className="bg-darkblue text-carpipink text-tiny py-0.5 px-2 -mt-1 rounded-full whitespace-nowrap">
+                Delete
+              </div>
+            </div>
+          </div>
         </div>
 
         <div className="flex items-center gap-2 pl-7 text-sm">

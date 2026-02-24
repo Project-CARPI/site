@@ -88,11 +88,7 @@ export default function App() {
         <AppDragDropContext>
           <div className="m-4 md:m-8 md:max-h-dvh overflow-hidden">
             <header className="sticky top-0 flex h-20 items-center justify-center bg-carpipink">
-              <img
-                src="/carpi-black.png"
-                alt="Carpi Logo"
-                className="h-full"
-              />
+              <img src="/carpi-black.png" alt="Carpi Logo" className="h-full" />
             </header>
 
             <Router>
@@ -113,6 +109,14 @@ export default function App() {
                           content="Plan smarter. Build your RPI schedule with ease."
                         />
                         <meta property="og:type" content="website" />
+                        <meta
+                          property="og:url"
+                          content="http://carpi.cs.rpi.edu/"
+                        />
+                        <meta
+                          property="og:image"
+                          content="http://carpi.cs.rpi.edu/carpi-black.png"
+                        />
                       </Helmet>
                       <HomePage />
                     </>
@@ -137,6 +141,14 @@ export default function App() {
                           content="Every RPI course, all in one place."
                         />
                         <meta property="og:type" content="website" />
+                        <meta
+                          property="og:url"
+                          content="http://carpi.cs.rpi.edu/catalog"
+                        />
+                        <meta
+                          property="og:image"
+                          content="http://carpi.cs.rpi.edu/carpi-black.png"
+                        />
                       </Helmet>
                       <Catalog />
                     </>
@@ -161,6 +173,14 @@ export default function App() {
                           content="Drag, drop, and plan your perfect RPI semester."
                         />
                         <meta property="og:type" content="website" />
+                        <meta
+                          property="og:url"
+                          content="http://carpi.cs.rpi.edu/planner"
+                        />
+                        <meta
+                          property="og:image"
+                          content="http://carpi.cs.rpi.edu/carpi-black.png"
+                        />
                       </Helmet>
                       <Planner />
                     </>

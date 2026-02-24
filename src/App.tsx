@@ -37,12 +37,12 @@ const AppDragDropContext: React.FC<{ children: React.ReactNode }> = ({
 
   const handleDragStart = (event: DragStartEvent) => {
     setIsDragging(true);
-    onDragStart(event); // Your existing logic
+    onDragStart(event);
   };
 
   const handleDragEnd = (event: DragEndEvent) => {
     setIsDragging(false);
-    onDragEnd(event); // Your existing logic
+    onDragEnd(event);
   };
 
   return (
@@ -99,13 +99,10 @@ export default function App() {
                         name="description"
                         content="Plan your RPI courses with CARPI — browse the course catalog and build your semester schedule."
                       />
-                      <meta
-                        property="og:title"
-                        content="CARPI Course Planner"
-                      />
+                      <meta property="og:title" content="CARPI" />
                       <meta
                         property="og:description"
-                        content="Plan your RPI courses with CARPI — browse the course catalog and build your semester schedule."
+                        content="Plan smarter. Build your RPI schedule with ease."
                       />
                       <meta property="og:type" content="website" />
                     </Helmet>
@@ -123,13 +120,10 @@ export default function App() {
                         name="description"
                         content="Search and browse RPI courses by name, subject, or credit hours."
                       />
-                      <meta
-                        property="og:title"
-                        content="Course Catalog | CARPI"
-                      />
+                      <meta property="og:title" content="RPI Course Catalog" />
                       <meta
                         property="og:description"
-                        content="Search and browse RPI courses by name, subject, or credit hours."
+                        content="Every RPI course, all in one place."
                       />
                       <meta property="og:type" content="website" />
                     </Helmet>
@@ -147,10 +141,13 @@ export default function App() {
                         name="description"
                         content="Build and manage your RPI semester plan — add courses, organize semesters, and track your progress."
                       />
-                      <meta property="og:title" content="My Planner | CARPI" />
+                      <meta
+                        property="og:title"
+                        content="RPI Semester Planner"
+                      />
                       <meta
                         property="og:description"
-                        content="Build and manage your RPI semester plan — add courses, organize semesters, and track your progress."
+                        content="Drag, drop, and plan your perfect RPI semester."
                       />
                       <meta property="og:type" content="website" />
                     </Helmet>

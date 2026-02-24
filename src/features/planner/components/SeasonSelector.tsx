@@ -1,6 +1,6 @@
 import { useCourseWorkspace } from "@/core/workspace/useCourseWorkspace";
-import { SemesterSeason } from "@/features/planner/interfaces";
 import { cn } from "@/lib/classnames";
+import { SemesterSeason } from "@/lib/types";
 
 const seasons: SemesterSeason[] = ["Fall", "Spring", "Summer"];
 

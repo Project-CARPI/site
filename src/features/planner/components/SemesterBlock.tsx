@@ -5,8 +5,8 @@ import {
   SortableContext,
   verticalListSortingStrategy,
 } from "@dnd-kit/sortable";
-import { motion } from "framer-motion";
-import { MdDragIndicator, MdDeleteOutline } from "react-icons/md";
+import { motion, AnimatePresence } from "framer-motion";
+import { MdDragIndicator, MdDeleteOutline, MdExpandMore } from "react-icons/md";
 
 import { useCourseWorkspace } from "@/core/workspace/useCourseWorkspace";
 import { SortableItem } from "@/features/dnd/components/SortableItem";
@@ -30,6 +30,13 @@ export default function SemesterBlock({
     id: semester.semesterID,
   });
   const { listeners, attributes } = useSortableItem();
+
+  const [isCollapsed, setIsCollapsed] = useState(false);
+
+  useEffect(() => {
+    const isMediumOrSmaller = window.matchMedia("(max-width: 768px)").matches;
+    setIsCollapsed(isMediumOrSmaller);
+  }, [isDragging]);
 
   const { updateSemesterName, deleteSemester } = useCourseWorkspace();
   const [isEditing, setIsEditing] = useState(false);
@@ -74,12 +81,16 @@ export default function SemesterBlock({
     <motion.div
       layout
       className={cn(
-        "flex flex-col p-4 rounded-2xl h-full w-full max-w-full relative group",
+        "flex flex-col rounded-2xl w-full max-w-full relative group",
         "bg-[color-mix(in_oklab,var(--color-darkblue)_10%,var(--color-carpipink)_90%)]",
+        isCollapsed ? "p-3 h-auto" : "p-4 h-full",
         { "border-2 border-rosewood": over_limit },
       )}
     >
-      <motion.div layout className="flex flex-col gap-1 mb-3 w-full">
+      <motion.div
+        layout
+        className={cn("flex flex-col gap-1 w-full", !isCollapsed && "mb-3")}
+      >
         <div className="flex items-center justify-between w-full">
           <div className="flex items-center gap-2 flex-1 min-w-0">
             <div
@@ -116,22 +127,36 @@ export default function SemesterBlock({
             )}
           </div>
 
-          <div className="relative group/delete-btn flex flex-col items-center">
-            <button
-              onClick={() => handleDeleteSemester(semester.semesterID)}
-              className="text-darkblue/40 hover:text-rosewood transition-colors p-1 hover:bg-rosewood/10 rounded-lg hover:cursor-pointer"
-              aria-label="Delete Semester"
-            >
-              <MdDeleteOutline size={22} />
-            </button>
+          <div className="flex items-center gap-1">
+            <div className="relative group/delete-btn flex flex-col items-center">
+              <button
+                onClick={() => handleDeleteSemester(semester.semesterID)}
+                className="text-darkblue/40 hover:text-rosewood transition-colors p-1 hover:bg-rosewood/10 rounded-lg hover:cursor-pointer"
+                aria-label="Delete Semester"
+              >
+                <MdDeleteOutline size={22} />
+              </button>
 
-            {/* Tooltip */}
-            <div className="absolute -bottom-7 z-50 hidden group-hover/delete-btn:flex flex-col items-center">
-              <div className="w-2 h-2 bg-darkblue rotate-45"></div>
-              <div className="bg-darkblue text-carpipink text-tiny py-0.5 px-2 -mt-1 rounded-full whitespace-nowrap">
-                Delete
+              {/* Tooltip */}
+              <div className="absolute -bottom-7 z-50 hidden group-hover/delete-btn:flex flex-col items-center">
+                <div className="w-2 h-2 bg-darkblue rotate-45"></div>
+                <div className="bg-darkblue text-carpipink text-tiny py-0.5 px-2 -mt-1 rounded-full whitespace-nowrap">
+                  Delete
+                </div>
               </div>
             </div>
+            <button
+              onClick={() => setIsCollapsed(!isCollapsed)}
+              className="lg:hidden text-darkblue/50 hover:text-darkblue transition-colors p-1 hover:bg-darkblue/10 rounded-lg hover:cursor-pointer"
+              title={isCollapsed ? "Expand Semester" : "Collapse Semester"}
+            >
+              <motion.div
+                animate={{ rotate: isCollapsed ? -90 : 0 }}
+                transition={{ duration: 0.2 }}
+              >
+                <MdExpandMore size={22} />
+              </motion.div>
+            </button>
           </div>
         </div>
 
@@ -156,50 +181,59 @@ export default function SemesterBlock({
         </div>
       </motion.div>
 
-      {over_limit && (
-        <motion.div
-          layout
-          className="text-darkblue text-sm bg-rosewood/20 rounded-2xl p-4 text-center"
-        >
-          You are over the maximum credit limit of{" "}
-          {over_hard_limit ? CREDIT_LIMIT : CREDIT_LIMIT_WITHOUT_APPROVAL}{" "}
-          credits! <b>Check with your advisor before proceeding.</b>
-        </motion.div>
-      )}
-
-      {hasDuplicateCourses && (
-        <motion.div
-          layout
-          className="text-darkblue text-sm bg-rosewood/20 rounded-2xl p-4 text-center"
-        >
-          There are duplicate courses in this semester!
-        </motion.div>
-      )}
-
-      <div ref={setNodeRef} className="flex flex-col gap-2 h-full">
-        <SortableContext
-          items={semester.courseList.map((c) => c.id)}
-          strategy={verticalListSortingStrategy}
-        >
-          {semester.courseList.length === 0 ? (
-            <CourseDropzone isHover={isOver} />
-          ) : (
-            semester.courseList.map((course) => (
-              <SortableItem
-                key={course.id}
-                id={course.id}
-                data={course}
-                type="course"
+      <AnimatePresence initial={false}>
+        {!isCollapsed && (
+          <motion.div
+            key="course-list"
+            className="overflow-hidden space-y-2 flex-1"
+          >
+            {over_limit && (
+              <motion.div
+                layout
+                className="text-darkblue text-sm bg-rosewood/20 rounded-2xl p-4 text-center"
               >
-                <PlannerCourse
-                  course={course}
-                  semesterId={semester.semesterID}
-                />
-              </SortableItem>
-            ))
-          )}
-        </SortableContext>
-      </div>
+                You are over the maximum credit limit of{" "}
+                {over_hard_limit ? CREDIT_LIMIT : CREDIT_LIMIT_WITHOUT_APPROVAL}{" "}
+                credits! <b>Check with your advisor before proceeding.</b>
+              </motion.div>
+            )}
+
+            {hasDuplicateCourses && (
+              <motion.div
+                layout
+                className="text-darkblue text-sm bg-rosewood/20 rounded-2xl p-4 text-center"
+              >
+                There are duplicate courses in this semester!
+              </motion.div>
+            )}
+
+            <div ref={setNodeRef} className="flex flex-col gap-2 h-full">
+              <SortableContext
+                items={semester.courseList.map((c) => c.id)}
+                strategy={verticalListSortingStrategy}
+              >
+                {semester.courseList.length === 0 ? (
+                  <CourseDropzone isHover={isOver} />
+                ) : (
+                  semester.courseList.map((course) => (
+                    <SortableItem
+                      key={course.id}
+                      id={course.id}
+                      data={course}
+                      type="course"
+                    >
+                      <PlannerCourse
+                        course={course}
+                        semesterId={semester.semesterID}
+                      />
+                    </SortableItem>
+                  ))
+                )}
+              </SortableContext>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </motion.div>
   );
 }

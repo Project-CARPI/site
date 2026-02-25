@@ -26,12 +26,12 @@ export default function ActionMenu({
         {isAllCollapsed ? (
           <>
             <MdUnfoldMore size={16} />
-            <span className="hidden sm:inline">Expand All</span>
+            <span>Expand All</span>
           </>
         ) : (
           <>
             <MdUnfoldLess size={16} />
-            <span className="hidden sm:inline">Collapse All</span>
+            <span>Collapse All</span>
           </>
         )}
       </button>

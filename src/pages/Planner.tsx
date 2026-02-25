@@ -37,7 +37,7 @@ const Planner: React.FC = () => {
           <div className="flex flex-col justify-center text-center opacity-60 italic">
             <p>
               No semesters added yet. <br></br>
-              Click "Add Semester Block" to get started!
+              Click "+ New Semester" to get started!
             </p>
           </div>
         ) : (

@@ -2,19 +2,19 @@ import React, { Fragment } from "react";
 
 import { MenuOption } from "@/features/planner/usePlannerCourse";
 
-interface PlannerMenuContentProps {
+interface CourseMenuContentProps {
   options: MenuOption[];
   onItemSelect?: () => void;
   ItemComponent: React.ElementType;
   SeparatorComponent: React.ElementType;
 }
 
-export default function PlannerMenuContent({
+export default function CourseMenuContent({
   options,
   onItemSelect,
   ItemComponent,
   SeparatorComponent,
-}: PlannerMenuContentProps) {
+}: CourseMenuContentProps) {
   const handleAction = (opt: MenuOption) => {
     if (opt.disabled) return;
     opt.action();

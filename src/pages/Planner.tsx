@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 
 import { SortableContext, rectSortingStrategy } from "@dnd-kit/sortable";
 import { useNavigate } from "react-router-dom";
@@ -10,9 +10,9 @@ import SemesterBlock from "@/features/planner/components/SemesterBlock";
 import useIsDesktop from "@/lib/hooks/useIsDesktop";
 
 const Planner: React.FC = () => {
+  // If user is on desktop, redirect to home page
   const navigate = useNavigate();
   const isDesktop = useIsDesktop();
-
   useEffect(() => {
     if (isDesktop) {
       navigate("/");

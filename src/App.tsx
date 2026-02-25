@@ -11,7 +11,7 @@ import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 
 import { CourseWorkspaceProvider } from "@/core/workspace/provider";
 import { useDndLogic } from "@/features/dnd/useDragAndDrop";
-import PlannerCourse from "@/features/planner/components/PlannerCourse";
+import PlannerCourse from "@/features/planner/components/course/PlannerCourse";
 import SemesterBlock from "@/features/planner/components/SemesterBlock";
 import Toolbox from "@/features/toolbox/Toolbox";
 import { cn } from "@/lib/classnames";

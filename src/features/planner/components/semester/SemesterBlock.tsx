@@ -161,7 +161,7 @@ export default function SemesterBlock({
             ) : (
               <span
                 onClick={() => setIsEditing(true)}
-                className="font-bold text-md truncate cursor-text hover:text-darkblue/70 transition-colors w-full"
+                className="font-bold text-md truncate cursor-text hover:text-darkblue/70 transition-colors w-full block min-w-0"
               >
                 {semester.semesterTitle ||
                   `Semester ${semester.semesterNumber}`}

@@ -17,7 +17,6 @@ export default function ActionMenu({
       <button
         onClick={toggleCollapse}
         className={cn(
-          "lg:hidden",
           "flex items-center justify-center gap-1",
           "border-1 border-black rounded-full pl-3 pr-4 py-2 w-fit text-xs font-medium hover:bg-darkblue/20 transition-colors",
         )}

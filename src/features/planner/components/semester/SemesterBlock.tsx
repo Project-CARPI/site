@@ -32,12 +32,7 @@ export default function SemesterBlock({
   // Local state to manage whether this semester block is collapsed or expanded.
   const [isCollapsed, setIsCollapsed] = useState(globalCollapse);
   useEffect(() => {
-    const isDesktop = window.innerWidth >= 1024;
-    if (isDesktop) {
-      setIsCollapsed(false);
-    } else {
-      setIsCollapsed(globalCollapse);
-    }
+    setIsCollapsed(globalCollapse);
   }, [globalCollapse]);
 
   /**

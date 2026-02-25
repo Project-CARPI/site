@@ -58,25 +58,26 @@ export const SemesterReducer = (
     case "UPDATE_CREDITS": {
       const { courseID, credits } = action.payload;
 
-      const updatedCourseList = state.courseList.map((course) => {
-        if (course.id === courseID) {
-          return { ...course, credits: credits };
-        }
-        return course;
-      });
+      // Find the course to update
+      const courseToUpdate = state.courseList.find((c) => c.id === courseID);
+      if (!courseToUpdate) {
+        return state;
+      }
 
-      const oldCredits =
-        state.courseList.find((c) => c.id === courseID)?.credits ?? 0;
-      const newCredits = credits;
-
-      console.log(
-        `Updating credits for course ${courseID}: ${oldCredits} -> ${newCredits}`,
+      // Update the credits for the specified course
+      const updatedCourseList = state.courseList.map((c) =>
+        c.id === courseID ? { ...c, credits } : c,
       );
+
+      // Calculate the new total credits for the semester
+      const oldTotal =
+        state.courseList.find((c) => c.id === courseID)?.credits ?? 0;
+      const newTotal = credits;
 
       return {
         ...state,
         courseList: updatedCourseList,
-        creditsTotal: state.creditsTotal - oldCredits + newCredits,
+        creditsTotal: state.creditsTotal - oldTotal + newTotal,
       };
     }
 

@@ -21,13 +21,19 @@ import { SemesterType } from "@/lib/types";
 export interface SemesterBlockProps {
   semester: SemesterType;
   isDragging?: boolean;
+  globalCollapse?: boolean;
 }
 
 export default function SemesterBlock({
   semester,
   isDragging,
+  globalCollapse = false,
 }: SemesterBlockProps) {
-  const [isCollapsed, setIsCollapsed] = useState(false);
+  // Local state to manage whether this semester block is collapsed or expanded.
+  const [isCollapsed, setIsCollapsed] = useState(globalCollapse);
+  useEffect(() => {
+    setIsCollapsed(globalCollapse);
+  }, [globalCollapse]);
 
   /**
    * DROPZONES

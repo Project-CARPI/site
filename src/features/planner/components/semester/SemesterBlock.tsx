@@ -15,25 +15,23 @@ import { useSortableItem } from "@/features/dnd/useSortableItem";
 import PlannerCourse from "@/features/planner/components/course/PlannerCourse";
 import CourseDropzone from "@/features/planner/components/semester/CourseDropzone";
 import SeasonSelector from "@/features/planner/components/semester/SeasonSelector";
+import { usePlannerLayoutStore } from "@/features/planner/PlannerLayoutStore";
 import { cn } from "@/lib/classnames";
 import { SemesterType } from "@/lib/types";
 
 export interface SemesterBlockProps {
   semester: SemesterType;
   isDragging?: boolean;
-  globalCollapse?: boolean;
 }
 
 export default function SemesterBlock({
   semester,
   isDragging,
-  globalCollapse = false,
 }: SemesterBlockProps) {
-  // Local state to manage whether this semester block is collapsed or expanded.
-  const [isCollapsed, setIsCollapsed] = useState(globalCollapse);
-  useEffect(() => {
-    setIsCollapsed(globalCollapse);
-  }, [globalCollapse]);
+  // Layout state
+  const { allExpanded, expandedSemesters, setExpanded } =
+    usePlannerLayoutStore();
+  const isOpen = expandedSemesters[semester.semesterID] ?? allExpanded;
 
   /**
    * DROPZONES
@@ -50,7 +48,7 @@ export default function SemesterBlock({
   });
   const { setNodeRef: setHeaderRef, isOver: isHeaderOver } = useDroppable({
     id: `${semester.semesterID}-header`,
-    disabled: !isCollapsed,
+    disabled: isOpen,
   });
 
   const { listeners, attributes } = useSortableItem();
@@ -61,9 +59,9 @@ export default function SemesterBlock({
   useEffect(() => {
     let timeoutId: ReturnType<typeof setTimeout> | undefined = undefined;
 
-    if (isHeaderOver && isCollapsed) {
+    if (isHeaderOver && !isOpen) {
       timeoutId = setTimeout(() => {
-        setIsCollapsed(false);
+        setExpanded(semester.semesterID, true);
       }, 400);
     }
 
@@ -72,7 +70,8 @@ export default function SemesterBlock({
         clearTimeout(timeoutId);
       }
     };
-  }, [isHeaderOver, isCollapsed]);
+  }, [isHeaderOver, isOpen, semester.semesterID, setExpanded]);
+
   /* SEMESTER CONTROLS */
   const { updateSemesterName, deleteSemester } = useCourseWorkspace();
   const [isEditing, setIsEditing] = useState(false);
@@ -119,14 +118,14 @@ export default function SemesterBlock({
       className={cn(
         "flex flex-col rounded-2xl w-full max-w-full relative group",
         "bg-[color-mix(in_oklab,var(--color-darkblue)_10%,var(--color-carpipink)_90%)]",
-        isCollapsed ? "p-3 h-auto" : "p-4 h-full",
+        !isOpen ? "p-3 h-auto" : "p-4 h-full",
         { "border-2 border-rosewood": over_limit },
       )}
     >
       <motion.div
         layout
         ref={setHeaderRef}
-        className={cn("flex flex-col gap-1 w-full", !isCollapsed && "mb-3")}
+        className={cn("flex flex-col gap-1 w-full", isOpen && "mb-3")}
       >
         <div className="flex items-center justify-between w-full">
           <div className="flex items-center gap-2 flex-1 min-w-0">
@@ -182,12 +181,12 @@ export default function SemesterBlock({
               </div>
             </div>
             <button
-              onClick={() => setIsCollapsed(!isCollapsed)}
+              onClick={() => setExpanded(semester.semesterID, !isOpen)}
               className="lg:hidden text-darkblue/50 hover:text-darkblue transition-colors p-1 hover:bg-darkblue/10 rounded-lg hover:cursor-pointer"
-              title={isCollapsed ? "Expand Semester" : "Collapse Semester"}
+              title={isOpen ? "Collapse Semester" : "Expand Semester"}
             >
               <motion.div
-                animate={{ rotate: isCollapsed ? -90 : 0 }}
+                animate={{ rotate: isOpen ? 0 : -90 }}
                 transition={{ duration: 0.2 }}
               >
                 <MdExpandMore size={22} />
@@ -217,8 +216,8 @@ export default function SemesterBlock({
         </div>
       </motion.div>
 
-      <AnimatePresence initial={!isCollapsed}>
-        {!isCollapsed && (
+      <AnimatePresence initial={isOpen}>
+        {isOpen && (
           <motion.div className="overflow-hidden space-y-2 flex-1">
             {over_limit && (
               <ErrorBanner>

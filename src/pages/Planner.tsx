@@ -29,7 +29,7 @@ const Planner: React.FC = () => {
           <h1 className="font-bold text-xl">Planner</h1>
           <ActionMenu
             isAllCollapsed={isAllCollapsed}
-            toggleCollapse={() => setIsAllCollapsed(!isAllCollapsed)}
+            toggleCollapse={() => setIsAllCollapsed((prev) => !prev)}
           />
         </div>
 

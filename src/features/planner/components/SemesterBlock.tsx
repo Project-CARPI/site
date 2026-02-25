@@ -26,18 +26,47 @@ export default function SemesterBlock({
   semester,
   isDragging,
 }: SemesterBlockProps) {
-  const { setNodeRef, isOver } = useDroppable({
-    id: semester.semesterID,
-  });
-  const { listeners, attributes } = useSortableItem();
-
   const [isCollapsed, setIsCollapsed] = useState(false);
 
-  useEffect(() => {
-    const isMediumOrSmaller = window.matchMedia("(max-width: 768px)").matches;
-    setIsCollapsed(isMediumOrSmaller);
-  }, [isDragging]);
+  /**
+   * DROPZONES
+   * We have two distinct droppable areas:
+   *  - setListRef: The main body of the semester block, where courses are dropped
+   *    and sorted.
+   *  - setHeaderRef: The header area of the semester block, which is only active
+   *    when the block is collapsed. Hovering over this for a moment will auto-expand
+   *    the block, allowing users to drop courses into it without needing to manually
+   *    expand first.
+   */
+  const { setNodeRef: setListRef, isOver: isListOver } = useDroppable({
+    id: semester.semesterID,
+  });
+  const { setNodeRef: setHeaderRef, isOver: isHeaderOver } = useDroppable({
+    id: `${semester.semesterID}-header`,
+    disabled: !isCollapsed,
+  });
 
+  const { listeners, attributes } = useSortableItem();
+
+  // If the user hovers over the header dropzone, a time starts. If they hover for
+  // for >= 400ms, we allow the block to auto-expand. This spring-loads the block
+  // open to prevent layouts shifts when users are trying to drag courses into blocks.
+  useEffect(() => {
+    let timeoutId: NodeJS.Timeout;
+
+    if (isHeaderOver && isCollapsed) {
+      timeoutId = setTimeout(() => {
+        setIsCollapsed(false);
+      }, 400);
+    }
+    return () => {
+      if (timeoutId) {
+        clearTimeout(timeoutId);
+      }
+    };
+  }, [isHeaderOver, isCollapsed]);
+
+  /* SEMESTER CONTROLS */
   const { updateSemesterName, deleteSemester } = useCourseWorkspace();
   const [isEditing, setIsEditing] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
@@ -48,6 +77,20 @@ export default function SemesterBlock({
     }
   }, [isEditing]);
 
+  const handleTitleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    updateSemesterName(semester.semesterID, e.target.value);
+  };
+
+  const handleDeleteSemester = (semesterId: string) => {
+    deleteSemester(semesterId);
+  };
+
+  const finishEditing = () => setIsEditing(false);
+  const handleKeyDown = (e: React.KeyboardEvent) => {
+    if (e.key === "Enter") finishEditing();
+  };
+
+  /* VALIDATION LOGIC */
   // check for credit limits
   const CREDIT_LIMIT_WITHOUT_APPROVAL = 21;
   const CREDIT_LIMIT = 23;
@@ -63,20 +106,6 @@ export default function SemesterBlock({
     );
   });
 
-  // customizable semester title
-  const handleTitleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    updateSemesterName(semester.semesterID, e.target.value);
-  };
-
-  const handleDeleteSemester = (semesterId: string) => {
-    deleteSemester(semesterId);
-  };
-
-  const finishEditing = () => setIsEditing(false);
-  const handleKeyDown = (e: React.KeyboardEvent) => {
-    if (e.key === "Enter") finishEditing();
-  };
-
   return (
     <motion.div
       layout
@@ -89,6 +118,7 @@ export default function SemesterBlock({
     >
       <motion.div
         layout
+        ref={setHeaderRef}
         className={cn("flex flex-col gap-1 w-full", !isCollapsed && "mb-3")}
       >
         <div className="flex items-center justify-between w-full">
@@ -137,7 +167,6 @@ export default function SemesterBlock({
                 <MdDeleteOutline size={22} />
               </button>
 
-              {/* Tooltip */}
               <div className="absolute -bottom-7 z-50 hidden group-hover/delete-btn:flex flex-col items-center">
                 <div className="w-2 h-2 bg-darkblue rotate-45"></div>
                 <div className="bg-darkblue text-carpipink text-tiny py-0.5 px-2 -mt-1 rounded-full whitespace-nowrap">
@@ -204,13 +233,16 @@ export default function SemesterBlock({
               </motion.div>
             )}
 
-            <div ref={setNodeRef} className="flex flex-col gap-2 h-full">
+            <div
+              ref={setListRef} // Assign our main List dropzone here!
+              className="flex flex-col gap-2 h-full"
+            >
               <SortableContext
                 items={semester.courseList.map((c) => c.id)}
                 strategy={verticalListSortingStrategy}
               >
                 {semester.courseList.length === 0 ? (
-                  <CourseDropzone isHover={isOver} />
+                  <CourseDropzone isHover={isListOver} />
                 ) : (
                   semester.courseList.map((course) => (
                     <SortableItem

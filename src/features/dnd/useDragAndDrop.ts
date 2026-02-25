@@ -117,18 +117,25 @@ export const useDndLogic = () => {
         const semester = plannerCourses.find((s) => s.semesterID === overId);
         if (semester) {
           const containerItems = semester.courseList.map((c) => c.id);
-          // If hovering a semester with items, bias towards the items inside it
-          if (containerItems.length > 0) {
-            overId = closestCenter({
+
+          const activeInnerContainers = args.droppableContainers.filter(
+            (container) =>
+              container.id !== overId &&
+              containerItems.includes(container.id as string),
+          );
+
+          if (activeInnerContainers.length > 0) {
+            const closestId = closestCenter({
               ...args,
-              droppableContainers: args.droppableContainers.filter(
-                (container) =>
-                  container.id !== overId &&
-                  containerItems.includes(container.id as string),
-              ),
+              droppableContainers: activeInnerContainers,
             })[0]?.id;
+
+            if (closestId) {
+              overId = closestId;
+            }
           }
         }
+
         lastOverId.current = overId;
         return [{ id: overId }];
       }

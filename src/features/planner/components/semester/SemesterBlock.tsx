@@ -8,12 +8,13 @@ import {
 import { motion, AnimatePresence } from "framer-motion";
 import { MdDragIndicator, MdDeleteOutline, MdExpandMore } from "react-icons/md";
 
+import ErrorBanner from "@/components/ErrorBanner";
 import { useCourseWorkspace } from "@/core/workspace/useCourseWorkspace";
 import { SortableItem } from "@/features/dnd/components/SortableItem";
 import { useSortableItem } from "@/features/dnd/useSortableItem";
 import PlannerCourse from "@/features/planner/components/course/PlannerCourse";
-import CourseDropzone from "@/features/planner/components/CourseDropzone";
-import SeasonSelector from "@/features/planner/components/SeasonSelector";
+import CourseDropzone from "@/features/planner/components/semester/CourseDropzone";
+import SeasonSelector from "@/features/planner/components/semester/SeasonSelector";
 import { cn } from "@/lib/classnames";
 import { SemesterType } from "@/lib/types";
 
@@ -214,23 +215,17 @@ export default function SemesterBlock({
         {!isCollapsed && (
           <motion.div className="overflow-hidden space-y-2 flex-1">
             {over_limit && (
-              <motion.div
-                layout
-                className="text-darkblue text-sm bg-rosewood/20 rounded-2xl p-4 text-center"
-              >
+              <ErrorBanner>
                 You are over the maximum credit limit of{" "}
                 {over_hard_limit ? CREDIT_LIMIT : CREDIT_LIMIT_WITHOUT_APPROVAL}{" "}
                 credits! <b>Check with your advisor before proceeding.</b>
-              </motion.div>
+              </ErrorBanner>
             )}
 
             {hasDuplicateCourses && (
-              <motion.div
-                layout
-                className="text-darkblue text-sm bg-rosewood/20 rounded-2xl p-4 text-center"
-              >
+              <ErrorBanner>
                 There are duplicate courses in this semester!
-              </motion.div>
+              </ErrorBanner>
             )}
 
             <div

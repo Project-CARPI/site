@@ -6,7 +6,7 @@ import { useNavigate } from "react-router-dom";
 import { useCourseWorkspace } from "@/core/workspace/useCourseWorkspace";
 import { SortableItem } from "@/features/dnd/components/SortableItem";
 import AddSemester from "@/features/planner/components/AddSemester";
-import SemesterBlock from "@/features/planner/components/SemesterBlock";
+import SemesterBlock from "@/features/planner/components/semester/SemesterBlock";
 import useIsDesktop from "@/lib/hooks/useIsDesktop";
 
 const Planner: React.FC = () => {

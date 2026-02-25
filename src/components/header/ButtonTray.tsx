@@ -32,9 +32,9 @@ function HeaderButton({ onClick, children, tooltip }: HeaderButtonProps) {
       </button>
 
       {/* Tooltip Container */}
-      <div className="absolute -bottom-8 hidden group-hover:flex flex-col items-center">
+      <div className="absolute -bottom-7 z-50 hidden group-hover:flex flex-col items-center">
         <div className="w-2 h-2 bg-darkblue rotate-45"></div>
-        <div className="bg-darkblue text-carpipink text-xs py-1 px-2 -mt-1 rounded-full whitespace-nowrap">
+        <div className="bg-darkblue text-carpipink text-tiny py-0.5 px-2 -mt-1 rounded-full whitespace-nowrap">
           {tooltip}
         </div>
       </div>

@@ -44,8 +44,8 @@ export default function CreditSelector({
       onPointerDown={(e) => e.stopPropagation()}
     >
       <span className="font-bold">{currentCredits}</span>
-      <span className="text-xs opacity-80 lg:hidden md:block">cr</span>
-      <span className="text-xs opacity-80 lg:block md:hidden">credits</span>
+      <span className="text-xs opacity-80 inline md:inline lg:hidden">cr</span>
+      <span className="text-xs opacity-80 hidden lg:inline">credits</span>
 
       <select
         value={currentCredits}

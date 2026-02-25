@@ -64,20 +64,20 @@ export default function SemesterBlock({
   // for >= 400ms, we allow the block to auto-expand. This spring-loads the block
   // open to prevent layouts shifts when users are trying to drag courses into blocks.
   useEffect(() => {
-    let timeoutId: NodeJS.Timeout;
+    let timeoutId: ReturnType<typeof setTimeout> | undefined = undefined;
 
     if (isHeaderOver && isCollapsed) {
       timeoutId = setTimeout(() => {
         setIsCollapsed(false);
       }, 400);
     }
+
     return () => {
       if (timeoutId) {
         clearTimeout(timeoutId);
       }
     };
   }, [isHeaderOver, isCollapsed]);
-
   /* SEMESTER CONTROLS */
   const { updateSemesterName, deleteSemester } = useCourseWorkspace();
   const [isEditing, setIsEditing] = useState(false);

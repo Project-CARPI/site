@@ -1,18 +1,18 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 
 import { SortableContext, rectSortingStrategy } from "@dnd-kit/sortable";
 import { useNavigate } from "react-router-dom";
 
 import { useCourseWorkspace } from "@/core/workspace/useCourseWorkspace";
 import { SortableItem } from "@/features/dnd/components/SortableItem";
-import AddSemester from "@/features/planner/components/AddSemester";
-import SemesterBlock from "@/features/planner/components/SemesterBlock";
+import ActionMenu from "@/features/planner/components/ActionMenu";
+import SemesterBlock from "@/features/planner/components/semester/SemesterBlock";
 import useIsDesktop from "@/lib/hooks/useIsDesktop";
 
 const Planner: React.FC = () => {
+  // If user is on desktop, redirect to home page
   const navigate = useNavigate();
   const isDesktop = useIsDesktop();
-
   useEffect(() => {
     if (isDesktop) {
       navigate("/");
@@ -20,13 +20,17 @@ const Planner: React.FC = () => {
   }, [isDesktop, navigate]);
 
   const { plannerCourses } = useCourseWorkspace();
+  const [isAllCollapsed, setIsAllCollapsed] = useState(false);
 
   return (
     <div className="md:h-[calc(100vh-10rem)]">
       <section className="h-full w-full flex flex-col gap-4">
         <div className="flex justify-between sticky top-0 z-10 bg-carpipink pt-4">
           <h1 className="font-bold text-xl">Planner</h1>
-          <AddSemester />
+          <ActionMenu
+            isAllCollapsed={isAllCollapsed}
+            toggleCollapse={() => setIsAllCollapsed(!isAllCollapsed)}
+          />
         </div>
 
         {plannerCourses.length === 0 ? (
@@ -54,6 +58,7 @@ const Planner: React.FC = () => {
                     <SemesterBlock
                       key={semester.semesterID}
                       semester={semester}
+                      globalCollapse={isAllCollapsed}
                     />
                   </div>
                 </SortableItem>

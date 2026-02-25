@@ -7,7 +7,8 @@ export type SemesterAction =
   | { type: "UPDATE_SEASON"; payload: { newSeason: SemesterSeason } }
   | { type: "ADD_COURSE"; payload: { course: UserCourse; index?: number } }
   | { type: "REMOVE_COURSE"; payload: { courseID: string } }
-  | { type: "MOVE_COURSE"; payload: { fromIndex: number; toIndex: number } };
+  | { type: "MOVE_COURSE"; payload: { fromIndex: number; toIndex: number } }
+  | { type: "UPDATE_CREDITS"; payload: { courseID: string; credits: number } };
 
 export const SemesterReducer = (
   state: SemesterType,
@@ -22,6 +23,9 @@ export const SemesterReducer = (
 
     case "ADD_COURSE": {
       const newCourseList = [...state.courseList];
+      const courseCredits =
+        action.payload.course.credits ?? action.payload.course.data.credit_max;
+
       if (action.payload.index !== undefined) {
         newCourseList.splice(action.payload.index, 0, action.payload.course);
       } else {
@@ -31,8 +35,7 @@ export const SemesterReducer = (
       return {
         ...state,
         courseList: newCourseList,
-        creditsTotal:
-          state.creditsTotal + action.payload.course.data.credit_max,
+        creditsTotal: state.creditsTotal + courseCredits,
       };
     }
 
@@ -40,14 +43,40 @@ export const SemesterReducer = (
       const removedCourse = state.courseList.find(
         (c) => c.id === action.payload.courseID,
       );
+      const removedCredits =
+        removedCourse?.credits ?? removedCourse?.data.credit_max ?? 0;
 
       return {
         ...state,
         courseList: state.courseList.filter(
           (c) => c.id !== action.payload.courseID,
         ),
-        creditsTotal:
-          state.creditsTotal - (removedCourse?.data.credit_max || 0),
+        creditsTotal: state.creditsTotal - removedCredits,
+      };
+    }
+
+    case "UPDATE_CREDITS": {
+      const { courseID, credits } = action.payload;
+
+      const updatedCourseList = state.courseList.map((course) => {
+        if (course.id === courseID) {
+          return { ...course, credits: credits };
+        }
+        return course;
+      });
+
+      const oldCredits =
+        state.courseList.find((c) => c.id === courseID)?.credits ?? 0;
+      const newCredits = credits;
+
+      console.log(
+        `Updating credits for course ${courseID}: ${oldCredits} -> ${newCredits}`,
+      );
+
+      return {
+        ...state,
+        courseList: updatedCourseList,
+        creditsTotal: state.creditsTotal - oldCredits + newCredits,
       };
     }
 

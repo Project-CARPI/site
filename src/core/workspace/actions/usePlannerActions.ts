@@ -34,6 +34,19 @@ export const usePlannerActions = (
     [dispatch],
   );
 
+  const updateCourseCredits = useCallback(
+    (semesterID: string, courseID: string, credits: number) => {
+      dispatch({
+        type: "SEMESTER_ACTION",
+        payload: {
+          semesterID,
+          action: { type: "UPDATE_CREDITS", payload: { courseID, credits } },
+        },
+      });
+    },
+    [dispatch],
+  );
+
   const moveCourseInSemester = useCallback(
     (semesterID: string, fromIndex: number, toIndex: number) => {
       dispatch({
@@ -123,6 +136,7 @@ export const usePlannerActions = (
     addCourseToSemester,
     removeCourseFromSemester,
     moveCourseInSemester,
+    updateCourseCredits,
     updateSemesterName,
     updateSemesterSeason,
     addSemester,

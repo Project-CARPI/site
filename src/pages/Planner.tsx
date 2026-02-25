@@ -1,18 +1,18 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 
 import { SortableContext, rectSortingStrategy } from "@dnd-kit/sortable";
 import { useNavigate } from "react-router-dom";
 
 import { useCourseWorkspace } from "@/core/workspace/useCourseWorkspace";
 import { SortableItem } from "@/features/dnd/components/SortableItem";
-import AddSemester from "@/features/planner/components/AddSemester";
-import SemesterBlock from "@/features/planner/components/SemesterBlock";
+import ActionMenu from "@/features/planner/components/ActionMenu";
+import SemesterBlock from "@/features/planner/components/semester/SemesterBlock";
 import useIsDesktop from "@/lib/hooks/useIsDesktop";
 
 const Planner: React.FC = () => {
+  // If user is on desktop, redirect to home page
   const navigate = useNavigate();
   const isDesktop = useIsDesktop();
-
   useEffect(() => {
     if (isDesktop) {
       navigate("/");
@@ -20,13 +20,17 @@ const Planner: React.FC = () => {
   }, [isDesktop, navigate]);
 
   const { plannerCourses } = useCourseWorkspace();
+  const [isAllCollapsed, setIsAllCollapsed] = useState(false);
 
   return (
-    <div className="md:h-[calc(100vh-10rem)] md:m-0 m-4 h-screen z-10">
+    <div className="md:h-[calc(100vh-10rem)]">
       <section className="h-full w-full flex flex-col gap-4">
         <div className="flex justify-between sticky top-0 bg-carpipink pt-4">
           <h1 className="font-bold text-xl">Planner</h1>
-          <AddSemester />
+          <ActionMenu
+            isAllCollapsed={isAllCollapsed}
+            toggleCollapse={() => setIsAllCollapsed(!isAllCollapsed)}
+          />
         </div>
 
         {plannerCourses.length === 0 ? (
@@ -37,7 +41,7 @@ const Planner: React.FC = () => {
             </p>
           </div>
         ) : (
-          <div className="md:overflow-y-auto grid md:grid-cols-2 gap-4 md:pr-4 pb-30">
+          <div className="md:overflow-y-auto grid lg:grid-cols-2 gap-4 md:pr-4 pb-30 overflow-x-hidden">
             <SortableContext
               items={plannerCourses.map((s) => "sem-" + s.semesterID)}
               strategy={rectSortingStrategy}
@@ -47,13 +51,14 @@ const Planner: React.FC = () => {
                   key={semester.semesterID}
                   id={"sem-" + semester.semesterID}
                   data={semester}
-                  type="Semester"
+                  type="semester"
                   useHandle={true}
                 >
-                  <div className="md:h-full flex flex-col justify-between">
+                  <div className="md:h-full flex flex-col justify-between min-w-0 w-full">
                     <SemesterBlock
                       key={semester.semesterID}
                       semester={semester}
+                      globalCollapse={isAllCollapsed}
                     />
                   </div>
                 </SortableItem>

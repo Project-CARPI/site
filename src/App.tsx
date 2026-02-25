@@ -12,11 +12,10 @@ import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import ButtonTray from "@/components/header/ButtonTray";
 import { CourseWorkspaceProvider } from "@/core/workspace/provider";
 import { useDndLogic } from "@/features/dnd/useDragAndDrop";
-import PlannerCourse from "@/features/planner/components/PlannerCourse";
-import SemesterBlock from "@/features/planner/components/SemesterBlock";
+import PlannerCourse from "@/features/planner/components/course/PlannerCourse";
+import SemesterBlock from "@/features/planner/components/semester/SemesterBlock";
 import Toolbox from "@/features/toolbox/Toolbox";
 import { cn } from "@/lib/classnames";
-import { UserCourse } from "@/lib/types";
 import Catalog from "@/pages/Catalog";
 import HomePage from "@/pages/HomePage";
 import Planner from "@/pages/Planner";
@@ -58,18 +57,18 @@ const AppDragDropContext: React.FC<{ children: React.ReactNode }> = ({
       {createPortal(
         <DragOverlay>
           {activeItem ? (
-            "semesterID" in activeItem ? (
+            activeItem.type === "semester" ? (
               <div
                 className={cn(
                   "opacity-90 scale-95 origin-top-left w-[400px]",
                   isDragging ? "cursor-grabbing" : "cursor-grab",
                 )}
               >
-                <SemesterBlock semester={activeItem} isDragging />
+                <SemesterBlock semester={activeItem.payload} isDragging />
               </div>
             ) : (
               <PlannerCourse
-                course={activeItem as UserCourse}
+                course={activeItem.payload}
                 semesterId={null}
                 isDragging
               />

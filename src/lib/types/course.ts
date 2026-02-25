@@ -20,4 +20,5 @@ export interface UserCourse {
   name: string;
   count: number;
   data: APICourse;
+  credits: number;
 }

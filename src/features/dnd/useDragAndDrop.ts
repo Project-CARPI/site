@@ -17,25 +17,21 @@ import {
   closestCenter,
 } from "@dnd-kit/core";
 import { sortableKeyboardCoordinates } from "@dnd-kit/sortable";
-import { v4 as uuidv4 } from "uuid";
 
 import { useCourseWorkspace } from "@/core/workspace/useCourseWorkspace";
-import { UserCourse, SemesterType } from "@/lib/types";
-
-// Union type for active item
-type ActiveItemType = UserCourse | SemesterType | null;
+import { UserCourse } from "@/lib/types";
+import { DraggableData, isDraggableData } from "@/lib/types/dnd";
 
 export const useDndLogic = () => {
   const {
     plannerCourses,
     toolboxCourses,
-
     // Planner Actions
     addCourseToSemester,
     removeCourseFromSemester,
     moveCourseInSemester,
-    moveSemester, // Import the new action
-
+    moveSemester,
+    deleteSemester,
     // Toolbox Actions
     insertCourseIntoToolbox,
     removeCourseFromToolbox,
@@ -44,7 +40,7 @@ export const useDndLogic = () => {
     resetToolbox,
   } = useCourseWorkspace();
 
-  const [activeItem, setActiveItem] = useState<ActiveItemType>(null);
+  const [activeItem, setActiveItem] = useState<DraggableData | null>(null);
 
   // Snapshot of toolbox before drag starts. Used for "Cancel" (Esc/Drop nowhere).
   const [originalToolboxState, setOriginalToolboxState] = useState<
@@ -57,15 +53,10 @@ export const useDndLogic = () => {
   // --- Sensors ---
   const sensors = useSensors(
     useSensor(MouseSensor, {
-      activationConstraint: {
-        distance: 10,
-      },
+      activationConstraint: { distance: 10 },
     }),
     useSensor(TouchSensor, {
-      activationConstraint: {
-        delay: 250,
-        tolerance: 5,
-      },
+      activationConstraint: { delay: 250, tolerance: 5 },
     }),
     useSensor(KeyboardSensor, {
       coordinateGetter: sortableKeyboardCoordinates,
@@ -76,12 +67,10 @@ export const useDndLogic = () => {
   const findContainer = useCallback(
     (id: UniqueIdentifier): UniqueIdentifier | undefined => {
       if (toolboxCourses.find((c) => c.id === id)) return "toolbox";
-
       const semester = plannerCourses.find((sem) =>
         sem.courseList.find((c) => c.id === id),
       );
       if (semester) return semester.semesterID;
-
       return undefined;
     },
     [plannerCourses, toolboxCourses],
@@ -90,20 +79,26 @@ export const useDndLogic = () => {
   // --- Collision Strategy ---
   const collisionDetectionStrategy: CollisionDetection = useCallback(
     (args) => {
-      // If dragging a Semester, use simple intersection
-      if (activeItem && "semesterID" in activeItem) {
-        return closestCenter(args);
+      // semester dragging strategy: only collide with other semesters and garbage bin
+      if (activeItem && activeItem.type === "semester") {
+        return closestCenter({
+          ...args,
+          droppableContainers: args.droppableContainers.filter(
+            (c) => c.data.current?.type === "semester" || c.id === "garbage",
+          ),
+        });
       }
 
-      // Prioritize Toolbox if active item started there
+      // toolbox priority
       if (
         activeItem &&
-        findContainer((activeItem as UserCourse).id) === "toolbox" &&
+        findContainer(activeItem.payload.id) === "toolbox" &&
         args.droppableContainers.find((c) => c.id === "toolbox")
       ) {
-        // Bias logic
+        // add bias here
       }
 
+      // course dragging strategy: prefer pointer intersections, then fallback to rectangle intersections
       const pointerIntersections = pointerWithin(args);
       const intersections =
         pointerIntersections.length > 0
@@ -114,32 +109,39 @@ export const useDndLogic = () => {
 
       if (overId != null) {
         if (
-          overId === "garbage" ||
-          overId === "toolbox" ||
-          overId === "toolbox-button"
-        )
+          ["garbage", "toolbox", "toolbox-button"].includes(overId as string)
+        ) {
           return intersections;
+        }
 
         const semester = plannerCourses.find((s) => s.semesterID === overId);
         if (semester) {
           const containerItems = semester.courseList.map((c) => c.id);
-          if (containerItems.length > 0) {
-            overId = closestCenter({
+
+          const activeInnerContainers = args.droppableContainers.filter(
+            (container) =>
+              container.id !== overId &&
+              containerItems.includes(container.id as string),
+          );
+
+          if (activeInnerContainers.length > 0) {
+            const closestId = closestCenter({
               ...args,
-              droppableContainers: args.droppableContainers.filter(
-                (container) =>
-                  container.id !== overId &&
-                  containerItems.includes(container.id as string),
-              ),
+              droppableContainers: activeInnerContainers,
             })[0]?.id;
+
+            if (closestId) {
+              overId = closestId;
+            }
           }
         }
+
         lastOverId.current = overId;
         return [{ id: overId }];
       }
 
       if (recentlyMovedToNewContainer.current) {
-        lastOverId.current = (activeItem as UserCourse)?.id || null;
+        lastOverId.current = activeItem?.payload.id || null;
       }
 
       return lastOverId.current ? [{ id: lastOverId.current }] : [];
@@ -150,20 +152,17 @@ export const useDndLogic = () => {
   // --- 1. Drag Start ---
   const onDragStart = (event: DragStartEvent) => {
     const { active } = event;
+    const data = active.data.current;
 
-    // Check if it's a Semester
-    if (active.data.current?.type === "Semester") {
-      setActiveItem(active.data.current as SemesterType);
-    } else {
-      // It's a course
-      const item = active.data.current as UserCourse;
-      setActiveItem(item);
+    if (isDraggableData(data)) {
+      setActiveItem(data);
 
-      if (findContainer(active.id) === "toolbox") {
-        setOriginalToolboxState([...toolboxCourses]);
+      if (data.type === "course") {
+        if (findContainer(active.id) === "toolbox") {
+          setOriginalToolboxState([...toolboxCourses]);
+        }
       }
     }
-
     document.body.classList.add("no-scroll-during-drag");
   };
 
@@ -171,13 +170,15 @@ export const useDndLogic = () => {
   const onDragOver = useCallback(
     (event: DragOverEvent) => {
       const { active, over } = event;
+      const data = active.data.current;
 
-      // If dragging a semester, do nothing during dragOver (we only reorder on dragEnd)
-      if (active.data.current?.type === "Semester") return;
+      // only allow dragging courses, nothing else
+      if (!isDraggableData(data)) return;
+      if (data.type === "semester") return;
+      if (!over) return;
 
-      const overId = over?.id;
-
-      if (!overId || active.id === overId) return;
+      const overId = over.id;
+      if (active.id === overId) return;
 
       const activeContainer = findContainer(active.id);
       const overContainer =
@@ -194,7 +195,7 @@ export const useDndLogic = () => {
         return;
       }
 
-      // Find the moving item data
+      // get the item we're moving
       let itemToMove: UserCourse | undefined;
       if (activeContainer === "toolbox") {
         itemToMove = toolboxCourses.find((c) => c.id === active.id);
@@ -209,22 +210,9 @@ export const useDndLogic = () => {
 
       // --- EXECUTE MOVE ---
 
-      // remove from source
+      // remove course from the source container
       if (activeContainer === "toolbox") {
-        // If count > 1, decrement count instead of removing
-        if (itemToMove.count > 1) {
-          const remainder: UserCourse = {
-            ...itemToMove,
-            id: uuidv4(),
-            count: itemToMove.count - 1,
-          };
-
-          const index = toolboxCourses.findIndex((c) => c.id === active.id);
-          removeCourseFromToolbox(active.id as string);
-          insertCourseIntoToolbox(remainder, index);
-        } else {
-          removeCourseFromToolbox(active.id as string);
-        }
+        removeCourseFromToolbox(active.id as string);
       } else {
         removeCourseFromSemester(
           activeContainer as string,
@@ -232,20 +220,19 @@ export const useDndLogic = () => {
         );
       }
 
-      // B. Add to Destination
-      // Ensure the moved item has count 1 in its new home
-      const itemWithSingleCount = { ...itemToMove!, count: 1 };
-
+      // add course to the destination container
+      const item = { ...itemToMove!, count: 1 };
       if (overContainer === "toolbox") {
         const overIndex =
           over.data.current?.sortable?.index ?? toolboxCourses.length;
-        insertCourseIntoToolbox(itemWithSingleCount, overIndex);
+        insertCourseIntoToolbox(item, overIndex);
       } else {
         const sem = plannerCourses.find((s) => s.semesterID === overContainer);
         if (sem) {
           const nextList = sem.courseList;
           let overIndex = nextList.length;
 
+          // calculate index based on hover position relative to other items
           if (overId !== overContainer) {
             const idx = nextList.findIndex((c) => c.id === overId);
             const isBelow =
@@ -256,14 +243,9 @@ export const useDndLogic = () => {
             const modifier = isBelow ? 1 : 0;
             overIndex = idx >= 0 ? idx + modifier : nextList.length;
           }
-          addCourseToSemester(
-            overContainer as string,
-            itemWithSingleCount,
-            overIndex,
-          );
+          addCourseToSemester(overContainer as string, item, overIndex);
         }
       }
-
       recentlyMovedToNewContainer.current = true;
     },
     [
@@ -280,18 +262,21 @@ export const useDndLogic = () => {
   // --- 3. Drag End (Cleanup & Merging) ---
   const onDragEnd = (event: DragEndEvent) => {
     const { active, over } = event;
+    const data = active.data.current;
 
     // Cleanup
     document.body.classList.remove("no-scroll-during-drag");
+    setActiveItem(null);
+    lastOverId.current = null;
 
-    // HANDLE SEMESTER DRAG END
-    if (active.data.current?.type === "Semester") {
-      if (over && active.id !== over.id) {
-        // We assume we are dragging over another SortableSemester
-        // which has the same parent SortableContext
-        const oldIndex = active.data.current.sortable.index;
+    if (!isDraggableData(data)) return;
+
+    if (data.type === "semester") {
+      if (over?.id === "garbage") {
+        deleteSemester(data.payload.semesterID as string);
+      } else if (over && active.id !== over.id) {
+        const oldIndex = data.sortable?.index;
         const newIndex = over.data.current?.sortable?.index;
-
         if (
           oldIndex !== undefined &&
           newIndex !== undefined &&
@@ -300,117 +285,93 @@ export const useDndLogic = () => {
           moveSemester(oldIndex, newIndex);
         }
       }
-      setActiveItem(null);
-      return;
-    }
+    } else if (data.type === "course") {
+      const activeContainer = findContainer(active.id);
 
-    const activeContainer = findContainer(active.id);
-
-    setActiveItem(null);
-    lastOverId.current = null;
-
-    // A. Handle Garbage Drop
-    if (over?.id === "garbage") {
-      if (activeContainer === "toolbox") {
-        const itemToMove = toolboxCourses.find((c) => c.id === active.id);
-        if (!itemToMove) {
-          setOriginalToolboxState(null);
-          return;
-        }
-
-        if (itemToMove.count > 1) {
-          const remainder: UserCourse = {
-            ...itemToMove,
-            id: uuidv4(),
-            count: itemToMove.count - 1,
-          };
-
-          const index = toolboxCourses.findIndex((c) => c.id === active.id);
+      // garbage drop (deletion)
+      if (over?.id === "garbage") {
+        if (activeContainer === "toolbox") {
           removeCourseFromToolbox(active.id as string);
-          insertCourseIntoToolbox(remainder, index);
-        } else {
-          removeCourseFromToolbox(active.id as string);
-        }
-      } else if (activeContainer) {
-        removeCourseFromSemester(
-          activeContainer as string,
-          active.id as string,
-        );
-      }
-      setOriginalToolboxState(null);
-      return;
-    } else if (over?.id === "toolbox-button") {
-      // add back into the toolbox and consolidate where needed
-      if (activeContainer) {
-        const sem = plannerCourses.find(
-          (s) => s.semesterID === activeContainer,
-        );
-        const itemToMove = sem?.courseList.find((c) => c.id === active.id);
-        if (itemToMove) {
-          // Remove from planner
+        } else if (activeContainer) {
           removeCourseFromSemester(
             activeContainer as string,
             active.id as string,
           );
-          // Insert into toolbox
-          insertCourseIntoToolbox(itemToMove, toolboxCourses.length);
-          // Consolidate duplicates
-          consolidateToolbox();
         }
         setOriginalToolboxState(null);
       }
-    }
 
-    // B. Handle Cancel / Drop Nowhere
-    if (!over) {
-      if (originalToolboxState) {
-        resetToolbox(originalToolboxState);
-
-        // remmove from planner if came from there
+      // drop into toolbox button on mobile (removes from semester, adds to toolbox)
+      else if (over?.id === "toolbox-button") {
         if (activeContainer && activeContainer !== "toolbox") {
-          removeCourseFromSemester(
-            activeContainer as string,
-            active.id as string,
+          const sem = plannerCourses.find(
+            (s) => s.semesterID === activeContainer,
           );
+          const itemToMove = sem?.courseList.find((c) => c.id === active.id);
+          if (itemToMove) {
+            removeCourseFromSemester(
+              activeContainer as string,
+              active.id as string,
+            );
+            insertCourseIntoToolbox(itemToMove, toolboxCourses.length);
+            consolidateToolbox();
+          }
+        }
+        setOriginalToolboxState(null);
+      }
+
+      // cancel/drop outside (revert to original position)
+      else if (!over) {
+        if (originalToolboxState) {
+          resetToolbox(originalToolboxState);
+          if (activeContainer && activeContainer !== "toolbox") {
+            removeCourseFromSemester(
+              activeContainer as string,
+              active.id as string,
+            );
+          }
+        }
+        setOriginalToolboxState(null);
+      }
+
+      // reorder within the same container
+      else if (
+        activeContainer &&
+        overContainerIsSame(activeContainer, over.id)
+      ) {
+        const activeIndex = data.sortable?.index;
+        const overIndex = over.data.current?.sortable?.index;
+
+        if (
+          activeIndex !== undefined &&
+          overIndex !== undefined &&
+          activeIndex !== overIndex
+        ) {
+          if (activeContainer === "toolbox") {
+            moveCourseInToolbox(activeIndex, overIndex);
+          } else {
+            moveCourseInSemester(
+              activeContainer as string,
+              activeIndex,
+              overIndex,
+            );
+          }
         }
       }
+
+      // merge duplicates if into toolbox or dropped outside and comes back to the toolbox
+      if (activeContainer === "toolbox" || over?.id === "toolbox") {
+        consolidateToolbox();
+      }
+
       setOriginalToolboxState(null);
-      return;
     }
-
-    // C. Handle Reorder within same container
-    if (activeContainer && overContainerIsSame(activeContainer, over.id)) {
-      const activeIndex = event.active.data.current?.sortable?.index;
-      const overIndex = event.over?.data.current?.sortable?.index;
-
-      if (activeIndex !== overIndex) {
-        if (activeContainer === "toolbox") {
-          moveCourseInToolbox(activeIndex, overIndex);
-        } else {
-          moveCourseInSemester(
-            activeContainer as string,
-            activeIndex,
-            overIndex,
-          );
-        }
-      }
-    }
-
-    // D. Merge Logic (If dropped in Toolbox)
-    if (activeContainer === "toolbox") {
-      consolidateToolbox();
-    }
-
-    // Clear snapshot after successful drop
-    setOriginalToolboxState(null);
   };
 
-  // Helper to check if overID belongs to the active container
   const overContainerIsSame = (
     activeContainer: UniqueIdentifier,
     overId: UniqueIdentifier,
   ) => {
-    // If we are over the container itself or an item inside it
     const overRealContainer =
       plannerCourses.some((s) => s.semesterID === overId) ||
       overId === "toolbox"

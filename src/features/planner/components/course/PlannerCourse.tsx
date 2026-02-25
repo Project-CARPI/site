@@ -6,7 +6,8 @@ import { motion } from "framer-motion";
 import { MdOutlineMoreHoriz, MdDragIndicator } from "react-icons/md";
 
 import CourseLabel from "@/components/course/CourseLabel";
-import PlannerMenuContent from "@/features/planner/components/PlannerMenu";
+import CourseMenuContent from "@/features/planner/components/course/CourseMenuContent";
+import CreditSelector from "@/features/planner/components/CreditSelector";
 import { usePlannerCourse } from "@/features/planner/usePlannerCourse";
 import { cn } from "@/lib/classnames";
 import { UserCourse } from "@/lib/types";
@@ -41,9 +42,19 @@ export default function PlannerCourse({
             isDragging ? "cursor-grabbing" : "cursor-grab",
           )}
         >
-          <div className="flex gap-2 items-center">
-            <MdDragIndicator size={22} />
+          <div className="flex gap-2 items-center flex-1">
+            <MdDragIndicator size={22} className="shrink-0" />
             <CourseLabel course={course.data} showCredits />
+          </div>
+
+          <div className="items-center flex">
+            <CreditSelector
+              semesterId={semesterId}
+              courseId={course.id}
+              currentCredits={course.credits}
+              minCredits={course.data.credit_min}
+              maxCredits={course.data.credit_max}
+            />
           </div>
 
           <Popover.Root
@@ -60,7 +71,7 @@ export default function PlannerCourse({
               side="bottom"
               align="end"
             >
-              <PlannerMenuContent
+              <CourseMenuContent
                 options={menuOptions}
                 onItemSelect={() => setPopoverOpen(false)}
                 ItemComponent="button"
@@ -73,7 +84,7 @@ export default function PlannerCourse({
 
       <ContextMenu.Portal>
         <ContextMenu.Content className={menuClassName}>
-          <PlannerMenuContent
+          <CourseMenuContent
             options={menuOptions}
             ItemComponent={ContextMenu.Item}
             SeparatorComponent={ContextMenu.Separator}

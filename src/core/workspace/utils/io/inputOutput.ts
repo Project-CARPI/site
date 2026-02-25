@@ -8,6 +8,7 @@ import { SemesterType, UserCourse } from "@/lib/types";
 export const ExportCourseSchema = z.object({
   code: z.string(),
   title: z.string(),
+  credits: z.number(),
   count: z.number().optional(),
   course_info: z.object({
     description: z.string(),
@@ -44,6 +45,7 @@ export const cleanCourseForExport = (course: UserCourse): ExportCourse => {
   return {
     code: course.name,
     title: course.data.title,
+    credits: course.credits,
     count: course.count > 1 ? course.count : undefined,
     course_info: {
       description: course.data.desc_text,
@@ -62,6 +64,7 @@ export const enrichCourseForImport = (exported: ExportCourse): UserCourse => {
   return {
     id: uuidv4(),
     name: exported.code,
+    credits: exported.credits,
     count: exported.count || 1,
     data: {
       subj_code: exported.code.split(" ")[0],

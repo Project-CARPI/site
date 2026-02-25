@@ -22,6 +22,7 @@ export const UserCourseSchema = z.object({
   id: z.string(),
   name: z.string(),
   count: z.number(),
+  credits: z.number(),
   data: APICourseSchema,
 });
 

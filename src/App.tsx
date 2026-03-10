@@ -7,9 +7,10 @@ import {
   DragEndEvent,
 } from "@dnd-kit/core";
 import { createPortal } from "react-dom";
-import { Helmet, HelmetProvider } from "react-helmet-async";
+import { HelmetProvider } from "react-helmet-async";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 
+import PageMeta from "@/components/PageMeta";
 import { CourseWorkspaceProvider } from "@/core/workspace/provider";
 import { useDndLogic } from "@/features/dnd/useDragAndDrop";
 import PlannerCourse from "@/features/planner/components/PlannerCourse";
@@ -97,27 +98,11 @@ export default function App() {
                   path="/"
                   element={
                     <>
-                      <Helmet>
-                        <title>CARPI Course Planner</title>
-                        <meta
-                          name="description"
-                          content="Plan your RPI courses with CARPI — browse the course catalog and build your semester schedule."
-                        />
-                        <meta property="og:title" content="CARPI" />
-                        <meta
-                          property="og:description"
-                          content="Plan smarter. Build your RPI schedule with ease."
-                        />
-                        <meta property="og:type" content="website" />
-                        <meta
-                          property="og:url"
-                          content="http://carpi.cs.rpi.edu/"
-                        />
-                        <meta
-                          property="og:image"
-                          content="http://carpi.cs.rpi.edu/carpi-black.png"
-                        />
-                      </Helmet>
+                      <PageMeta
+                        title="CARPI Course Planner"
+                        description="Plan your RPI courses with CARPI — browse the course catalog and build your semester schedule."
+                        path="/"
+                      />
                       <HomePage />
                     </>
                   }
@@ -126,30 +111,11 @@ export default function App() {
                   path="/catalog"
                   element={
                     <>
-                      <Helmet>
-                        <title>Course Catalog | CARPI</title>
-                        <meta
-                          name="description"
-                          content="Search and browse RPI courses by name, subject, or credit hours."
-                        />
-                        <meta
-                          property="og:title"
-                          content="RPI Course Catalog"
-                        />
-                        <meta
-                          property="og:description"
-                          content="Every RPI course, all in one place."
-                        />
-                        <meta property="og:type" content="website" />
-                        <meta
-                          property="og:url"
-                          content="http://carpi.cs.rpi.edu/catalog"
-                        />
-                        <meta
-                          property="og:image"
-                          content="http://carpi.cs.rpi.edu/carpi-black.png"
-                        />
-                      </Helmet>
+                      <PageMeta
+                        title="Course Catalog | CARPI Course Planner"
+                        description="Search and browse RPI courses by name, subject, or credit hours."
+                        path="/catalog"
+                      />
                       <Catalog />
                     </>
                   }
@@ -158,30 +124,11 @@ export default function App() {
                   path="/planner"
                   element={
                     <>
-                      <Helmet>
-                        <title>My Planner | CARPI</title>
-                        <meta
-                          name="description"
-                          content="Build and manage your RPI semester plan — add courses, organize semesters, and track your progress."
-                        />
-                        <meta
-                          property="og:title"
-                          content="RPI Semester Planner"
-                        />
-                        <meta
-                          property="og:description"
-                          content="Drag, drop, and plan your perfect RPI semester."
-                        />
-                        <meta property="og:type" content="website" />
-                        <meta
-                          property="og:url"
-                          content="http://carpi.cs.rpi.edu/planner"
-                        />
-                        <meta
-                          property="og:image"
-                          content="http://carpi.cs.rpi.edu/carpi-black.png"
-                        />
-                      </Helmet>
+                      <PageMeta
+                        title="My Planner | CARPI Course Planner"
+                        description="Build and manage your RPI semester plan — add courses, organize semesters, and track your progress."
+                        path="/planner"
+                      />
                       <Planner />
                     </>
                   }

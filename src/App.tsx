@@ -98,11 +98,7 @@ export default function App() {
                   path="/"
                   element={
                     <>
-                      <PageMeta
-                        title="CARPI Course Planner"
-                        description="Plan your RPI courses with CARPI — browse the course catalog and build your semester schedule."
-                        path="/"
-                      />
+                      <PageMeta path="/" />
                       <HomePage />
                     </>
                   }
@@ -111,11 +107,7 @@ export default function App() {
                   path="/catalog"
                   element={
                     <>
-                      <PageMeta
-                        title="Course Catalog | CARPI Course Planner"
-                        description="Search and browse RPI courses by name, subject, or credit hours."
-                        path="/catalog"
-                      />
+                      <PageMeta path="/catalog" />
                       <Catalog />
                     </>
                   }
@@ -124,11 +116,7 @@ export default function App() {
                   path="/planner"
                   element={
                     <>
-                      <PageMeta
-                        title="My Planner | CARPI Course Planner"
-                        description="Build and manage your RPI semester plan — add courses, organize semesters, and track your progress."
-                        path="/planner"
-                      />
+                      <PageMeta path="/planner" />
                       <Planner />
                     </>
                   }

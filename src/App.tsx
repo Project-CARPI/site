@@ -93,34 +93,11 @@ export default function App() {
             </header>
 
             <Router>
+              <PageMeta />
               <Routes>
-                <Route
-                  path="/"
-                  element={
-                    <>
-                      <PageMeta path="/" />
-                      <HomePage />
-                    </>
-                  }
-                />
-                <Route
-                  path="/catalog"
-                  element={
-                    <>
-                      <PageMeta path="/catalog" />
-                      <Catalog />
-                    </>
-                  }
-                />
-                <Route
-                  path="/planner"
-                  element={
-                    <>
-                      <PageMeta path="/planner" />
-                      <Planner />
-                    </>
-                  }
-                />
+                <Route path="/" element={<HomePage />} />
+                <Route path="/catalog" element={<Catalog />} />
+                <Route path="/planner" element={<Planner />} />
               </Routes>
               <Toolbox />
             </Router>

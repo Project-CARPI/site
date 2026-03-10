@@ -1,4 +1,5 @@
 import { Helmet } from "react-helmet-async";
+import { useLocation } from "react-router-dom";
 
 const SITE_NAME = "CARPI";
 const BASE_URL = "http://carpi.cs.rpi.edu";
@@ -24,7 +25,12 @@ const PAGE_META = {
 
 type PagePath = keyof typeof PAGE_META;
 
-export default function PageMeta({ path }: { path: PagePath }) {
+const DEFAULT_PATH: PagePath = "/";
+
+export default function PageMeta() {
+  const { pathname } = useLocation();
+  const path: PagePath =
+    pathname in PAGE_META ? (pathname as PagePath) : DEFAULT_PATH;
   const { title: pageTitle, description } = PAGE_META[path];
   const fullTitle = `${pageTitle} | ${SITE_NAME}`;
   const url = `${BASE_URL}${path}`;

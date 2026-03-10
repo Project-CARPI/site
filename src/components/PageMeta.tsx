@@ -29,7 +29,8 @@ const DEFAULT_PATH: PagePath = "/";
 
 export default function PageMeta() {
   const { pathname } = useLocation();
-  const path: PagePath = pathname in PAGE_META ? (pathname as PagePath) : DEFAULT_PATH;
+  const path: PagePath =
+    pathname in PAGE_META ? (pathname as PagePath) : DEFAULT_PATH;
   const { title: pageTitle, description } = PAGE_META[path];
   const fullTitle = `${pageTitle} | ${SITE_NAME}`;
   const url = `${BASE_URL}${path}`;

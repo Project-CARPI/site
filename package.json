@@ -12,6 +12,8 @@
     "prettier:write": "prettier --write ."
   },
   "dependencies": {
+    "@dnd-kit/helpers": "^0.3.2",
+    "@dnd-kit/react": "^0.3.2",
     "@radix-ui/react-context-menu": "^2.2.16",
     "@radix-ui/react-popover": "^1.1.15",
     "@tailwindcss/vite": "^4.0.6",

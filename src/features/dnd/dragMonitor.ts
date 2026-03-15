@@ -5,7 +5,7 @@ import { useDragDropMonitor } from "@dnd-kit/react";
 
 import { useCourseWorkspace } from "@/core/workspace/useCourseWorkspace";
 import { UserCourse } from "@/lib/types/course";
-import { DraggableData, isDraggableData } from "@/lib/types/dnd";
+import { isDraggableData } from "@/lib/types/dnd";
 
 export default function DragMonitor() {
   const {
@@ -23,7 +23,6 @@ export default function DragMonitor() {
     resetToolbox,
   } = useCourseWorkspace();
 
-  const [activeItem, setActiveItem] = useState<DraggableData | null>(null);
   const [originalToolboxState, setOriginalToolboxState] = useState<
     UserCourse[] | null
   >(null);
@@ -63,11 +62,9 @@ export default function DragMonitor() {
       const active = event.operation.source;
       if (!active) return;
 
-      const data = active.data.current;
+      const data = active.data;
 
       if (isDraggableData(data)) {
-        setActiveItem(data);
-
         if (data.type === "course") {
           if (findContainer(active.id) === "toolbox") {
             setOriginalToolboxState([...toolboxCourses]);
@@ -77,90 +74,79 @@ export default function DragMonitor() {
     },
 
     onDragOver(event) {
-      const active = event.operation.source;
-      const over = event.operation.target;
-      const data = active?.data.current; // FIX: Was incorrectly .payload
+      const { source, target } = event.operation;
 
-      if (!active || !over || !data) return;
+      if (source?.type === "semester") return;
 
-      const activeContainer = findContainer(active.id);
-      const overContainer = findContainer(over.id);
+      const activeId = source?.id as string;
+      const overId = target?.id as string;
+
+      const activeData = source?.data;
+      const overData = target?.data;
+
+      const activeGroup = activeData?.group as string;
+      let overGroup = overData?.group || (target?.id as string);
+
+      console.log(source, target);
+
+      // FIX 1: Map header hover-zones back to their parent semester ID
+      if (overGroup.endsWith("-header")) {
+        overGroup = overGroup.replace("-header", "");
+      }
 
       if (
-        !activeContainer ||
-        !overContainer ||
-        activeContainer === overContainer
-      )
+        !activeId ||
+        !overId ||
+        !activeGroup ||
+        !overGroup ||
+        activeGroup === overGroup ||
+        // FIX 2: Ignore garbage bins during the hover phase so items don't vanish instantly
+        overGroup === "garbage" ||
+        overGroup === "toolbox-button"
+      ) {
         return;
+      }
 
-      let movingItem: UserCourse | null = null;
-      if (data.type === "course") {
-        if (activeContainer === "toolbox") {
-          movingItem = toolboxCourses.find((c) => c.id === active.id) || null;
-        } else {
-          const semester = plannerCourses.find(
-            (sem) => sem.semesterID === activeContainer,
-          );
-          movingItem =
-            semester?.courseList.find((c) => c.id === active.id) || null;
-        }
+      let movingItem: UserCourse | undefined;
+      if (activeGroup === "toolbox") {
+        movingItem = toolboxCourses.find((c) => c.id === activeId);
+        removeCourseFromToolbox(activeId);
+      } else {
+        const sem = plannerCourses.find((s) => s.semesterID === activeGroup);
+        movingItem = sem?.courseList.find((c) => c.id === activeId);
+        removeCourseFromSemester(activeGroup, activeId);
       }
 
       if (!movingItem) return;
 
-      if (activeContainer === "toolbox") {
-        removeCourseFromToolbox(active.id as string);
-      } else {
-        removeCourseFromSemester(
-          activeContainer as string,
-          active.id as string,
-        );
-      }
+      let overIndex = target?.index ?? 0;
 
-      movingItem = { ...movingItem, count: 1 };
-
-      // FIX: Calculate target index manually instead of relying on sortable?.index
-      if (overContainer === "toolbox") {
-        let overIndex = toolboxCourses.findIndex((c) => c.id === over.id);
-        if (overIndex === -1) overIndex = toolboxCourses.length;
-        insertCourseIntoToolbox(movingItem, overIndex);
-      } else {
-        const sem = plannerCourses.find((s) => s.semesterID === overContainer);
-        if (sem) {
-          const nextList = sem.courseList;
-          let overIndex = nextList.length;
-
-          if (over.id !== overContainer) {
-            const idx = nextList.findIndex((c) => c.id === over.id);
-            const activeRect =
-              active.element instanceof HTMLElement
-                ? active.element.getBoundingClientRect()
-                : null;
-            const overRect =
-              over.element instanceof HTMLElement
-                ? over.element.getBoundingClientRect()
-                : null;
-            const isBelow =
-              over &&
-              activeRect &&
-              overRect &&
-              activeRect.top > overRect.top + overRect.height;
-            overIndex = idx >= 0 ? idx + (isBelow ? 1 : 0) : nextList.length;
-          }
-          addCourseToSemester(overContainer as string, movingItem, overIndex);
+      // FIX 3: If dropping into the empty space of the container itself, push to the end of the array
+      if (overId === overGroup) {
+        if (overGroup === "toolbox") {
+          overIndex = toolboxCourses.length;
+        } else {
+          const sem = plannerCourses.find((s) => s.semesterID === overGroup);
+          overIndex = sem?.courseList.length ?? 0;
         }
       }
 
+      if (overGroup === "toolbox") {
+        insertCourseIntoToolbox(movingItem, overIndex);
+      } else {
+        addCourseToSemester(overGroup, movingItem, overIndex);
+      }
+
+      movingItem = { ...movingItem, count: 1 };
       recentlyMovedToNewContainer.current = true;
     },
 
     onDragEnd(event) {
       const { operation } = event;
       const active = operation.source;
-      const data = active?.data.current;
+      const data = active?.data;
       const over = operation.target;
 
-      setActiveItem(null);
       lastOverId.current = null;
 
       if (!isDraggableData(data) || !active) return;

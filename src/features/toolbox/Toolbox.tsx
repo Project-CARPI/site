@@ -6,6 +6,7 @@ import { IoIosArrowUp } from "react-icons/io";
 
 import { useCourseWorkspace } from "@/core/workspace/useCourseWorkspace";
 import { SortableItem } from "@/features/dnd/components/SortableItem";
+import PlannerCourse from "@/features/planner/components/course/PlannerCourse";
 import GarbageBin from "@/features/toolbox/GarbageBin";
 import NavButton from "@/features/toolbox/NavButton";
 import ToolboxButton from "@/features/toolbox/ToolboxButton";
@@ -125,8 +126,23 @@ export default function Toolbox() {
                   data={course}
                   type="course"
                   index={index}
+                  group="toolbox"
                 >
-                  <ToolboxCourse course={course} />
+                  {(isDragging) =>
+                    isDragging ? (
+                      // When dragging, Morph into a PlannerCourse with a fixed width
+                      <div className="w-[300px] sm:w-[350px]">
+                        <PlannerCourse
+                          course={course}
+                          semesterId={null}
+                          isDragging
+                        />
+                      </div>
+                    ) : (
+                      // When resting in the toolbox, render normally
+                      <ToolboxCourse course={course} />
+                    )
+                  }
                 </SortableItem>
               ))
             )}

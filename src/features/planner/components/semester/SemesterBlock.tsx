@@ -1,17 +1,14 @@
 import React, { useState, useRef, useEffect } from "react";
 
+import { CollisionPriority } from "@dnd-kit/abstract";
 import { useDroppable } from "@dnd-kit/react";
-// import {
-//   SortableContext,
-//   verticalListSortingStrategy,
-// } from "@dnd-kit/react/sortable";
+import { useSortable } from "@dnd-kit/react/sortable";
 import { motion, AnimatePresence } from "framer-motion";
 import { MdDragIndicator, MdDeleteOutline, MdExpandMore } from "react-icons/md";
 
 import ErrorBanner from "@/components/ErrorBanner";
 import { useCourseWorkspace } from "@/core/workspace/useCourseWorkspace";
-import { SortableItem } from "@/features/dnd/components/SortableItem";
-import { useSortableItem } from "@/features/dnd/useSortableItem";
+import SortableCourse from "@/features/dnd/components/SortableCourse";
 import PlannerCourse from "@/features/planner/components/course/PlannerCourse";
 import CourseDropzone from "@/features/planner/components/semester/CourseDropzone";
 import SeasonSelector from "@/features/planner/components/semester/SeasonSelector";
@@ -22,11 +19,13 @@ import { SemesterType } from "@/lib/types";
 export interface SemesterBlockProps {
   semester: SemesterType;
   isDragging?: boolean;
+  index: number;
 }
 
 export default function SemesterBlock({
   semester,
   isDragging,
+  index,
 }: SemesterBlockProps) {
   // Layout state
   const { allExpanded, expandedSemesters, setExpanded } =
@@ -43,15 +42,32 @@ export default function SemesterBlock({
    *    the block, allowing users to drop courses into it without needing to manually
    *    expand first.
    */
-  const { ref: setListRef, isDropTarget: isListOver } = useDroppable({
+  const dndData = {
+    type: "semester",
+    payload: semester,
+  };
+
+  const {
+    handleRef,
+    // isDragging,
+    ref: listRef,
+    isDropTarget: isListOver,
+  } = useSortable({
     id: semester.semesterID,
+    index: index,
+    type: "semester",
+    accept: ["semester", "course"],
+    collisionPriority: CollisionPriority.Low,
+    data: dndData,
   });
+
+  // const { ref: setListRef, isDropTarget: isListOver } = useDroppable({
+  //   id: semester.semesterID,
+  // });
   const { ref: setHeaderRef, isDropTarget: isHeaderOver } = useDroppable({
     id: `${semester.semesterID}-header`,
     disabled: isOpen,
   });
-
-  const { listeners, attributes } = useSortableItem();
 
   // If the user hovers over the header dropzone, a time starts. If they hover for
   // for >= 400ms, we allow the block to auto-expand. This spring-loads the block
@@ -114,6 +130,7 @@ export default function SemesterBlock({
 
   return (
     <motion.div
+      ref={listRef}
       layout
       className={cn(
         "flex flex-col rounded-2xl w-full max-w-full relative group",
@@ -129,18 +146,17 @@ export default function SemesterBlock({
       >
         <div className="flex items-center justify-between w-full">
           <div className="flex items-center gap-2 flex-1 min-w-0">
-            <div
+            <button
+              ref={handleRef}
               className={cn(
                 "hover:bg-darkblue/20 py-1.5 px-0.75 rounded-lg flex-shrink-0 ",
                 isDragging
                   ? "cursor-grabbing"
                   : "cursor-grab active:cursor-grabbing",
               )}
-              {...listeners}
-              {...attributes}
             >
               <MdDragIndicator size={22} />
-            </div>
+            </button>
 
             {isEditing ? (
               <input
@@ -233,30 +249,25 @@ export default function SemesterBlock({
               </ErrorBanner>
             )}
 
-            <div
-              ref={setListRef} // Assign our main List dropzone here!
-              className="flex flex-col gap-2 h-full"
-            >
-              <ul>
-                {semester.courseList.length === 0 ? (
-                  <CourseDropzone isHover={isListOver} />
-                ) : (
-                  semester.courseList.map((course, index) => (
-                    <SortableItem
-                      key={course.id}
-                      id={course.id}
-                      data={course}
-                      type="course"
-                      index={index}
-                    >
-                      <PlannerCourse
-                        course={course}
-                        semesterId={semester.semesterID}
-                      />
-                    </SortableItem>
-                  ))
-                )}
-              </ul>
+            <div className="flex flex-col gap-2 h-full">
+              {semester.courseList.length === 0 ? (
+                <CourseDropzone isHover={isListOver} />
+              ) : (
+                semester.courseList.map((course, index) => (
+                  <SortableCourse
+                    key={course.id}
+                    id={course.id}
+                    data={course}
+                    index={index}
+                    group={semester.semesterID}
+                  >
+                    <PlannerCourse
+                      course={course}
+                      semesterId={semester.semesterID}
+                    />
+                  </SortableCourse>
+                ))
+              )}
             </div>
           </motion.div>
         )}

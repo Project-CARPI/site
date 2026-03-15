@@ -4,9 +4,9 @@ import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 
 import { useCourseWorkspace } from "@/core/workspace/useCourseWorkspace";
-import { SortableItem } from "@/features/dnd/components/SortableItem";
 import ActionMenu from "@/features/planner/components/ActionMenu";
 import SemesterBlock from "@/features/planner/components/semester/SemesterBlock";
+import { cn } from "@/lib/classnames";
 import useIsDesktop from "@/lib/hooks/useIsDesktop";
 
 const Planner: React.FC = () => {
@@ -37,23 +37,24 @@ const Planner: React.FC = () => {
             </p>
           </div>
         ) : (
-          <div className="md:overflow-y-auto grid grid-cols-1 lg:grid-cols-2 items-start gap-4 md:pr-4 pb-32 overflow-x-hidden">
+          <div
+            className={cn(
+              "grid grid-cols-1 lg:grid-cols-2",
+              "items-start gap-4 pb-32 overflow-x-hidden",
+              "md:overflow-y-auto md:pr-4",
+            )}
+          >
             {plannerCourses.map((semester, index) => (
-              <SortableItem
-                key={semester.semesterID}
-                id={"sem-" + semester.semesterID}
-                data={semester}
-                type="semester"
-                useHandle={true}
-                index={index}
+              <div
+                key={index}
+                className="md:h-full flex flex-col justify-between min-w-0 w-full"
               >
-                <div className="md:h-full flex flex-col justify-between min-w-0 w-full">
-                  <SemesterBlock
-                    key={semester.semesterID}
-                    semester={semester}
-                  />
-                </div>
-              </SortableItem>
+                <SemesterBlock
+                  key={semester.semesterID}
+                  semester={semester}
+                  index={index}
+                />
+              </div>
             ))}
           </div>
         )}

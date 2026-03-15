@@ -1,9 +1,8 @@
-import { arrayMove } from "@dnd-kit/sortable";
-
 import {
   SemesterReducer,
   SemesterAction,
 } from "@/core/workspace/reducers/semester";
+import arrayMove from "@/core/workspace/utils/arrayMove";
 import { SemesterType } from "@/lib/types";
 
 export type PlannerAction =

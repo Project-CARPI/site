@@ -1,10 +1,6 @@
-import { useState, useEffect, useMemo, useRef } from "react";
+import { useState, useEffect, useRef } from "react";
 
-import { useDroppable } from "@dnd-kit/core";
-import {
-  SortableContext,
-  horizontalListSortingStrategy,
-} from "@dnd-kit/sortable";
+import { useDroppable } from "@dnd-kit/react";
 import { motion, useAnimation } from "framer-motion";
 import { IoIosArrowUp } from "react-icons/io";
 
@@ -18,17 +14,17 @@ import { cn } from "@/lib/classnames";
 import useIsDesktop from "@/lib/hooks/useIsDesktop";
 
 export default function Toolbox() {
-  const { setNodeRef } = useDroppable({ id: "toolbox" });
+  const { ref } = useDroppable({ id: "toolbox" });
   const isDesktop = useIsDesktop();
   const [isOpen, setIsOpen] = useState(isDesktop);
   const scrollRef = useRef<HTMLDivElement>(null);
   const controls = useAnimation();
 
   const { toolboxCourses, toolboxCourseCount } = useCourseWorkspace();
-  const courseIds = useMemo(
-    () => toolboxCourses.map((c) => c.id),
-    [toolboxCourses],
-  );
+  // const courseIds = useMemo(
+  //   () => toolboxCourses.map((c) => c.id),
+  //   [toolboxCourses],
+  // );
 
   useEffect(() => {
     setIsOpen(isDesktop);
@@ -107,7 +103,7 @@ export default function Toolbox() {
         >
           <div
             ref={(node) => {
-              setNodeRef(node);
+              ref(node);
               (
                 scrollRef as React.MutableRefObject<HTMLDivElement | null>
               ).current = node;
@@ -115,29 +111,25 @@ export default function Toolbox() {
             onWheel={handleWheel}
             className="gap-4 scrollbar-none flex items-center w-full overflow-x-auto p-4 -mt-4 mb-14 h-fit md:mb-0"
           >
-            <SortableContext
-              items={courseIds}
-              strategy={horizontalListSortingStrategy}
-            >
-              {toolboxCourses.length === 0 ? (
-                <div className="w-full h-full flex items-center justify-center pointer-events-none">
-                  <span className="text-carpipink opacity-60 text-base font-medium italic mb-4">
-                    Add courses to plan your semester
-                  </span>
-                </div>
-              ) : (
-                toolboxCourses.map((course) => (
-                  <SortableItem
-                    key={course.id}
-                    id={course.id}
-                    data={course}
-                    type="course"
-                  >
-                    <ToolboxCourse course={course} />
-                  </SortableItem>
-                ))
-              )}
-            </SortableContext>
+            {toolboxCourses.length === 0 ? (
+              <div className="w-full h-full flex items-center justify-center pointer-events-none">
+                <span className="text-carpipink opacity-60 text-base font-medium italic mb-4">
+                  Add courses to plan your semester
+                </span>
+              </div>
+            ) : (
+              toolboxCourses.map((course, index) => (
+                <SortableItem
+                  key={course.id}
+                  id={course.id}
+                  data={course}
+                  type="course"
+                  index={index}
+                >
+                  <ToolboxCourse course={course} />
+                </SortableItem>
+              ))
+            )}
           </div>
         </div>
       </motion.div>

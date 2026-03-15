@@ -1,22 +1,21 @@
 import { useState, useCallback, useRef } from "react";
 
 import {
-  useSensor,
-  useSensors,
+  // useSensor,
+  // useSensors,
   DragStartEvent,
   DragOverEvent,
   DragEndEvent,
-  MouseSensor,
-  TouchSensor,
-  KeyboardSensor,
-  UniqueIdentifier,
-  CollisionDetection,
-  pointerWithin,
-  rectIntersection,
-  getFirstCollision,
-  closestCenter,
-} from "@dnd-kit/core";
-import { sortableKeyboardCoordinates } from "@dnd-kit/sortable";
+  // MouseSensor,
+  // TouchSensor,
+  // KeyboardSensor,
+  // UniqueIdentifier,
+  // CollisionDetection,
+  // pointerWithin,
+  // rectIntersection,
+  // getFirstCollision,
+  // closestCenter,
+} from "@dnd-kit/react";
 
 import { useCourseWorkspace } from "@/core/workspace/useCourseWorkspace";
 import { UserCourse } from "@/lib/types";
@@ -49,19 +48,6 @@ export const useDndLogic = () => {
 
   const lastOverId = useRef<UniqueIdentifier | null>(null);
   const recentlyMovedToNewContainer = useRef(false);
-
-  // --- Sensors ---
-  const sensors = useSensors(
-    useSensor(MouseSensor, {
-      activationConstraint: { distance: 10 },
-    }),
-    useSensor(TouchSensor, {
-      activationConstraint: { delay: 250, tolerance: 5 },
-    }),
-    useSensor(KeyboardSensor, {
-      coordinateGetter: sortableKeyboardCoordinates,
-    }),
-  );
 
   // --- Helper: Find Container by Course ID ---
   const findContainer = useCallback(
@@ -381,7 +367,6 @@ export const useDndLogic = () => {
   };
 
   return {
-    sensors,
     collisionDetectionStrategy,
     onDragStart,
     onDragOver,

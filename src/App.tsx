@@ -1,20 +1,11 @@
-import React, { useState } from "react";
+import React from "react";
 
-import {
-  DndContext,
-  DragOverlay,
-  DragStartEvent,
-  DragEndEvent,
-} from "@dnd-kit/core";
-import { createPortal } from "react-dom";
+import { DragDropProvider } from "@dnd-kit/react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 
 import { CourseWorkspaceProvider } from "@/core/workspace/provider";
-import { useDndLogic } from "@/features/dnd/useDragAndDrop";
-import PlannerCourse from "@/features/planner/components/course/PlannerCourse";
-import SemesterBlock from "@/features/planner/components/semester/SemesterBlock";
+import DragMonitor from "@/features/dnd/dragMonitor";
 import Toolbox from "@/features/toolbox/Toolbox";
-import { cn } from "@/lib/classnames";
 import Catalog from "@/pages/Catalog";
 import HomePage from "@/pages/HomePage";
 import Planner from "@/pages/Planner";
@@ -22,38 +13,38 @@ import Planner from "@/pages/Planner";
 const AppDragDropContext: React.FC<{ children: React.ReactNode }> = ({
   children,
 }) => {
-  const {
-    sensors,
-    collisionDetectionStrategy,
-    onDragStart,
-    onDragOver,
-    onDragEnd,
-    activeItem,
-  } = useDndLogic();
+  // const {
+  //   collisionDetectionStrategy,
+  //   onDragStart,
+  //   onDragOver,
+  //   onDragEnd,
+  //   activeItem,
+  // } = useDndLogic();
 
-  const [isDragging, setIsDragging] = useState(false);
+  // const [isDragging, setIsDragging] = useState(false);
 
-  const handleDragStart = (event: DragStartEvent) => {
-    setIsDragging(true);
-    onDragStart(event); // Your existing logic
-  };
+  // const handleDragStart = (event: DragStartEvent) => {
+  //   setIsDragging(true);
+  //   onDragStart(event); // Your existing logic
+  // };
 
-  const handleDragEnd = (event: DragEndEvent) => {
-    setIsDragging(false);
-    onDragEnd(event); // Your existing logic
-  };
+  // const handleDragEnd = (event: DragEndEvent) => {
+  //   setIsDragging(false);
+  //   onDragEnd(event); // Your existing logic
+  // };
 
   return (
-    <DndContext
-      sensors={sensors}
-      collisionDetection={collisionDetectionStrategy}
-      onDragStart={handleDragStart}
-      onDragOver={onDragOver}
-      onDragEnd={handleDragEnd}
+    <DragDropProvider
+    // collisionDetection={collisionDetectionStrategy}
+    // onDragStart={(event, manager) => handleDragStart(event)}
+    // onDragOver={onDragOver}
+    // onDragEnd={handleDragEnd}
     >
+      <DragMonitor />
+
       {children}
 
-      {createPortal(
+      {/* {createPortal(
         <DragOverlay>
           {activeItem ? (
             activeItem.type === "semester" ? (
@@ -75,8 +66,8 @@ const AppDragDropContext: React.FC<{ children: React.ReactNode }> = ({
           ) : null}
         </DragOverlay>,
         document.body,
-      )}
-    </DndContext>
+      )} */}
+    </DragDropProvider>
   );
 };
 

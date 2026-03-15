@@ -1,6 +1,6 @@
 import { useEffect } from "react";
 
-import { SortableContext, rectSortingStrategy } from "@dnd-kit/sortable";
+// import { SortableContext, rectSortingStrategy } from "@dnd-kit/sortable";
 import { useNavigate } from "react-router-dom";
 
 import { useCourseWorkspace } from "@/core/workspace/useCourseWorkspace";
@@ -37,28 +37,24 @@ const Planner: React.FC = () => {
             </p>
           </div>
         ) : (
-          <div className="md:overflow-y-auto grid grid-cols-1 lg:grid-cols-2 gap-4 md:pr-4 pb-32 overflow-x-hidden">
-            <SortableContext
-              items={plannerCourses.map((s) => "sem-" + s.semesterID)}
-              strategy={rectSortingStrategy}
-            >
-              {plannerCourses.map((semester) => (
-                <SortableItem
-                  key={semester.semesterID}
-                  id={"sem-" + semester.semesterID}
-                  data={semester}
-                  type="semester"
-                  useHandle={true}
-                >
-                  <div className="md:h-full flex flex-col justify-between min-w-0 w-full">
-                    <SemesterBlock
-                      key={semester.semesterID}
-                      semester={semester}
-                    />
-                  </div>
-                </SortableItem>
-              ))}
-            </SortableContext>
+          <div className="md:overflow-y-auto grid grid-cols-1 lg:grid-cols-2 items-start gap-4 md:pr-4 pb-32 overflow-x-hidden">
+            {plannerCourses.map((semester, index) => (
+              <SortableItem
+                key={semester.semesterID}
+                id={"sem-" + semester.semesterID}
+                data={semester}
+                type="semester"
+                useHandle={true}
+                index={index}
+              >
+                <div className="md:h-full flex flex-col justify-between min-w-0 w-full">
+                  <SemesterBlock
+                    key={semester.semesterID}
+                    semester={semester}
+                  />
+                </div>
+              </SortableItem>
+            ))}
           </div>
         )}
       </section>

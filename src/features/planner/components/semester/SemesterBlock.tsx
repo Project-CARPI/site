@@ -1,10 +1,10 @@
 import React, { useState, useRef, useEffect } from "react";
 
-import { useDroppable } from "@dnd-kit/core";
-import {
-  SortableContext,
-  verticalListSortingStrategy,
-} from "@dnd-kit/sortable";
+import { useDroppable } from "@dnd-kit/react";
+// import {
+//   SortableContext,
+//   verticalListSortingStrategy,
+// } from "@dnd-kit/react/sortable";
 import { motion, AnimatePresence } from "framer-motion";
 import { MdDragIndicator, MdDeleteOutline, MdExpandMore } from "react-icons/md";
 
@@ -43,10 +43,10 @@ export default function SemesterBlock({
    *    the block, allowing users to drop courses into it without needing to manually
    *    expand first.
    */
-  const { setNodeRef: setListRef, isOver: isListOver } = useDroppable({
+  const { ref: setListRef, isDropTarget: isListOver } = useDroppable({
     id: semester.semesterID,
   });
-  const { setNodeRef: setHeaderRef, isOver: isHeaderOver } = useDroppable({
+  const { ref: setHeaderRef, isDropTarget: isHeaderOver } = useDroppable({
     id: `${semester.semesterID}-header`,
     disabled: isOpen,
   });
@@ -237,19 +237,17 @@ export default function SemesterBlock({
               ref={setListRef} // Assign our main List dropzone here!
               className="flex flex-col gap-2 h-full"
             >
-              <SortableContext
-                items={semester.courseList.map((c) => c.id)}
-                strategy={verticalListSortingStrategy}
-              >
+              <ul>
                 {semester.courseList.length === 0 ? (
                   <CourseDropzone isHover={isListOver} />
                 ) : (
-                  semester.courseList.map((course) => (
+                  semester.courseList.map((course, index) => (
                     <SortableItem
                       key={course.id}
                       id={course.id}
                       data={course}
                       type="course"
+                      index={index}
                     >
                       <PlannerCourse
                         course={course}
@@ -258,7 +256,7 @@ export default function SemesterBlock({
                     </SortableItem>
                   ))
                 )}
-              </SortableContext>
+              </ul>
             </div>
           </motion.div>
         )}

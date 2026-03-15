@@ -1,5 +1,4 @@
-import { arrayMove } from "@dnd-kit/sortable";
-
+import arrayMove from "@/core/workspace/utils/arrayMove";
 import { SemesterType, SemesterSeason, UserCourse } from "@/lib/types";
 
 export type SemesterAction =

@@ -1,4 +1,3 @@
-import { useDroppable } from "@dnd-kit/react";
 import { PiToolbox } from "react-icons/pi";
 
 import { cn } from "@/lib/classnames";
@@ -13,18 +12,12 @@ export default function ToolboxButton({
   isOpen,
   count,
 }: ToolboxButtonProps) {
-  const { ref, isDropTarget } = useDroppable({
-    id: "toolbox-button",
-  });
-
   return (
     <button
-      ref={ref}
       onClick={toggleToolbox}
       className={cn(
         "bg-darkblue rounded-full text-carpipink text-5xl p-4 border-carpipink border-1 m-4 absolute bottom-10 right-0",
         isOpen && "hidden",
-        isDropTarget && "scale-110",
       )}
     >
       <div

@@ -2,7 +2,7 @@ import { useState } from "react";
 
 import * as ContextMenu from "@radix-ui/react-context-menu";
 import * as Popover from "@radix-ui/react-popover";
-import { motion } from "framer-motion";
+// import { motion } from "framer-motion";
 import { MdOutlineMoreHoriz, MdDragIndicator } from "react-icons/md";
 
 import CourseLabel from "@/components/course/CourseLabel";
@@ -33,8 +33,7 @@ export default function PlannerCourse({
   return (
     <ContextMenu.Root>
       <ContextMenu.Trigger>
-        <motion.div
-          layout
+        <div
           className={cn(
             "relative flex justify-between bg-darkblue rounded-2xl text-carpipink gap-4 px-2 py-3",
             "hover:shadow-lg",
@@ -68,7 +67,7 @@ export default function PlannerCourse({
               />
             </Popover.Content>
           </Popover.Root>
-        </motion.div>
+        </div>
       </ContextMenu.Trigger>
 
       <ContextMenu.Portal>

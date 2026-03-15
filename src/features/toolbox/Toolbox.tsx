@@ -1,12 +1,9 @@
 import { useState, useEffect, useRef } from "react";
 
-import { useDroppable } from "@dnd-kit/react";
 import { motion, useAnimation } from "framer-motion";
 import { IoIosArrowUp } from "react-icons/io";
 
 import { useCourseWorkspace } from "@/core/workspace/useCourseWorkspace";
-import { SortableItem } from "@/features/dnd/components/SortableItem";
-import PlannerCourse from "@/features/planner/components/course/PlannerCourse";
 import GarbageBin from "@/features/toolbox/GarbageBin";
 import NavButton from "@/features/toolbox/NavButton";
 import ToolboxButton from "@/features/toolbox/ToolboxButton";
@@ -15,17 +12,12 @@ import { cn } from "@/lib/classnames";
 import useIsDesktop from "@/lib/hooks/useIsDesktop";
 
 export default function Toolbox() {
-  const { ref } = useDroppable({ id: "toolbox" });
   const isDesktop = useIsDesktop();
   const [isOpen, setIsOpen] = useState(isDesktop);
   const scrollRef = useRef<HTMLDivElement>(null);
   const controls = useAnimation();
 
   const { toolboxCourses, toolboxCourseCount } = useCourseWorkspace();
-  // const courseIds = useMemo(
-  //   () => toolboxCourses.map((c) => c.id),
-  //   [toolboxCourses],
-  // );
 
   useEffect(() => {
     setIsOpen(isDesktop);
@@ -103,12 +95,6 @@ export default function Toolbox() {
           id="hideable-toolbox-content"
         >
           <div
-            ref={(node) => {
-              ref(node);
-              (
-                scrollRef as React.MutableRefObject<HTMLDivElement | null>
-              ).current = node;
-            }}
             onWheel={handleWheel}
             className="gap-4 scrollbar-none flex items-center w-full overflow-x-auto p-4 -mt-4 mb-14 h-fit md:mb-0"
           >
@@ -120,30 +106,7 @@ export default function Toolbox() {
               </div>
             ) : (
               toolboxCourses.map((course, index) => (
-                <SortableItem
-                  key={course.id}
-                  id={course.id}
-                  data={course}
-                  type="course"
-                  index={index}
-                  group="toolbox"
-                >
-                  {(isDragging) =>
-                    isDragging ? (
-                      // When dragging, Morph into a PlannerCourse with a fixed width
-                      <div className="w-[300px] sm:w-[350px]">
-                        <PlannerCourse
-                          course={course}
-                          semesterId={null}
-                          isDragging
-                        />
-                      </div>
-                    ) : (
-                      // When resting in the toolbox, render normally
-                      <ToolboxCourse course={course} />
-                    )
-                  }
-                </SortableItem>
+                <ToolboxCourse course={course} key={index} />
               ))
             )}
           </div>

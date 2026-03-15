@@ -1,14 +1,10 @@
 import React, { useState, useRef, useEffect } from "react";
 
-import { CollisionPriority } from "@dnd-kit/abstract";
-import { useDroppable } from "@dnd-kit/react";
-import { useSortable } from "@dnd-kit/react/sortable";
 import { motion, AnimatePresence } from "framer-motion";
 import { MdDragIndicator, MdDeleteOutline, MdExpandMore } from "react-icons/md";
 
 import ErrorBanner from "@/components/ErrorBanner";
 import { useCourseWorkspace } from "@/core/workspace/useCourseWorkspace";
-import SortableCourse from "@/features/dnd/components/SortableCourse";
 import PlannerCourse from "@/features/planner/components/course/PlannerCourse";
 import CourseDropzone from "@/features/planner/components/semester/CourseDropzone";
 import SeasonSelector from "@/features/planner/components/semester/SeasonSelector";
@@ -25,68 +21,11 @@ export interface SemesterBlockProps {
 export default function SemesterBlock({
   semester,
   isDragging,
-  index,
 }: SemesterBlockProps) {
   // Layout state
   const { allExpanded, expandedSemesters, setExpanded } =
     usePlannerLayoutStore();
   const isOpen = expandedSemesters[semester.semesterID] ?? allExpanded;
-
-  /**
-   * DROPZONES
-   * We have two distinct droppable areas:
-   *  - setListRef: The main body of the semester block, where courses are dropped
-   *    and sorted.
-   *  - setHeaderRef: The header area of the semester block, which is only active
-   *    when the block is collapsed. Hovering over this for a moment will auto-expand
-   *    the block, allowing users to drop courses into it without needing to manually
-   *    expand first.
-   */
-  const dndData = {
-    type: "semester",
-    payload: semester,
-  };
-
-  const {
-    handleRef,
-    // isDragging,
-    ref: listRef,
-    isDropTarget: isListOver,
-  } = useSortable({
-    id: semester.semesterID,
-    index: index,
-    type: "semester",
-    accept: ["semester", "course"],
-    collisionPriority: CollisionPriority.Low,
-    data: dndData,
-  });
-
-  // const { ref: setListRef, isDropTarget: isListOver } = useDroppable({
-  //   id: semester.semesterID,
-  // });
-  const { ref: setHeaderRef, isDropTarget: isHeaderOver } = useDroppable({
-    id: `${semester.semesterID}-header`,
-    disabled: isOpen,
-  });
-
-  // If the user hovers over the header dropzone, a time starts. If they hover for
-  // for >= 400ms, we allow the block to auto-expand. This spring-loads the block
-  // open to prevent layouts shifts when users are trying to drag courses into blocks.
-  useEffect(() => {
-    let timeoutId: ReturnType<typeof setTimeout> | undefined = undefined;
-
-    if (isHeaderOver && !isOpen) {
-      timeoutId = setTimeout(() => {
-        setExpanded(semester.semesterID, true);
-      }, 400);
-    }
-
-    return () => {
-      if (timeoutId) {
-        clearTimeout(timeoutId);
-      }
-    };
-  }, [isHeaderOver, isOpen, semester.semesterID, setExpanded]);
 
   /* SEMESTER CONTROLS */
   const { updateSemesterName, deleteSemester } = useCourseWorkspace();
@@ -129,9 +68,7 @@ export default function SemesterBlock({
   });
 
   return (
-    <motion.div
-      ref={listRef}
-      layout
+    <div
       className={cn(
         "flex flex-col rounded-2xl w-full max-w-full relative group",
         "bg-[color-mix(in_oklab,var(--color-darkblue)_10%,var(--color-carpipink)_90%)]",
@@ -139,15 +76,10 @@ export default function SemesterBlock({
         { "border-2 border-rosewood": over_limit },
       )}
     >
-      <motion.div
-        layout
-        ref={setHeaderRef}
-        className={cn("flex flex-col gap-1 w-full", isOpen && "mb-3")}
-      >
+      <div className={cn("flex flex-col gap-1 w-full", isOpen && "mb-3")}>
         <div className="flex items-center justify-between w-full">
           <div className="flex items-center gap-2 flex-1 min-w-0">
             <button
-              ref={handleRef}
               className={cn(
                 "hover:bg-darkblue/20 py-1.5 px-0.75 rounded-lg flex-shrink-0 ",
                 isDragging
@@ -230,11 +162,11 @@ export default function SemesterBlock({
             {semester.creditsTotal} Credits
           </div>
         </div>
-      </motion.div>
+      </div>
 
       <AnimatePresence initial={isOpen}>
         {isOpen && (
-          <motion.div className="overflow-hidden space-y-2 flex-1">
+          <div className="overflow-hidden space-y-2 flex-1">
             {over_limit && (
               <ErrorBanner>
                 You are over the maximum credit limit of{" "}
@@ -251,27 +183,20 @@ export default function SemesterBlock({
 
             <div className="flex flex-col gap-2 h-full">
               {semester.courseList.length === 0 ? (
-                <CourseDropzone isHover={isListOver} />
+                <CourseDropzone isHover={false} />
               ) : (
                 semester.courseList.map((course, index) => (
-                  <SortableCourse
-                    key={course.id}
-                    id={course.id}
-                    data={course}
-                    index={index}
-                    group={semester.semesterID}
-                  >
-                    <PlannerCourse
-                      course={course}
-                      semesterId={semester.semesterID}
-                    />
-                  </SortableCourse>
+                  <PlannerCourse
+                    key={index}
+                    course={course}
+                    semesterId={semester.semesterID}
+                  />
                 ))
               )}
             </div>
-          </motion.div>
+          </div>
         )}
       </AnimatePresence>
-    </motion.div>
+    </div>
   );
 }

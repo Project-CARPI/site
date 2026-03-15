@@ -1,6 +1,5 @@
 import { useEffect } from "react";
 
-// import { SortableContext, rectSortingStrategy } from "@dnd-kit/sortable";
 import { useNavigate } from "react-router-dom";
 
 import { useCourseWorkspace } from "@/core/workspace/useCourseWorkspace";

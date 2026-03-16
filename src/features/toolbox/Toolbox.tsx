@@ -1,17 +1,26 @@
 import { useState, useEffect, useRef } from "react";
 
+import { CollisionPriority } from "@dnd-kit/abstract";
+import { useDroppable } from "@dnd-kit/react";
 import { motion, useAnimation } from "framer-motion";
 import { IoIosArrowUp } from "react-icons/io";
 
+import Course from "@/components/course/Course";
 import { useCourseWorkspace } from "@/core/workspace/useCourseWorkspace";
 import GarbageBin from "@/features/toolbox/GarbageBin";
 import NavButton from "@/features/toolbox/NavButton";
 import ToolboxButton from "@/features/toolbox/ToolboxButton";
-import ToolboxCourse from "@/features/toolbox/ToolboxCourse";
 import { cn } from "@/lib/classnames";
 import useIsDesktop from "@/lib/hooks/useIsDesktop";
 
 export default function Toolbox() {
+  const { ref } = useDroppable({
+    id: "toolbox",
+    type: "toolbox",
+    accept: ["planner-course", "toolbox-course"],
+    collisionPriority: CollisionPriority.Low,
+  });
+
   const isDesktop = useIsDesktop();
   const [isOpen, setIsOpen] = useState(isDesktop);
   const scrollRef = useRef<HTMLDivElement>(null);
@@ -61,6 +70,7 @@ export default function Toolbox() {
       </div>
 
       <motion.div
+        ref={ref}
         animate={controls}
         initial={isOpen ? "open" : "closed"}
         variants={variants}
@@ -106,7 +116,14 @@ export default function Toolbox() {
               </div>
             ) : (
               toolboxCourses.map((course, index) => (
-                <ToolboxCourse course={course} key={index} />
+                <Course
+                  variant="toolbox"
+                  key={index}
+                  id={course.id}
+                  index={index}
+                  group={"toolbox"}
+                  course={course}
+                />
               ))
             )}
           </div>

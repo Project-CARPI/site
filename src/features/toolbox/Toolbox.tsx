@@ -106,6 +106,7 @@ export default function Toolbox() {
           id="hideable-toolbox-content"
         >
           <div
+            ref={scrollRef}
             onWheel={handleWheel}
             className="gap-4 scrollbar-none flex items-center w-full overflow-x-auto p-4 -mt-4 mb-14 h-fit md:mb-0"
           >

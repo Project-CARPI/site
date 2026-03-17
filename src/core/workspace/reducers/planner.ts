@@ -1,9 +1,8 @@
-import { arrayMove } from "@dnd-kit/sortable";
-
 import {
   SemesterReducer,
   SemesterAction,
 } from "@/core/workspace/reducers/semester";
+import arrayMove from "@/core/workspace/utils/arrayMove";
 import { SemesterType } from "@/lib/types";
 
 export type PlannerAction =
@@ -31,7 +30,11 @@ export const PlannerReducer = (
       return state.filter((s) => s.semesterID !== action.payload.semesterID);
 
     case "MOVE_SEMESTER":
-      return arrayMove(state, action.payload.fromIndex, action.payload.toIndex);
+      return arrayMove(
+        state,
+        action.payload.fromIndex,
+        action.payload.toIndex,
+      ) as SemesterType[];
 
     case "UPDATE_SEMESTER":
       return state.map((s) =>

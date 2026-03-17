@@ -1,5 +1,4 @@
-import { arrayMove } from "@dnd-kit/sortable";
-
+import arrayMove from "@/core/workspace/utils/arrayMove";
 import { UserCourse } from "@/lib/types";
 
 export type ToolboxAction =
@@ -29,7 +28,11 @@ export const ToolboxReducer = (
     }
 
     case "MOVE_COURSE":
-      return arrayMove(state, action.payload.fromIndex, action.payload.toIndex);
+      return arrayMove(
+        state,
+        action.payload.fromIndex,
+        action.payload.toIndex,
+      ) as UserCourse[];
 
     case "REMOVE_COURSE":
       return state.filter((c) => c.id !== action.payload.courseID);
@@ -50,6 +53,7 @@ export const ToolboxReducer = (
           uniqueMap.set(course.name, { ...course });
         }
       }
+
       return Array.from(uniqueMap.values());
     }
 

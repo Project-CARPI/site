@@ -1,5 +1,4 @@
-import { arrayMove } from "@dnd-kit/sortable";
-
+import arrayMove from "@/core/workspace/utils/arrayMove";
 import { SemesterType, SemesterSeason, UserCourse } from "@/lib/types";
 
 export type SemesterAction =
@@ -58,7 +57,7 @@ export const SemesterReducer = (
           state.courseList,
           action.payload.fromIndex,
           action.payload.toIndex,
-        ),
+        ) as UserCourse[],
       };
 
     default:

@@ -4,8 +4,8 @@ import { CollisionPriority } from "@dnd-kit/abstract";
 import { closestCenter } from "@dnd-kit/collision";
 import { useDroppable } from "@dnd-kit/react";
 import { useSortable } from "@dnd-kit/react/sortable";
-import { motion, AnimatePresence } from "framer-motion";
-import { MdDragIndicator, MdDeleteOutline, MdExpandMore } from "react-icons/md";
+import { AnimatePresence } from "framer-motion";
+import { MdDragIndicator, MdDeleteOutline } from "react-icons/md";
 
 import Course from "@/components/course/Course";
 import ErrorBanner from "@/components/ErrorBanner";
@@ -46,7 +46,7 @@ export default function SemesterBlock({ semester, index }: SemesterBlockProps) {
   });
 
   // Layout state
-  const { allExpanded, expandedSemesters, setExpanded } =
+  const { allExpanded, expandedSemesters } =
     usePlannerLayoutStore();
   const isOpen = expandedSemesters[semester.semesterID] ?? allExpanded;
 
@@ -151,18 +151,6 @@ export default function SemesterBlock({ semester, index }: SemesterBlockProps) {
                 </div>
               </div>
             </div>
-            <button
-              onClick={() => setExpanded(semester.semesterID, !isOpen)}
-              className="lg:hidden text-darkblue/50 hover:text-darkblue transition-colors p-1 hover:bg-darkblue/10 rounded-lg hover:cursor-pointer"
-              title={isOpen ? "Collapse Semester" : "Expand Semester"}
-            >
-              <motion.div
-                animate={{ rotate: isOpen ? 0 : -90 }}
-                transition={{ duration: 0.2 }}
-              >
-                <MdExpandMore size={22} />
-              </motion.div>
-            </button>
           </div>
         </div>
 

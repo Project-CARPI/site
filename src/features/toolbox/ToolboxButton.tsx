@@ -1,5 +1,8 @@
+import { useEffect } from "react";
+
 import { CollisionPriority } from "@dnd-kit/abstract";
-import { useDroppable } from "@dnd-kit/react";
+import { AutoScroller } from "@dnd-kit/dom";
+import { useDroppable, useDragDropManager } from "@dnd-kit/react";
 import { PiToolbox } from "react-icons/pi";
 
 import { cn } from "@/lib/classnames";
@@ -20,6 +23,27 @@ export default function ToolboxButton({
     accept: ["planner-course", "toolbox-course"],
     collisionPriority: CollisionPriority.Highest,
   });
+
+  const manager = useDragDropManager();
+
+  useEffect(() => {
+    if (!manager) return;
+
+    // Grab the active AutoScroller plugin from the core registry
+    const autoScroller = manager.registry.plugins.get(AutoScroller);
+
+    if (autoScroller) {
+      autoScroller.disabled = isDropTarget;
+    }
+
+    // Safety cleanup: Ensure autoscrolling is re-enabled if the bin
+    // unmounts or the drag ends while still hovering.
+    return () => {
+      if (autoScroller && isDropTarget) {
+        autoScroller.disabled = false;
+      }
+    };
+  }, [isDropTarget, manager]);
 
   return (
     <button

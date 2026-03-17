@@ -1,14 +1,9 @@
 import { useState, useCallback, useRef, useMemo } from "react";
 
 import { PointerSensor, KeyboardSensor } from "@dnd-kit/dom";
-import {
-  DragDropProvider,
-  DragDropEventHandlers,
-  DragOverlay,
-} from "@dnd-kit/react";
+import { DragDropProvider, DragDropEventHandlers } from "@dnd-kit/react";
 import { isSortable } from "@dnd-kit/react/sortable";
 
-import Course from "@/components/course/Course";
 import { useCourseWorkspace } from "@/core/workspace/useCourseWorkspace";
 import { UserCourse } from "@/lib/types";
 
@@ -244,29 +239,6 @@ export default function WorkspaceDndProvider({
       onDragEnd={handleDragEnd}
     >
       {children}
-
-      <DragOverlay>
-        {(source) => {
-          if (
-            source.type === "planner-course" ||
-            source.type === "toolbox-course"
-          ) {
-            const course = source.data?.course as UserCourse | undefined;
-            if (course) {
-              return (
-                <Course
-                  id={course.id}
-                  index={0}
-                  group="drag-overlay"
-                  course={course}
-                  variant="planner"
-                />
-              );
-            }
-          }
-          return null;
-        }}
-      </DragOverlay>
     </DragDropProvider>
   );
 }

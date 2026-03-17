@@ -51,3 +51,21 @@ img {
   image-rendering: crisp-edges;
   image-rendering: -webkit-optimize-contrast;
 }
+
+/* The active item currently following your cursor */
+[data-dnd-dragging="true"] {
+  opacity: 1 !important;
+}
+
+/* The cloned placeholder left behind in the list */
+[data-dnd-placeholder="clone"] {
+  opacity: 0.5 !important;
+}
+
+/* Allow Toolbox courses to freely expand into Planner courses when dragged */
+[data-dnd-dragging="true"][data-group="toolbox"] {
+  width: auto !important;
+  max-width: none !important;
+  height: auto !important;
+  max-height: none !important;
+}

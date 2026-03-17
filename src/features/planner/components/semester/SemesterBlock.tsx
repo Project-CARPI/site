@@ -88,7 +88,7 @@ export default function SemesterBlock({ semester, index }: SemesterBlockProps) {
 
   return (
     <div
-      ref={sortableRef} // <-- Attach SORTABLE ref to the outer shell
+      ref={sortableRef}
       className={cn(
         "flex flex-col rounded-2xl w-full max-w-full relative group",
         "bg-[color-mix(in_oklab,var(--color-darkblue)_10%,var(--color-carpipink)_90%)]",
@@ -102,7 +102,7 @@ export default function SemesterBlock({ semester, index }: SemesterBlockProps) {
             <button
               ref={handleRef}
               className={cn(
-                "hover:bg-darkblue/20 py-1.5 px-0.75 rounded-lg flex-shrink-0 ",
+                "hover:bg-darkblue/20 py-1.5 px-0.75 rounded-lg shrink-0 ",
                 isDragging
                   ? "cursor-grabbing"
                   : "cursor-grab active:cursor-grabbing",
@@ -203,10 +203,10 @@ export default function SemesterBlock({ semester, index }: SemesterBlockProps) {
             )}
 
             <div
-              ref={droppableRef} // <-- Attach DROPPABLE ref to the course container!
+              ref={droppableRef}
               className={cn(
-                "flex flex-col gap-2 h-full min-h-[60px] rounded-xl transition-colors",
-                isDropTarget && "bg-black/5", // Highlights the zone slightly when a course hovers over it
+                "flex flex-col gap-2 h-full min-h-15 rounded-xl transition-colors",
+                isDropTarget && "bg-black/5",
               )}
             >
               {semester.courseList.length === 0 ? (

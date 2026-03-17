@@ -13,6 +13,7 @@ export interface CourseWorkspaceContextType {
   toolboxCourses: UserCourse[];
 
   // planner actions
+  updateSemesterCourselist: (semesterID: string, newList: UserCourse[]) => void;
   addCourseToSemester: (
     semesterID: string,
     course: UserCourse,
@@ -29,6 +30,7 @@ export interface CourseWorkspaceContextType {
   deleteSemester: (semesterID: string) => void;
   addSemester: () => void;
   moveSemester: (fromIndex: number, toIndex: number) => void;
+  resetPlanner: (semesters: SemesterType[]) => void;
 
   // toolbox actions
   toolboxCourseCount: number;

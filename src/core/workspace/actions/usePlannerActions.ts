@@ -8,6 +8,22 @@ export const usePlannerActions = (
   dispatch: React.Dispatch<PlannerAction>,
   plannerSemesters: SemesterType[],
 ) => {
+  const updateSemesterCourselist = useCallback(
+    (semesterID: string, newList: UserCourse[]) => {
+      dispatch({
+        type: "SEMESTER_ACTION",
+        payload: {
+          semesterID,
+          action: {
+            type: "UPDATE_COURSELIST",
+            payload: { courseList: newList },
+          },
+        },
+      });
+    },
+    [dispatch],
+  );
+
   const addCourseToSemester = useCallback(
     (semesterID: string, course: UserCourse, index?: number) => {
       dispatch({
@@ -109,7 +125,23 @@ export const usePlannerActions = (
     [dispatch],
   );
 
+  const resetPlanner = useCallback(
+    (semesters: SemesterType[]) => {
+      semesters.forEach((semester) => {
+        dispatch({
+          type: "UPDATE_SEMESTER",
+          payload: {
+            semesterID: semester.semesterID,
+            updatedSemester: semester,
+          },
+        });
+      });
+    },
+    [dispatch],
+  );
+
   return {
+    updateSemesterCourselist,
     addCourseToSemester,
     removeCourseFromSemester,
     moveCourseInSemester,
@@ -118,5 +150,6 @@ export const usePlannerActions = (
     addSemester,
     moveSemester,
     deleteSemester,
+    resetPlanner,
   };
 };

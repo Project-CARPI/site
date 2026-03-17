@@ -6,7 +6,8 @@ export type SemesterAction =
   | { type: "UPDATE_SEASON"; payload: { newSeason: SemesterSeason } }
   | { type: "ADD_COURSE"; payload: { course: UserCourse; index?: number } }
   | { type: "REMOVE_COURSE"; payload: { courseID: string } }
-  | { type: "MOVE_COURSE"; payload: { fromIndex: number; toIndex: number } };
+  | { type: "MOVE_COURSE"; payload: { fromIndex: number; toIndex: number } }
+  | { type: "UPDATE_COURSELIST"; payload: { courseList: UserCourse[] } };
 
 export const SemesterReducer = (
   state: SemesterType,
@@ -58,6 +59,12 @@ export const SemesterReducer = (
           action.payload.fromIndex,
           action.payload.toIndex,
         ),
+      };
+
+    case "UPDATE_COURSELIST":
+      return {
+        ...state,
+        courseList: action.payload.courseList,
       };
 
     default:

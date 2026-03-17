@@ -1,27 +1,47 @@
 import React, { useState, useRef, useEffect } from "react";
 
+import { CollisionPriority } from "@dnd-kit/abstract";
+import { useDroppable } from "@dnd-kit/react"; // <-- 1. Import useDroppable
+import { useSortable } from "@dnd-kit/react/sortable";
 import { motion, AnimatePresence } from "framer-motion";
 import { MdDragIndicator, MdDeleteOutline, MdExpandMore } from "react-icons/md";
 
+import Course from "@/components/course/Course";
 import ErrorBanner from "@/components/ErrorBanner";
 import { useCourseWorkspace } from "@/core/workspace/useCourseWorkspace";
-import PlannerCourse from "@/features/planner/components/course/PlannerCourse";
 import CourseDropzone from "@/features/planner/components/semester/CourseDropzone";
 import SeasonSelector from "@/features/planner/components/semester/SeasonSelector";
 import { usePlannerLayoutStore } from "@/features/planner/PlannerLayoutStore";
 import { cn } from "@/lib/classnames";
 import { SemesterType } from "@/lib/types";
 
-export interface SemesterBlockProps {
+export type SemesterBlockProps = {
   semester: SemesterType;
-  isDragging?: boolean;
   index: number;
-}
+};
 
-export default function SemesterBlock({
-  semester,
-  isDragging,
-}: SemesterBlockProps) {
+export default function SemesterBlock({ semester, index }: SemesterBlockProps) {
+  // --- SORTABLE: For dragging the Semester block itself ---
+  const {
+    handleRef,
+    ref: sortableRef,
+    isDragging,
+  } = useSortable({
+    id: semester.semesterID,
+    accept: ["semester"], // Only swap places with other semesters
+    collisionPriority: CollisionPriority.Low,
+    type: "semester",
+    index,
+    data: { type: "semester", semesterId: semester.semesterID },
+  });
+
+  // --- DROPPABLE: For receiving Courses inside the Semester ---
+  const { ref: droppableRef, isDropTarget } = useDroppable({
+    id: `dropzone-${semester.semesterID}`,
+    accept: ["planner-course", "toolbox-course"], // Accept courses
+    data: { type: "semester", semesterId: semester.semesterID },
+  });
+
   // Layout state
   const { allExpanded, expandedSemesters, setExpanded } =
     usePlannerLayoutStore();
@@ -52,13 +72,11 @@ export default function SemesterBlock({
   };
 
   /* VALIDATION LOGIC */
-  // check for credit limits
   const CREDIT_LIMIT_WITHOUT_APPROVAL = 21;
   const CREDIT_LIMIT = 23;
   const over_limit = semester.creditsTotal > CREDIT_LIMIT_WITHOUT_APPROVAL;
   const over_hard_limit = semester.creditsTotal > CREDIT_LIMIT;
 
-  // check for duplicate courses
   const hasDuplicateCourses = semester.courseList.some((course, index) => {
     return (
       semester.courseList.findIndex(
@@ -69,6 +87,7 @@ export default function SemesterBlock({
 
   return (
     <div
+      ref={sortableRef} // <-- Attach SORTABLE ref to the outer shell
       className={cn(
         "flex flex-col rounded-2xl w-full max-w-full relative group",
         "bg-[color-mix(in_oklab,var(--color-darkblue)_10%,var(--color-carpipink)_90%)]",
@@ -80,6 +99,7 @@ export default function SemesterBlock({
         <div className="flex items-center justify-between w-full">
           <div className="flex items-center gap-2 flex-1 min-w-0">
             <button
+              ref={handleRef}
               className={cn(
                 "hover:bg-darkblue/20 py-1.5 px-0.75 rounded-lg flex-shrink-0 ",
                 isDragging
@@ -181,13 +201,23 @@ export default function SemesterBlock({
               </ErrorBanner>
             )}
 
-            <div className="flex flex-col gap-2 h-full">
+            <div
+              ref={droppableRef} // <-- Attach DROPPABLE ref to the course container!
+              className={cn(
+                "flex flex-col gap-2 h-full min-h-[60px] rounded-xl transition-colors",
+                isDropTarget && "bg-black/5", // Highlights the zone slightly when a course hovers over it
+              )}
+            >
               {semester.courseList.length === 0 ? (
-                <CourseDropzone isHover={false} />
+                <CourseDropzone isHover={isDropTarget} />
               ) : (
                 semester.courseList.map((course, index) => (
-                  <PlannerCourse
-                    key={index}
+                  <Course
+                    variant="planner"
+                    key={course.id}
+                    id={course.id}
+                    index={index}
+                    group={semester.semesterID}
                     course={course}
                     semesterId={semester.semesterID}
                   />

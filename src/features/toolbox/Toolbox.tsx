@@ -118,7 +118,7 @@ export default function Toolbox() {
               toolboxCourses.map((course, index) => (
                 <Course
                   variant="toolbox"
-                  key={index}
+                  key={course.id}
                   id={course.id}
                   index={index}
                   group={"toolbox"}

@@ -1,6 +1,5 @@
 import { useState } from "react";
 
-import { DragOverlay } from "@dnd-kit/react";
 import { useSortable } from "@dnd-kit/react/sortable";
 import * as ContextMenu from "@radix-ui/react-context-menu";
 import * as Popover from "@radix-ui/react-popover";
@@ -73,23 +72,14 @@ type ViewProps = {
 
 function ToolboxCourseView({ innerRef, isDragging, course }: ViewProps) {
   return (
-    <>
-      <div
-        ref={innerRef}
-        data-shadow={isDragging || undefined}
-        className="relative bg-carpipink text-nowrap rounded-md w-fit px-3 py-1 hover:cursor-grab active:cursor-grabbing select-none"
-      >
-        <CourseBadge
-          count={course.count}
-          className="absolute -top-2 -right-2"
-        />
-        <CourseLabel course={course.data} horizontal />
-      </div>
-
-      <DragOverlay dropAnimation={{ duration: 150, easing: "ease-out" }}>
-        <PlannerCourseView isDragging={isDragging} course={course} />
-      </DragOverlay>
-    </>
+    <div
+      ref={innerRef}
+      data-shadow={isDragging || undefined}
+      className="relative bg-carpipink text-nowrap rounded-md w-fit px-3 py-1 hover:cursor-grab active:cursor-grabbing select-none"
+    >
+      <CourseBadge count={course.count} className="absolute -top-2 -right-2" />
+      <CourseLabel course={course.data} horizontal />
+    </div>
   );
 }
 

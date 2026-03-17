@@ -46,8 +46,7 @@ export default function SemesterBlock({ semester, index }: SemesterBlockProps) {
   });
 
   // Layout state
-  const { allExpanded, expandedSemesters } =
-    usePlannerLayoutStore();
+  const { allExpanded, expandedSemesters } = usePlannerLayoutStore();
   const isOpen = expandedSemesters[semester.semesterID] ?? allExpanded;
 
   /* SEMESTER CONTROLS */

@@ -1,3 +1,5 @@
+import { CollisionPriority } from "@dnd-kit/abstract";
+import { useDroppable } from "@dnd-kit/react";
 import { PiToolbox } from "react-icons/pi";
 
 import { cn } from "@/lib/classnames";
@@ -12,12 +14,21 @@ export default function ToolboxButton({
   isOpen,
   count,
 }: ToolboxButtonProps) {
+  const { ref, isDropTarget } = useDroppable({
+    id: "toolbox-button",
+    type: "toolbox-button",
+    accept: ["planner-course", "toolbox-course"],
+    collisionPriority: CollisionPriority.Highest,
+  });
+
   return (
     <button
+      ref={ref}
       onClick={toggleToolbox}
       className={cn(
-        "bg-darkblue rounded-full text-carpipink text-5xl p-4 border-carpipink border-1 m-4 absolute bottom-10 right-0",
+        "relative bg-darkblue rounded-full text-carpipink text-5xl p-4 border-carpipink border hover:cursor-pointer transition-transform ease-in-out",
         isOpen && "hidden",
+        isDropTarget && "scale-110",
       )}
     >
       <div

@@ -178,22 +178,26 @@ export default function WorkspaceDndProvider({
 
       // --- UTILITY DROPZONES ---
       if (targetId === "garbage") {
-        if (sourceType === "semester") {
-          deleteSemester(source.data?.semester?.semesterID || sourceId);
-        } else {
-          // Always look up the *current* state before deleting, as onDragOver might have moved it
-          const semId = courseLocationMap.get(sourceId)?.semesterId;
-          if (semId) removeCourseFromSemester(semId, sourceId);
-          else removeCourseFromToolbox(sourceId);
-        }
+        console.log("Dropped on garbage, deleting course");
+        const semId = courseLocationMap.get(sourceId)?.semesterId;
+        if (semId) removeCourseFromSemester(semId, sourceId);
+        else removeCourseFromToolbox(sourceId);
         return;
       }
 
-      if (
-        targetId === "toolbox-button" ||
-        targetId === "toolbox" ||
-        targetType === "toolbox-course"
-      ) {
+      if (targetId === "toolbox-button") {
+        console.log("Dropped on toolbox button, consolidating toolbox");
+        const sourceCourse = source.data?.course as UserCourse | undefined;
+        if (!sourceCourse) return;
+        const semId = courseLocationMap.get(sourceId)?.semesterId;
+        if (semId) {
+          removeCourseFromSemester(semId, sourceId);
+          insertCourseIntoToolbox(sourceCourse, 0);
+          consolidateToolbox();
+        }
+      }
+
+      if (targetId === "toolbox" || targetType === "toolbox-course") {
         if (sourceType !== "semester") {
           consolidateToolbox();
         }

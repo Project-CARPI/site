@@ -58,18 +58,17 @@ export default function Toolbox() {
         "fixed bottom-0 left-0 w-full z-50 flex flex-col items-start pointer-events-none",
       )}
     >
-      {!isDesktop && !isOpen && (
-        <div className="absolute bottom-0 right-0 pointer-events-auto">
-          <ToolboxButton
-            isOpen={isOpen}
-            toggleToolbox={toggleToolbox}
-            count={toolboxCourseCount}
-          />
-        </div>
-      )}
-
-      <div className="pointer-events-none w-full">
+      <div className="flex justify-between pointer-events-none px-4 w-full pb-4">
         <GarbageBin />
+        {!isDesktop && !isOpen && (
+          <div className="pointer-events-auto">
+            <ToolboxButton
+              isOpen={isOpen}
+              toggleToolbox={toggleToolbox}
+              count={toolboxCourseCount}
+            />
+          </div>
+        )}
       </div>
 
       <motion.div

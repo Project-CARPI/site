@@ -125,38 +125,40 @@ function PlannerCourseView({
             <CourseLabel course={course.data} showCredits />
           </div>
 
-          <div className="items-center flex">
-            <CreditSelector
-              semesterId={semesterId}
-              courseId={course.id}
-              currentCredits={course.credits}
-              minCredits={course.data.credit_min}
-              maxCredits={course.data.credit_max}
-            />
-          </div>
-
-          <Popover.Root
-            open={popoverOpen && !isDragging}
-            onOpenChange={setPopoverOpen}
-          >
-            <Popover.Trigger asChild>
-              <button className="outline-none">
-                <MdOutlineMoreHoriz className="cursor-pointer text-2xl" />
-              </button>
-            </Popover.Trigger>
-            <Popover.Content
-              className={menuClassName}
-              side="bottom"
-              align="end"
-            >
-              <CourseMenuContent
-                options={menuOptions}
-                onItemSelect={() => setPopoverOpen(false)}
-                ItemComponent="button"
-                SeparatorComponent="div"
+          <div className="flex flex-row gap-2">
+            <div className="items-center flex">
+              <CreditSelector
+                semesterId={semesterId}
+                courseId={course.id}
+                currentCredits={course.credits}
+                minCredits={course.data.credit_min}
+                maxCredits={course.data.credit_max}
               />
-            </Popover.Content>
-          </Popover.Root>
+            </div>
+
+            <Popover.Root
+              open={popoverOpen && !isDragging}
+              onOpenChange={setPopoverOpen}
+            >
+              <Popover.Trigger asChild>
+                <button className="outline-none">
+                  <MdOutlineMoreHoriz className="cursor-pointer text-2xl" />
+                </button>
+              </Popover.Trigger>
+              <Popover.Content
+                className={menuClassName}
+                side="bottom"
+                align="end"
+              >
+                <CourseMenuContent
+                  options={menuOptions}
+                  onItemSelect={() => setPopoverOpen(false)}
+                  ItemComponent="button"
+                  SeparatorComponent="div"
+                />
+              </Popover.Content>
+            </Popover.Root>
+          </div>
         </div>
       </ContextMenu.Trigger>
 

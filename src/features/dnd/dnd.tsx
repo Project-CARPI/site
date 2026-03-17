@@ -177,7 +177,6 @@ export default function WorkspaceDndProvider({
 
       // --- UTILITY DROPZONES ---
       if (targetId === "garbage") {
-        console.log("Dropped on garbage, deleting course");
         const semId = courseLocationMap.get(sourceId)?.semesterId;
         if (semId) removeCourseFromSemester(semId, sourceId);
         else removeCourseFromToolbox(sourceId);
@@ -185,7 +184,6 @@ export default function WorkspaceDndProvider({
       }
 
       if (targetId === "toolbox-button") {
-        console.log("Dropped on toolbox button, consolidating toolbox");
         const sourceCourse = source.data?.course as UserCourse | undefined;
         if (!sourceCourse) return;
         const semId = courseLocationMap.get(sourceId)?.semesterId;

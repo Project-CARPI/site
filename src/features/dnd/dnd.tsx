@@ -19,7 +19,6 @@ export default function WorkspaceDndProvider({
     addCourseToSemester,
     removeCourseFromSemester,
     removeCourseFromToolbox,
-    deleteSemester,
     resetPlanner,
     resetToolbox,
     consolidateToolbox,
@@ -224,11 +223,11 @@ export default function WorkspaceDndProvider({
       moveSemester,
       resetPlanner,
       resetToolbox,
-      deleteSemester,
       consolidateToolbox,
       courseLocationMap,
       removeCourseFromSemester,
       removeCourseFromToolbox,
+      insertCourseIntoToolbox,
     ],
   );
 

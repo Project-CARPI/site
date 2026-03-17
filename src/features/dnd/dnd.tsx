@@ -91,6 +91,10 @@ export default function WorkspaceDndProvider({
       let targetIndex;
       if (isSortable(target)) {
         targetIndex = target.index;
+      } else {
+        const targetSemester =
+          plannerCourses[courseLocationMap.get(targetId)?.semesterIndex || -1];
+        targetIndex = targetSemester?.courseList.length || 0;
       }
 
       // --- PLANNER TO TOOLBOX ---
@@ -113,12 +117,6 @@ export default function WorkspaceDndProvider({
           : courseLocationMap.get(targetId)?.semesterId;
 
       if (!targetSemesterId) return;
-
-      if (targetIndex == undefined) {
-        const targetSemester =
-          plannerCourses[courseLocationMap.get(targetId)?.semesterIndex || -1];
-        targetIndex = targetSemester?.courseList.length || 0;
-      }
 
       if (sourceType === "toolbox-course" && !sourceSemesterMeta) {
         // Toolbox to Planner
@@ -192,10 +190,9 @@ export default function WorkspaceDndProvider({
       }
 
       if (
-        (targetId === "toolbox-button" ||
-          targetId === "toolbox" ||
-          targetType === "toolbox-course") &&
-        isSortable(target)
+        targetId === "toolbox-button" ||
+        targetId === "toolbox" ||
+        targetType === "toolbox-course"
       ) {
         if (sourceType !== "semester") {
           consolidateToolbox();

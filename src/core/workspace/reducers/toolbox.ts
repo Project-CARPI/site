@@ -53,6 +53,11 @@ export const ToolboxReducer = (
           uniqueMap.set(course.name, { ...course });
         }
       }
+
+      console.log(
+        "Consolidated Toolbox Courses:",
+        Array.from(uniqueMap.values()),
+      );
       return Array.from(uniqueMap.values());
     }
 

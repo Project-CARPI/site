@@ -1,7 +1,6 @@
 import React, { useState, useRef, useEffect } from "react";
 
 import { CollisionPriority } from "@dnd-kit/abstract";
-import { pointerIntersection } from "@dnd-kit/collision";
 import { useDroppable } from "@dnd-kit/react";
 import { useSortable } from "@dnd-kit/react/sortable";
 import { motion, AnimatePresence } from "framer-motion";
@@ -29,12 +28,12 @@ export default function SemesterBlock({ semester, index }: SemesterBlockProps) {
     isDragging,
   } = useSortable({
     id: semester.semesterID,
-    accept: ["semester"], // Only swap places with other semesters
-    collisionPriority: CollisionPriority.Low,
-    collisionDetector: pointerIntersection,
-    type: "semester",
     index,
+    accept: ["semester"],
+    type: "semester",
+    feedback: "clone",
     data: { type: "semester", semesterId: semester.semesterID },
+    collisionPriority: CollisionPriority.Low,
   });
 
   // --- DROPPABLE: For receiving Courses inside the Semester ---

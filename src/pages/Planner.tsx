@@ -44,16 +44,11 @@ const Planner: React.FC = () => {
             )}
           >
             {plannerCourses.map((semester, index) => (
-              <div
+              <SemesterBlock
                 key={semester.semesterID}
-                className="md:h-full flex flex-col justify-between min-w-0 w-full"
-              >
-                <SemesterBlock
-                  key={semester.semesterID}
-                  semester={semester}
-                  index={index}
-                />
-              </div>
+                semester={semester}
+                index={index}
+              />
             ))}
           </div>
         )}

@@ -53,6 +53,7 @@ export default function Toolbox() {
 
   return (
     <div
+      ref={ref}
       className={cn(
         "fixed bottom-0 left-0 w-full z-50 flex flex-col items-start pointer-events-none",
       )}
@@ -72,7 +73,6 @@ export default function Toolbox() {
       </div>
 
       <motion.div
-        ref={ref}
         animate={controls}
         initial={isOpen ? "open" : "closed"}
         variants={variants}

@@ -18,13 +18,13 @@ export default function WorkspaceDndProvider({
     moveSemester,
     addCourseToSemester,
     removeCourseFromSemester,
-    addCourseToToolbox,
     removeCourseFromToolbox,
     deleteSemester,
     resetPlanner,
     resetToolbox,
     consolidateToolbox,
     moveCourseInSemester,
+    insertCourseIntoToolbox,
   } = useCourseWorkspace();
 
   const snapshotToolbox = useRef(structuredClone(toolboxCourses));
@@ -88,13 +88,18 @@ export default function WorkspaceDndProvider({
 
       if (!sourceCourse) return;
 
+      let targetIndex;
+      if (isSortable(target)) {
+        targetIndex = target.index;
+      }
+
       // --- PLANNER TO TOOLBOX ---
       if (targetId === "toolbox" || targetType === "toolbox-course") {
         if (sourceType === "planner-course") {
           const sourceSemesterId = courseLocationMap.get(sourceId)?.semesterId;
           if (sourceSemesterId) {
             removeCourseFromSemester(sourceSemesterId, sourceId);
-            addCourseToToolbox(sourceCourse.data);
+            insertCourseIntoToolbox(sourceCourse, targetIndex ?? 0);
           }
         }
         return;
@@ -109,10 +114,7 @@ export default function WorkspaceDndProvider({
 
       if (!targetSemesterId) return;
 
-      let targetIndex;
-      if (isSortable(target)) {
-        targetIndex = target.index;
-      } else {
+      if (targetIndex == undefined) {
         const targetSemester =
           plannerCourses[courseLocationMap.get(targetId)?.semesterIndex || -1];
         targetIndex = targetSemester?.courseList.length || 0;
@@ -154,9 +156,9 @@ export default function WorkspaceDndProvider({
       addCourseToSemester,
       removeCourseFromToolbox,
       removeCourseFromSemester,
-      addCourseToToolbox,
       courseLocationMap,
       moveCourseInSemester,
+      insertCourseIntoToolbox,
     ],
   );
 
@@ -190,19 +192,13 @@ export default function WorkspaceDndProvider({
       }
 
       if (
-        targetId === "toolbox-button" ||
-        targetId === "toolbox" ||
-        targetType === "toolbox-course"
+        (targetId === "toolbox-button" ||
+          targetId === "toolbox" ||
+          targetType === "toolbox-course") &&
+        isSortable(target)
       ) {
         if (sourceType !== "semester") {
-          const semId = courseLocationMap.get(sourceId)?.semesterId;
-          if (semId) {
-            removeCourseFromSemester(semId, sourceId);
-            addCourseToToolbox(
-              source.data?.course?.data || source.data?.course,
-            );
-            consolidateToolbox();
-          }
+          consolidateToolbox();
         }
         return;
       }
@@ -232,7 +228,6 @@ export default function WorkspaceDndProvider({
       courseLocationMap,
       removeCourseFromSemester,
       removeCourseFromToolbox,
-      addCourseToToolbox,
     ],
   );
 

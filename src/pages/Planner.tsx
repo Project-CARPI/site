@@ -45,7 +45,7 @@ const Planner: React.FC = () => {
           >
             {plannerCourses.map((semester, index) => (
               <div
-                key={index}
+                key={semester.semesterID}
                 className="md:h-full flex flex-col justify-between min-w-0 w-full"
               >
                 <SemesterBlock

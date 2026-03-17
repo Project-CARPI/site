@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef } from "react";
 
 import { CollisionPriority } from "@dnd-kit/abstract";
+import { pointerIntersection } from "@dnd-kit/collision";
 import { useDroppable } from "@dnd-kit/react";
 import { motion, useAnimation } from "framer-motion";
 import { IoIosArrowUp } from "react-icons/io";
@@ -18,7 +19,8 @@ export default function Toolbox() {
     id: "toolbox",
     type: "toolbox",
     accept: ["planner-course", "toolbox-course"],
-    collisionPriority: CollisionPriority.Low,
+    collisionPriority: CollisionPriority.High,
+    collisionDetector: pointerIntersection,
   });
 
   const isDesktop = useIsDesktop();

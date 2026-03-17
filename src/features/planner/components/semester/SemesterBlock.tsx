@@ -1,7 +1,8 @@
 import React, { useState, useRef, useEffect } from "react";
 
 import { CollisionPriority } from "@dnd-kit/abstract";
-import { useDroppable } from "@dnd-kit/react"; // <-- 1. Import useDroppable
+import { pointerIntersection } from "@dnd-kit/collision";
+import { useDroppable } from "@dnd-kit/react";
 import { useSortable } from "@dnd-kit/react/sortable";
 import { motion, AnimatePresence } from "framer-motion";
 import { MdDragIndicator, MdDeleteOutline, MdExpandMore } from "react-icons/md";
@@ -30,6 +31,7 @@ export default function SemesterBlock({ semester, index }: SemesterBlockProps) {
     id: semester.semesterID,
     accept: ["semester"], // Only swap places with other semesters
     collisionPriority: CollisionPriority.Low,
+    collisionDetector: pointerIntersection,
     type: "semester",
     index,
     data: { type: "semester", semesterId: semester.semesterID },

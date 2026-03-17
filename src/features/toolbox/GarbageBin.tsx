@@ -1,5 +1,12 @@
+import { useEffect } from "react";
+
 import { CollisionPriority } from "@dnd-kit/abstract";
-import { useDroppable, useDragOperation } from "@dnd-kit/react";
+import { AutoScroller } from "@dnd-kit/dom";
+import {
+  useDroppable,
+  useDragOperation,
+  useDragDropManager,
+} from "@dnd-kit/react";
 import { MdDelete } from "react-icons/md";
 
 import { cn } from "@/lib/classnames";
@@ -13,10 +20,30 @@ export default function GarbageBin() {
   });
 
   const operation = useDragOperation();
+  const manager = useDragDropManager();
 
   const draggedType = operation?.source?.data?.type as string | undefined;
   const showBin =
     draggedType === "planner-course" || draggedType === "toolbox-course";
+
+  useEffect(() => {
+    if (!manager) return;
+
+    // Grab the active AutoScroller plugin from the core registry
+    const autoScroller = manager.registry.plugins.get(AutoScroller);
+
+    if (autoScroller) {
+      autoScroller.disabled = isDropTarget;
+    }
+
+    // Safety cleanup: Ensure autoscrolling is re-enabled if the bin
+    // unmounts or the drag ends while still hovering.
+    return () => {
+      if (autoScroller && isDropTarget) {
+        autoScroller.disabled = false;
+      }
+    };
+  }, [isDropTarget, manager]);
 
   return (
     <button

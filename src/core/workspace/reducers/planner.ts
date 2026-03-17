@@ -30,7 +30,11 @@ export const PlannerReducer = (
       return state.filter((s) => s.semesterID !== action.payload.semesterID);
 
     case "MOVE_SEMESTER":
-      return arrayMove(state, action.payload.fromIndex, action.payload.toIndex);
+      return arrayMove(
+        state,
+        action.payload.fromIndex,
+        action.payload.toIndex,
+      ) as SemesterType[];
 
     case "UPDATE_SEMESTER":
       return state.map((s) =>

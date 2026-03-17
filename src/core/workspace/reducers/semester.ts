@@ -58,7 +58,7 @@ export const SemesterReducer = (
           state.courseList,
           action.payload.fromIndex,
           action.payload.toIndex,
-        ),
+        ) as UserCourse[],
       };
 
     case "UPDATE_COURSELIST":

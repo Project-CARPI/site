@@ -28,7 +28,11 @@ export const ToolboxReducer = (
     }
 
     case "MOVE_COURSE":
-      return arrayMove(state, action.payload.fromIndex, action.payload.toIndex);
+      return arrayMove(
+        state,
+        action.payload.fromIndex,
+        action.payload.toIndex,
+      ) as UserCourse[];
 
     case "REMOVE_COURSE":
       return state.filter((c) => c.id !== action.payload.courseID);

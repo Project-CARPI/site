@@ -1,6 +1,7 @@
 import React, { useState, useRef, useEffect } from "react";
 
 import { CollisionPriority } from "@dnd-kit/abstract";
+import { closestCenter } from "@dnd-kit/collision";
 import { useDroppable } from "@dnd-kit/react";
 import { useSortable } from "@dnd-kit/react/sortable";
 import { motion, AnimatePresence } from "framer-motion";
@@ -34,6 +35,7 @@ export default function SemesterBlock({ semester, index }: SemesterBlockProps) {
     feedback: "clone",
     data: { type: "semester", semesterId: semester.semesterID },
     collisionPriority: CollisionPriority.Low,
+    collisionDetector: closestCenter,
   });
 
   // --- DROPPABLE: For receiving Courses inside the Semester ---

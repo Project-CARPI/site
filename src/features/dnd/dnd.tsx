@@ -40,11 +40,18 @@ export default function WorkspaceDndProvider({
   ]);
 
   const courseLocationMap = useMemo(() => {
-    const map = new Map<string, string>();
+    const map = new Map<
+      string,
+      { semesterId: string; semesterIndex: number; index: number }
+    >();
 
-    plannerCourses.forEach((semester) => {
-      semester.courseList.forEach((course) => {
-        map.set(course.id, semester.semesterID);
+    plannerCourses.forEach((semester, semesterIndex) => {
+      semester.courseList.forEach((course, index) => {
+        map.set(course.id, {
+          semesterId: semester.semesterID,
+          semesterIndex,
+          index,
+        });
       });
     });
 
@@ -84,7 +91,7 @@ export default function WorkspaceDndProvider({
       // --- PLANNER TO TOOLBOX ---
       if (targetId === "toolbox" || targetType === "toolbox-course") {
         if (sourceType === "planner-course") {
-          const sourceSemesterId = courseLocationMap.get(sourceId);
+          const sourceSemesterId = courseLocationMap.get(sourceId)?.semesterId;
           if (sourceSemesterId) {
             removeCourseFromSemester(sourceSemesterId, sourceId);
             addCourseToToolbox(sourceCourse.data);
@@ -94,11 +101,11 @@ export default function WorkspaceDndProvider({
       }
 
       // --- ALL PLANNER MOVES (CROSS AND SAME SEMESTER) ---
-      const currentSourceSemesterId = courseLocationMap.get(sourceId);
+      const sourceSemesterMeta = courseLocationMap.get(sourceId);
       const targetSemesterId =
         targetType === "semester"
           ? target.data?.semesterId || targetId
-          : courseLocationMap.get(targetId);
+          : courseLocationMap.get(targetId)?.semesterId;
 
       if (!targetSemesterId) return;
 
@@ -106,13 +113,12 @@ export default function WorkspaceDndProvider({
       if (isSortable(target)) {
         targetIndex = target.index;
       } else {
-        const targetSemester = plannerCourses.find(
-          (s) => s.semesterID === targetSemesterId,
-        );
+        const targetSemester =
+          plannerCourses[courseLocationMap.get(targetId)?.semesterIndex || -1];
         targetIndex = targetSemester?.courseList.length || 0;
       }
 
-      if (sourceType === "toolbox-course" && !currentSourceSemesterId) {
+      if (sourceType === "toolbox-course" && !sourceSemesterMeta) {
         // Toolbox to Planner
         removeCourseFromToolbox(sourceId);
         addCourseToSemester(
@@ -120,15 +126,10 @@ export default function WorkspaceDndProvider({
           { ...sourceCourse, id: sourceId, count: 1 },
           targetIndex,
         );
-      } else if (currentSourceSemesterId) {
-        if (currentSourceSemesterId === targetSemesterId) {
+      } else if (sourceSemesterMeta) {
+        if (sourceSemesterMeta.semesterId === targetSemesterId) {
           // SAME SEMESTER: Dynamically compute index to prevent React batching staleness
-          const semester = plannerCourses.find(
-            (s) => s.semesterID === currentSourceSemesterId,
-          );
-          const currentCourseIndex = semester?.courseList.findIndex(
-            (c) => c.id === sourceId,
-          );
+          const currentCourseIndex = sourceSemesterMeta.index;
 
           if (
             currentCourseIndex !== undefined &&
@@ -136,14 +137,14 @@ export default function WorkspaceDndProvider({
             currentCourseIndex !== targetIndex
           ) {
             moveCourseInSemester(
-              currentSourceSemesterId,
+              sourceSemesterMeta.semesterId,
               currentCourseIndex,
               targetIndex,
             );
           }
         } else {
           // CROSS SEMESTER: Instantly mount to new list so DOM keeps track of ID
-          removeCourseFromSemester(currentSourceSemesterId, sourceId);
+          removeCourseFromSemester(sourceSemesterMeta.semesterId, sourceId);
           addCourseToSemester(targetSemesterId, sourceCourse, targetIndex);
         }
       }
@@ -181,7 +182,7 @@ export default function WorkspaceDndProvider({
           deleteSemester(source.data?.semester?.semesterID || sourceId);
         } else {
           // Always look up the *current* state before deleting, as onDragOver might have moved it
-          const semId = courseLocationMap.get(sourceId);
+          const semId = courseLocationMap.get(sourceId)?.semesterId;
           if (semId) removeCourseFromSemester(semId, sourceId);
           else removeCourseFromToolbox(sourceId);
         }
@@ -194,7 +195,7 @@ export default function WorkspaceDndProvider({
         targetType === "toolbox-course"
       ) {
         if (sourceType !== "semester") {
-          const semId = courseLocationMap.get(sourceId);
+          const semId = courseLocationMap.get(sourceId)?.semesterId;
           if (semId) {
             removeCourseFromSemester(semId, sourceId);
             addCourseToToolbox(

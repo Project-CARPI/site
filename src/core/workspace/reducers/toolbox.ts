@@ -54,10 +54,6 @@ export const ToolboxReducer = (
         }
       }
 
-      console.log(
-        "Consolidated Toolbox Courses:",
-        Array.from(uniqueMap.values()),
-      );
       return Array.from(uniqueMap.values());
     }
 

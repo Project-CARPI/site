@@ -12,7 +12,7 @@ export default function CatalogResults() {
   } = useCatalog();
 
   return (
-    <div className="overflow-y-auto flex-grow">
+    <div className="overflow-y-auto">
       {searchResults.length > 0 ? (
         <div className="h-full overflow-y-auto flex flex-wrap justify-center gap-4 pr-3 pt-3">
           {searchResults.map((course, index) => (

@@ -109,6 +109,21 @@ export const usePlannerActions = (
     [dispatch],
   );
 
+  const resetPlanner = useCallback(
+    (semesters: SemesterType[]) => {
+      semesters.forEach((semester) => {
+        dispatch({
+          type: "UPDATE_SEMESTER",
+          payload: {
+            semesterID: semester.semesterID,
+            updatedSemester: semester,
+          },
+        });
+      });
+    },
+    [dispatch],
+  );
+
   return {
     addCourseToSemester,
     removeCourseFromSemester,
@@ -118,5 +133,6 @@ export const usePlannerActions = (
     addSemester,
     moveSemester,
     deleteSemester,
+    resetPlanner,
   };
 };

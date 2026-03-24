@@ -1,5 +1,6 @@
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 
+import PageMeta from "@/components/PageMeta";
 import { CourseWorkspaceProvider } from "@/core/workspace/provider";
 import WorkspaceDndProvider from "@/features/dnd/dnd.tsx";
 import Toolbox from "@/features/toolbox/Toolbox";

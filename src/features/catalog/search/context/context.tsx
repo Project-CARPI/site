@@ -10,6 +10,7 @@ interface CatalogContextType {
     semesters: FilterData[];
   };
   selectedFilters: FilterData[];
+  selectedFilterKeys: Set<string>;
   toggleFilter: (filter: FilterData) => void;
   clearFilters: () => void;
 

@@ -18,7 +18,7 @@ export default function FilterSection({
   tags,
   showCode = false,
 }: FilterSectionProps) {
-  const { selectedFilters } = useCatalog();
+  const { selectedFilterKeys } = useCatalog();
 
   const isDesktop = useIsDesktop();
   const [isExpanded, setIsExpanded] = useState(false);
@@ -48,9 +48,7 @@ export default function FilterSection({
               key={`${tag.type}-${tag.code}`}
               filter={tag}
               isSelectable={true}
-              isSelected={selectedFilters.some(
-                (sf) => sf.code === tag.code && sf.type === tag.type,
-              )}
+              isSelected={selectedFilterKeys.has(`${tag.type}-${tag.code}`)}
               showCode={showCode}
             />
           ))}

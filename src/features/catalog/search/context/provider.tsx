@@ -74,10 +74,11 @@ export function CatalogProvider({ children }: { children: ReactNode }) {
       return;
     }
 
-    setIsLoading(true);
     setHasSearched(true);
 
     debounceTimeout.current = setTimeout(async () => {
+      setIsLoading(true);
+
       const getCodes = (type: string) =>
         selectedFilters.filter((f) => f.type === type).map((f) => f.code);
 
@@ -98,10 +99,15 @@ export function CatalogProvider({ children }: { children: ReactNode }) {
     };
   }, [selectedFilters, searchPrompt]);
 
+  const selectedFilterKeys = useMemo(() => {
+    return new Set(selectedFilters.map((f) => `${f.type}-${f.code}`));
+  }, [selectedFilters]);
+
   const value = useMemo(
     () => ({
       filters,
       selectedFilters,
+      selectedFilterKeys,
       toggleFilter,
       clearFilters: () => setSelectedFilters([]),
       searchPrompt,
@@ -115,6 +121,7 @@ export function CatalogProvider({ children }: { children: ReactNode }) {
     [
       filters,
       selectedFilters,
+      selectedFilterKeys,
       searchPrompt,
       searchResults,
       isLoading,

@@ -2,13 +2,13 @@ import { useCatalog } from "@/features/catalog/search/context/useCatalog";
 import { cn } from "@/lib/classnames";
 
 export default function DepartmentFilters() {
-  const { toggleFilter, filters, selectedFilters } = useCatalog();
+  const { toggleFilter, filters, selectedFilterKeys } = useCatalog();
 
   return (
     <div className="md:overflow-y-auto flex flex-wrap justify-center gap-1 mt-2">
       {filters.subjects.map((subject) => {
-        const isSelected = selectedFilters.some(
-          (sf) => sf.code === subject.code && sf.type === subject.type,
+        const isSelected = selectedFilterKeys.has(
+          `${subject.type}-${subject.code}`,
         );
 
         return (

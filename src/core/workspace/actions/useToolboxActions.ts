@@ -34,6 +34,7 @@ export const useToolboxActions = (
           name: `${courseData.subj_code} ${courseData.code_num}`,
           count: 1,
           data: courseData,
+          credits: courseData.credit_max,
         };
 
         dispatch({

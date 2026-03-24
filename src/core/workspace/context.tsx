@@ -19,6 +19,11 @@ export interface CourseWorkspaceContextType {
     index?: number,
   ) => void;
   removeCourseFromSemester: (semesterID: string, courseID: string) => void;
+  updateCourseCredits: (
+    semesterID: string,
+    courseID: string,
+    credits: number,
+  ) => void;
   moveCourseInSemester: (
     semesterID: string,
     fromIndex: number,

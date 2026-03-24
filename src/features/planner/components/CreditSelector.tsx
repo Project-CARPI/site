@@ -38,14 +38,17 @@ export default function CreditSelector({
 
   if (!isVariableCredits) return null;
 
+  // Handle pluralization edge case
+  const creditText = currentCredits === 1 ? "credit" : "credits";
+
   return (
     <div
       className="relative flex items-center gap-1 text-sm bg-carpipink/10 rounded-lg px-1.5 py-0.5 border border-carpipink/30 hover:bg-carpipink/20 transition-colors"
       onPointerDown={(e) => e.stopPropagation()}
     >
       <span className="font-bold">{currentCredits}</span>
-      <span className="text-xs opacity-80 inline md:inline lg:hidden">cr</span>
-      <span className="text-xs opacity-80 hidden lg:inline">credits</span>
+      <span className="text-xs opacity-80 block lg:hidden">cr</span>
+      <span className="text-xs opacity-80 hidden lg:block">{creditText}</span>
 
       <select
         value={currentCredits}

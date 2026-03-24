@@ -1,82 +1,53 @@
 import React, { useState, useRef, useEffect } from "react";
 
-import { useDroppable } from "@dnd-kit/core";
-import {
-  SortableContext,
-  verticalListSortingStrategy,
-} from "@dnd-kit/sortable";
-import { motion, AnimatePresence } from "framer-motion";
-import { MdDragIndicator, MdDeleteOutline, MdExpandMore } from "react-icons/md";
+import { CollisionPriority } from "@dnd-kit/abstract";
+import { closestCenter } from "@dnd-kit/collision";
+import { useDroppable } from "@dnd-kit/react";
+import { useSortable } from "@dnd-kit/react/sortable";
+import { AnimatePresence } from "framer-motion";
+import { MdDragIndicator, MdDeleteOutline } from "react-icons/md";
 
+import Course from "@/components/course/Course";
 import ErrorBanner from "@/components/ErrorBanner";
 import { useCourseWorkspace } from "@/core/workspace/useCourseWorkspace";
-import { SortableItem } from "@/features/dnd/components/SortableItem";
-import { useSortableItem } from "@/features/dnd/useSortableItem";
-import PlannerCourse from "@/features/planner/components/course/PlannerCourse";
 import CourseDropzone from "@/features/planner/components/semester/CourseDropzone";
 import SeasonSelector from "@/features/planner/components/semester/SeasonSelector";
+import { usePlannerLayoutStore } from "@/features/planner/PlannerLayoutStore";
 import { cn } from "@/lib/classnames";
 import { SemesterType } from "@/lib/types";
 
-export interface SemesterBlockProps {
+export type SemesterBlockProps = {
   semester: SemesterType;
-  isDragging?: boolean;
-  globalCollapse?: boolean;
-}
+  index: number;
+};
 
-export default function SemesterBlock({
-  semester,
-  isDragging,
-  globalCollapse = false,
-}: SemesterBlockProps) {
-  // Local state to manage whether this semester block is collapsed or expanded.
-  const [isCollapsed, setIsCollapsed] = useState(globalCollapse);
-  useEffect(() => {
-    const isDesktop = window.innerWidth >= 1024;
-    if (isDesktop) {
-      setIsCollapsed(false);
-    } else {
-      setIsCollapsed(globalCollapse);
-    }
-  }, [globalCollapse]);
-
-  /**
-   * DROPZONES
-   * We have two distinct droppable areas:
-   *  - setListRef: The main body of the semester block, where courses are dropped
-   *    and sorted.
-   *  - setHeaderRef: The header area of the semester block, which is only active
-   *    when the block is collapsed. Hovering over this for a moment will auto-expand
-   *    the block, allowing users to drop courses into it without needing to manually
-   *    expand first.
-   */
-  const { setNodeRef: setListRef, isOver: isListOver } = useDroppable({
+export default function SemesterBlock({ semester, index }: SemesterBlockProps) {
+  // --- SORTABLE: For dragging the Semester block itself ---
+  const {
+    handleRef,
+    ref: sortableRef,
+    isDragging,
+  } = useSortable({
     id: semester.semesterID,
+    index,
+    accept: ["semester"],
+    type: "semester",
+    feedback: "clone",
+    data: { type: "semester", semesterId: semester.semesterID },
+    collisionPriority: CollisionPriority.Low,
+    collisionDetector: closestCenter,
   });
-  const { setNodeRef: setHeaderRef, isOver: isHeaderOver } = useDroppable({
-    id: `${semester.semesterID}-header`,
-    disabled: !isCollapsed,
+
+  // --- DROPPABLE: For receiving Courses inside the Semester ---
+  const { ref: droppableRef, isDropTarget } = useDroppable({
+    id: `dropzone-${semester.semesterID}`,
+    accept: ["planner-course", "toolbox-course"], // Accept courses
+    data: { type: "semester", semesterId: semester.semesterID },
   });
 
-  const { listeners, attributes } = useSortableItem();
-
-  // If the user hovers over the header dropzone, a time starts. If they hover for
-  // for >= 400ms, we allow the block to auto-expand. This spring-loads the block
-  // open to prevent layouts shifts when users are trying to drag courses into blocks.
-  useEffect(() => {
-    let timeoutId: NodeJS.Timeout;
-
-    if (isHeaderOver && isCollapsed) {
-      timeoutId = setTimeout(() => {
-        setIsCollapsed(false);
-      }, 400);
-    }
-    return () => {
-      if (timeoutId) {
-        clearTimeout(timeoutId);
-      }
-    };
-  }, [isHeaderOver, isCollapsed]);
+  // Layout state
+  const { allExpanded, expandedSemesters } = usePlannerLayoutStore();
+  const isOpen = expandedSemesters[semester.semesterID] ?? allExpanded;
 
   /* SEMESTER CONTROLS */
   const { updateSemesterName, deleteSemester } = useCourseWorkspace();
@@ -103,13 +74,11 @@ export default function SemesterBlock({
   };
 
   /* VALIDATION LOGIC */
-  // check for credit limits
   const CREDIT_LIMIT_WITHOUT_APPROVAL = 21;
   const CREDIT_LIMIT = 23;
   const over_limit = semester.creditsTotal > CREDIT_LIMIT_WITHOUT_APPROVAL;
   const over_hard_limit = semester.creditsTotal > CREDIT_LIMIT;
 
-  // check for duplicate courses
   const hasDuplicateCourses = semester.courseList.some((course, index) => {
     return (
       semester.courseList.findIndex(
@@ -119,34 +88,29 @@ export default function SemesterBlock({
   });
 
   return (
-    <motion.div
-      layout
+    <div
+      ref={sortableRef}
       className={cn(
         "flex flex-col rounded-2xl w-full max-w-full relative group",
         "bg-[color-mix(in_oklab,var(--color-darkblue)_10%,var(--color-carpipink)_90%)]",
-        isCollapsed ? "p-3 h-auto" : "p-4 h-full",
+        !isOpen ? "p-3 h-auto" : "p-4 h-full",
         { "border-2 border-rosewood": over_limit },
       )}
     >
-      <motion.div
-        layout
-        ref={setHeaderRef}
-        className={cn("flex flex-col gap-1 w-full", !isCollapsed && "mb-3")}
-      >
+      <div className={cn("flex flex-col gap-1 w-full", isOpen && "mb-3")}>
         <div className="flex items-center justify-between w-full">
           <div className="flex items-center gap-2 flex-1 min-w-0">
-            <div
+            <button
+              ref={handleRef}
               className={cn(
-                "hover:bg-darkblue/20 py-1.5 px-0.75 rounded-lg flex-shrink-0 ",
+                "hover:bg-darkblue/20 py-1.5 px-0.75 rounded-lg shrink-0 ",
                 isDragging
                   ? "cursor-grabbing"
                   : "cursor-grab active:cursor-grabbing",
               )}
-              {...listeners}
-              {...attributes}
             >
               <MdDragIndicator size={22} />
-            </div>
+            </button>
 
             {isEditing ? (
               <input
@@ -161,7 +125,7 @@ export default function SemesterBlock({
             ) : (
               <span
                 onClick={() => setIsEditing(true)}
-                className="font-bold text-md truncate cursor-text hover:text-darkblue/70 transition-colors w-full"
+                className="font-bold text-md truncate cursor-text hover:text-darkblue/70 transition-colors w-full block min-w-0"
               >
                 {semester.semesterTitle ||
                   `Semester ${semester.semesterNumber}`}
@@ -186,18 +150,6 @@ export default function SemesterBlock({
                 </div>
               </div>
             </div>
-            <button
-              onClick={() => setIsCollapsed(!isCollapsed)}
-              className="lg:hidden text-darkblue/50 hover:text-darkblue transition-colors p-1 hover:bg-darkblue/10 rounded-lg hover:cursor-pointer"
-              title={isCollapsed ? "Expand Semester" : "Collapse Semester"}
-            >
-              <motion.div
-                animate={{ rotate: isCollapsed ? -90 : 0 }}
-                transition={{ duration: 0.2 }}
-              >
-                <MdExpandMore size={22} />
-              </motion.div>
-            </button>
           </div>
         </div>
 
@@ -220,11 +172,11 @@ export default function SemesterBlock({
             {semester.creditsTotal} Credits
           </div>
         </div>
-      </motion.div>
+      </div>
 
-      <AnimatePresence initial={!isCollapsed}>
-        {!isCollapsed && (
-          <motion.div className="overflow-hidden space-y-2 flex-1">
+      <AnimatePresence initial={isOpen}>
+        {isOpen && (
+          <div className="overflow-hidden space-y-2 flex-1">
             {over_limit && (
               <ErrorBanner>
                 You are over the maximum credit limit of{" "}
@@ -240,35 +192,31 @@ export default function SemesterBlock({
             )}
 
             <div
-              ref={setListRef} // Assign our main List dropzone here!
-              className="flex flex-col gap-2 h-full"
+              ref={droppableRef}
+              className={cn(
+                "flex flex-col gap-2 h-full min-h-15 rounded-xl transition-colors",
+                isDropTarget && "bg-black/5",
+              )}
             >
-              <SortableContext
-                items={semester.courseList.map((c) => c.id)}
-                strategy={verticalListSortingStrategy}
-              >
-                {semester.courseList.length === 0 ? (
-                  <CourseDropzone isHover={isListOver} />
-                ) : (
-                  semester.courseList.map((course) => (
-                    <SortableItem
-                      key={course.id}
-                      id={course.id}
-                      data={course}
-                      type="course"
-                    >
-                      <PlannerCourse
-                        course={course}
-                        semesterId={semester.semesterID}
-                      />
-                    </SortableItem>
-                  ))
-                )}
-              </SortableContext>
+              {semester.courseList.length === 0 ? (
+                <CourseDropzone isHover={isDropTarget} />
+              ) : (
+                semester.courseList.map((course, index) => (
+                  <Course
+                    variant="planner"
+                    key={course.id}
+                    id={course.id}
+                    index={index}
+                    group={semester.semesterID}
+                    course={course}
+                    semesterId={semester.semesterID}
+                  />
+                ))
+              )}
             </div>
-          </motion.div>
+          </div>
         )}
       </AnimatePresence>
-    </motion.div>
+    </div>
   );
 }

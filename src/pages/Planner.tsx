@@ -1,12 +1,11 @@
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 
-import { SortableContext, rectSortingStrategy } from "@dnd-kit/sortable";
 import { useNavigate } from "react-router-dom";
 
 import { useCourseWorkspace } from "@/core/workspace/useCourseWorkspace";
-import { SortableItem } from "@/features/dnd/components/SortableItem";
 import ActionMenu from "@/features/planner/components/ActionMenu";
 import SemesterBlock from "@/features/planner/components/semester/SemesterBlock";
+import { cn } from "@/lib/classnames";
 import useIsDesktop from "@/lib/hooks/useIsDesktop";
 
 const Planner: React.FC = () => {
@@ -20,50 +19,37 @@ const Planner: React.FC = () => {
   }, [isDesktop, navigate]);
 
   const { plannerCourses } = useCourseWorkspace();
-  const [isAllCollapsed, setIsAllCollapsed] = useState(false);
 
   return (
     <div className="md:h-[calc(100vh-10rem)]">
       <section className="h-full w-full flex flex-col gap-4">
         <div className="flex justify-between sticky top-0 bg-carpipink pt-4">
           <h1 className="font-bold text-xl">Planner</h1>
-          <ActionMenu
-            isAllCollapsed={isAllCollapsed}
-            toggleCollapse={() => setIsAllCollapsed(!isAllCollapsed)}
-          />
+          <ActionMenu />
         </div>
 
         {plannerCourses.length === 0 ? (
           <div className="flex flex-col justify-center text-center opacity-60 italic">
             <p>
               No semesters added yet. <br></br>
-              Click "Add Semester Block" to get started!
+              Click "+ New Semester" to get started!
             </p>
           </div>
         ) : (
-          <div className="md:overflow-y-auto grid lg:grid-cols-2 gap-4 md:pr-4 pb-30 overflow-x-hidden">
-            <SortableContext
-              items={plannerCourses.map((s) => "sem-" + s.semesterID)}
-              strategy={rectSortingStrategy}
-            >
-              {plannerCourses.map((semester) => (
-                <SortableItem
-                  key={semester.semesterID}
-                  id={"sem-" + semester.semesterID}
-                  data={semester}
-                  type="semester"
-                  useHandle={true}
-                >
-                  <div className="md:h-full flex flex-col justify-between min-w-0 w-full">
-                    <SemesterBlock
-                      key={semester.semesterID}
-                      semester={semester}
-                      globalCollapse={isAllCollapsed}
-                    />
-                  </div>
-                </SortableItem>
-              ))}
-            </SortableContext>
+          <div
+            className={cn(
+              "grid grid-cols-1 lg:grid-cols-2",
+              "items-start gap-4 pb-32 overflow-x-hidden",
+              "md:overflow-y-auto md:pr-4",
+            )}
+          >
+            {plannerCourses.map((semester, index) => (
+              <SemesterBlock
+                key={semester.semesterID}
+                semester={semester}
+                index={index}
+              />
+            ))}
           </div>
         )}
       </section>

@@ -124,14 +124,9 @@ export const usePlannerActions = (
 
   const resetPlanner = useCallback(
     (semesters: SemesterType[]) => {
-      semesters.forEach((semester) => {
-        dispatch({
-          type: "UPDATE_SEMESTER",
-          payload: {
-            semesterID: semester.semesterID,
-            updatedSemester: semester,
-          },
-        });
+      dispatch({
+        type: "RESET_PLANNER",
+        payload: { semesters },
       });
     },
     [dispatch],

@@ -16,7 +16,8 @@ export type PlannerAction =
   | {
       type: "SEMESTER_ACTION";
       payload: { semesterID: string; action: SemesterAction };
-    };
+    }
+  | { type: "RESET_PLANNER"; payload: { semesters: SemesterType[] } };
 
 export const PlannerReducer = (
   state: SemesterType[],
@@ -49,6 +50,9 @@ export const PlannerReducer = (
           ? SemesterReducer(s, action.payload.action)
           : s,
       );
+
+    case "RESET_PLANNER":
+      return action.payload.semesters;
 
     default:
       return state;

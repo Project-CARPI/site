@@ -1,11 +1,17 @@
 import { useState, useCallback, useRef, useMemo } from "react";
 
 import { PointerSensor, KeyboardSensor } from "@dnd-kit/dom";
-import { DragDropProvider, DragDropEventHandlers } from "@dnd-kit/react";
+import {
+  DragDropProvider,
+  DragDropEventHandlers,
+  DragOverlay,
+} from "@dnd-kit/react";
 import { isSortable } from "@dnd-kit/react/sortable";
+import { MdDragIndicator, MdOutlineMoreHoriz } from "react-icons/md";
 
 import { v4 as uuidv4 } from "uuid";
 
+import CourseLabel from "@/components/course/CourseLabel";
 import { useCourseWorkspace } from "@/core/workspace/useCourseWorkspace";
 import { APICourse, UserCourse } from "@/lib/types";
 
@@ -30,6 +36,9 @@ export default function WorkspaceDndProvider({
 
   const snapshotToolbox = useRef(structuredClone(toolboxCourses));
   const snapshotPlanner = useRef(structuredClone(plannerCourses));
+
+  const [draggedCatalogCourse, setDraggedCatalogCourse] =
+    useState<APICourse | null>(null);
 
   const [sensors] = useState(() => [
     PointerSensor.configure({
@@ -59,12 +68,18 @@ export default function WorkspaceDndProvider({
     return map;
   }, [plannerCourses]);
 
-  const handleDragStart = useCallback<
-    DragDropEventHandlers["onDragStart"]
-  >(() => {
-    snapshotPlanner.current = structuredClone(plannerCourses);
-    snapshotToolbox.current = structuredClone(toolboxCourses);
-  }, [plannerCourses, toolboxCourses]);
+  const handleDragStart = useCallback<DragDropEventHandlers["onDragStart"]>(
+    (event) => {
+      snapshotPlanner.current = structuredClone(plannerCourses);
+      snapshotToolbox.current = structuredClone(toolboxCourses);
+
+      const { source } = event.operation;
+      if (source?.data?.type === "catalog-course") {
+        setDraggedCatalogCourse(source.data.course as APICourse);
+      }
+    },
+    [plannerCourses, toolboxCourses],
+  );
 
   const handleDragOver = useCallback<DragDropEventHandlers["onDragOver"]>(
     (event) => {
@@ -166,6 +181,8 @@ export default function WorkspaceDndProvider({
 
   const handleDragEnd = useCallback<DragDropEventHandlers["onDragEnd"]>(
     (event) => {
+      setDraggedCatalogCourse(null);
+
       const { source, target } = event.operation;
 
       if (event.canceled || !target) {
@@ -277,6 +294,17 @@ export default function WorkspaceDndProvider({
       onDragEnd={handleDragEnd}
     >
       {children}
+      <DragOverlay disabled={!draggedCatalogCourse} dropAnimation={null}>
+        {draggedCatalogCourse && (
+          <div className="flex justify-between bg-darkblue rounded-2xl text-carpipink gap-4 px-2 py-3 shadow-xl cursor-grabbing select-none">
+            <div className="flex gap-2 items-center">
+              <MdDragIndicator size={22} />
+              <CourseLabel course={draggedCatalogCourse} showCredits />
+            </div>
+            <MdOutlineMoreHoriz className="text-2xl opacity-40" />
+          </div>
+        )}
+      </DragOverlay>
     </DragDropProvider>
   );
 }

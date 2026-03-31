@@ -125,29 +125,6 @@ function PlannerCourseView({
             <CourseLabel course={course.data} showCredits />
           </div>
 
-          <Popover.Root
-            open={popoverOpen && !isDragging}
-            onOpenChange={setPopoverOpen}
-          >
-            <Popover.Trigger asChild>
-              <button
-                type="button"
-                className="outline-none"
-                aria-label="Course options"
-              >
-                <MdOutlineMoreHoriz className="cursor-pointer text-2xl" />
-              </button>
-            </Popover.Trigger>
-            <Popover.Content
-              className={menuClassName}
-              side="bottom"
-              align="end"
-            >
-              <CourseMenuContent
-                options={menuOptions}
-                onItemSelect={() => setPopoverOpen(false)}
-                ItemComponent="button"
-                SeparatorComponent="div"
           <div className="flex flex-row gap-2">
             <div className="items-center flex">
               <CreditSelector
@@ -164,7 +141,11 @@ function PlannerCourseView({
               onOpenChange={setPopoverOpen}
             >
               <Popover.Trigger asChild>
-                <button className="outline-none">
+                <button
+                  type="button"
+                  className="outline-none"
+                  aria-label="Course options"
+                >
                   <MdOutlineMoreHoriz className="cursor-pointer text-2xl" />
                 </button>
               </Popover.Trigger>

@@ -1,5 +1,6 @@
 import { useState } from "react";
 
+import { useDraggable } from "@dnd-kit/react";
 import { motion } from "framer-motion";
 import { IoAdd } from "react-icons/io5";
 
@@ -26,6 +27,12 @@ const Course: React.FC<CourseProps> = ({ course }) => {
   const { filters } = useCatalog();
   const { getCourseCount } = useCourseWorkspace();
 
+  const { ref, isDragging } = useDraggable({
+    id: `catalog-${course.subj_code}-${course.code_num}`,
+    type: "catalog-course",
+    data: { type: "catalog-course", course },
+  });
+
   const attrFilters = findFiltersForCourse(
     course.attr_list || [],
     filters.attributes,
@@ -43,7 +50,8 @@ const Course: React.FC<CourseProps> = ({ course }) => {
 
   return (
     <div
-      className="relative bg-carpipink hover:cursor-pointer hover:bg-darkblue/10 border-1 border-black rounded-xl w-full p-4"
+      ref={ref}
+      className={`relative bg-carpipink hover:cursor-pointer hover:bg-darkblue/10 border-1 border-black rounded-xl w-full p-4 ${isDragging ? "opacity-50" : ""}`}
       onClick={toggleOpen}
     >
       <CourseBadge
@@ -98,6 +106,8 @@ interface AddButtonProps {
 const AddButton: React.FC<AddButtonProps> = ({ addCourse }) => {
   return (
     <button
+      type="button"
+      aria-label="Add course to toolbox"
       className={`hover:cursor-pointer hover:bg-darkblue hover:text-carpipink border-2 border-darkblue rounded-full p-1 text-4xl`}
       onClick={addCourse}
     >

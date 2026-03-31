@@ -111,7 +111,7 @@ function PlannerCourseView({
           )}
         >
           <div className="flex gap-2 items-center">
-            <button ref={handleRef}>
+            <button ref={handleRef} type="button" aria-label="Drag to reorder">
               <MdDragIndicator size={22} />
             </button>
             <CourseLabel course={course.data} showCredits />
@@ -122,7 +122,11 @@ function PlannerCourseView({
             onOpenChange={setPopoverOpen}
           >
             <Popover.Trigger asChild>
-              <button className="outline-none">
+              <button
+                type="button"
+                className="outline-none"
+                aria-label="Course options"
+              >
                 <MdOutlineMoreHoriz className="cursor-pointer text-2xl" />
               </button>
             </Popover.Trigger>

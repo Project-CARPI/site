@@ -48,6 +48,8 @@ export default function GarbageBin() {
   return (
     <button
       ref={ref}
+      type="button"
+      aria-label="Delete course"
       className={cn(
         "w-fit transition-opacity duration-200",
         showBin ? "opacity-100" : "opacity-0 pointer-events-none",

@@ -4,8 +4,10 @@ import { PointerSensor, KeyboardSensor } from "@dnd-kit/dom";
 import { DragDropProvider, DragDropEventHandlers } from "@dnd-kit/react";
 import { isSortable } from "@dnd-kit/react/sortable";
 
+import { v4 as uuidv4 } from "uuid";
+
 import { useCourseWorkspace } from "@/core/workspace/useCourseWorkspace";
-import { UserCourse } from "@/lib/types";
+import { APICourse, UserCourse } from "@/lib/types";
 
 export default function WorkspaceDndProvider({
   children,
@@ -84,6 +86,9 @@ export default function WorkspaceDndProvider({
       const sourceType = source.data?.type;
       const targetType = target.data?.type;
       const sourceCourse = source.data?.course as UserCourse | undefined;
+
+      // Catalog courses are handled in onDragEnd only
+      if (sourceType === "catalog-course") return;
 
       if (!sourceCourse) return;
 
@@ -175,6 +180,40 @@ export default function WorkspaceDndProvider({
       const sourceType = source.data?.type;
       const targetType = target.data?.type;
 
+      // --- CATALOG TO PLANNER ---
+      if (sourceType === "catalog-course") {
+        const apiCourse = source.data?.course as APICourse | undefined;
+        if (!apiCourse) return;
+
+        const targetSemesterId =
+          targetType === "semester"
+            ? target.data?.semesterId || targetId
+            : courseLocationMap.get(targetId)?.semesterId;
+
+        if (!targetSemesterId) return;
+
+        let targetIndex;
+        if (isSortable(target)) {
+          targetIndex = target.index;
+        } else {
+          const targetSemester =
+            plannerCourses[
+              courseLocationMap.get(targetId)?.semesterIndex || -1
+            ];
+          targetIndex = targetSemester?.courseList.length || 0;
+        }
+
+        const newCourse: UserCourse = {
+          id: uuidv4(),
+          name: `${apiCourse.subj_code} ${apiCourse.code_num}`,
+          count: 1,
+          data: apiCourse,
+        };
+
+        addCourseToSemester(targetSemesterId, newCourse, targetIndex);
+        return;
+      }
+
       // --- UTILITY DROPZONES ---
       if (targetId === "garbage") {
         const semId = courseLocationMap.get(sourceId)?.semesterId;
@@ -223,6 +262,7 @@ export default function WorkspaceDndProvider({
       resetToolbox,
       consolidateToolbox,
       courseLocationMap,
+      addCourseToSemester,
       removeCourseFromSemester,
       removeCourseFromToolbox,
       insertCourseIntoToolbox,

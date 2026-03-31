@@ -70,13 +70,13 @@ export default function WorkspaceDndProvider({
 
   const handleDragStart = useCallback<DragDropEventHandlers["onDragStart"]>(
     (event) => {
-      snapshotPlanner.current = structuredClone(plannerCourses);
-      snapshotToolbox.current = structuredClone(toolboxCourses);
-
       const { source } = event.operation;
       if (source?.data?.type === "catalog-course") {
         setDraggedCatalogCourse(source.data.course as APICourse);
+        return;
       }
+      snapshotPlanner.current = structuredClone(plannerCourses);
+      snapshotToolbox.current = structuredClone(toolboxCourses);
     },
     [plannerCourses, toolboxCourses],
   );

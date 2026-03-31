@@ -71,7 +71,11 @@ const Course: React.FC<CourseProps> = ({ course }) => {
             })}
           </div>
         </div>
-        <div id="add-button" className={``} onPointerDown={(e) => e.stopPropagation()}>
+        <div
+          id="add-button"
+          className={``}
+          onPointerDown={(e) => e.stopPropagation()}
+        >
           <AddButton
             addCourse={(e) => {
               e.stopPropagation();

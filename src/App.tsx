@@ -1,6 +1,6 @@
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 
-import PageMeta from "@/components/PageMeta";
+import ButtonTray from "@/components/header/ButtonTray";
 import { CourseWorkspaceProvider } from "@/core/workspace/provider";
 import WorkspaceDndProvider from "@/features/dnd/dnd.tsx";
 import Toolbox from "@/features/toolbox/Toolbox";
@@ -13,8 +13,9 @@ export default function App() {
     <CourseWorkspaceProvider>
       <WorkspaceDndProvider>
         <div className="m-4 md:m-8 md:max-h-dvh overflow-hidden">
-          <header className="sticky top-0 flex h-20 items-center justify-center bg-carpipink">
+          <header className="top-0 flex h-20 items-center justify-center bg-carpipink relative z-10">
             <img src="/carpi-black.png" alt="Carpi Logo" className="h-full" />
+            <ButtonTray />
           </header>
 
           <Router>

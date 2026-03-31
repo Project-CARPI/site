@@ -28,7 +28,7 @@ function CatalogContent() {
       // ref={setNodeRef}
       className="flex flex-col gap-2 md:h-[calc(100vh-10rem)] md:overflow-hidden"
     >
-      <div className="sticky z-10 flex flex-col gap-2">
+      <div className="sticky flex flex-col gap-2">
         <h1 className="font-bold text-xl">Courses</h1>
         <SearchBar />
 

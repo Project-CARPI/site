@@ -12,6 +12,7 @@ import { useCourseWorkspace } from "@/core/workspace/useCourseWorkspace";
 import { useCatalog } from "@/features/catalog/search/context/useCatalog";
 import Tag from "@/features/catalog/Tag";
 import { APICourse, FilterData } from "@/lib/types";
+import useIsDesktop from "@/lib/hooks/useIsDesktop";
 
 const findFiltersForCourse = (
   api_list: string[],
@@ -29,12 +30,14 @@ const Course: React.FC<CourseProps> = ({ course }) => {
   const { filters } = useCatalog();
   const { getCourseCount } = useCourseWorkspace();
 
+  const isDesktop = useIsDesktop();
   const idRef = useRef(uuidv4());
 
   const { ref, isDragging } = useDraggable({
     id: idRef.current,
     type: "catalog-course",
     data: { type: "catalog-course", course },
+    disabled: !isDesktop,
   });
 
   const attrFilters = findFiltersForCourse(

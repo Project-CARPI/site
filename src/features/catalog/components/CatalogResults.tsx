@@ -1,3 +1,5 @@
+import { useDragOperation } from "@dnd-kit/react";
+
 import Course from "@/features/catalog/components/CatalogCourse";
 import { useCatalog } from "@/features/catalog/search/context/useCatalog";
 import DepartmentFilters from "@/features/catalog/search/filters/DepartmentFilters";
@@ -11,8 +13,11 @@ export default function CatalogResults() {
     selectedFilters,
   } = useCatalog();
 
+  const operation = useDragOperation();
+  const isDraggingCatalog = operation?.source?.data?.type === "catalog-course";
+
   return (
-    <div className="overflow-y-auto">
+    <div className={isDraggingCatalog ? "overflow-hidden" : "overflow-y-auto"}>
       {searchResults.length > 0 ? (
         <div className="h-full overflow-y-auto flex flex-wrap justify-center gap-4 pr-3 pt-3">
           {searchResults.map((course, index) => (

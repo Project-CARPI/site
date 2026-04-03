@@ -9,8 +9,6 @@ import {
 import { isSortable } from "@dnd-kit/react/sortable";
 import { MdDragIndicator, MdOutlineMoreHoriz } from "react-icons/md";
 
-import { v4 as uuidv4 } from "uuid";
-
 import CourseLabel from "@/components/course/CourseLabel";
 import { useCourseWorkspace } from "@/core/workspace/useCourseWorkspace";
 import { APICourse, UserCourse } from "@/lib/types";
@@ -71,12 +69,11 @@ export default function WorkspaceDndProvider({
   const handleDragStart = useCallback<DragDropEventHandlers["onDragStart"]>(
     (event) => {
       const { source } = event.operation;
-      if (source?.data?.type === "catalog-course") {
-        setDraggedCatalogCourse(source.data.course as APICourse);
-        return;
-      }
       snapshotPlanner.current = structuredClone(plannerCourses);
       snapshotToolbox.current = structuredClone(toolboxCourses);
+      if (source?.data?.type === "catalog-course") {
+        setDraggedCatalogCourse(source.data.course as APICourse);
+      }
     },
     [plannerCourses, toolboxCourses],
   );
@@ -100,11 +97,62 @@ export default function WorkspaceDndProvider({
 
       const sourceType = source.data?.type;
       const targetType = target.data?.type;
+
+      // --- CATALOG TO PLANNER ---
+      if (sourceType === "catalog-course") {
+        const apiCourse = source.data?.course as APICourse | undefined;
+        if (!apiCourse) return;
+
+        const targetSemesterId =
+          targetType === "semester"
+            ? target.data?.semesterId || targetId
+            : courseLocationMap.get(targetId)?.semesterId;
+
+        if (!targetSemesterId) return;
+
+        let catalogTargetIndex: number | undefined;
+        if (isSortable(target)) {
+          catalogTargetIndex = target.index;
+        } else {
+          const targetSemester =
+            plannerCourses[
+              courseLocationMap.get(targetId)?.semesterIndex ?? -1
+            ];
+          catalogTargetIndex = targetSemester?.courseList.length ?? 0;
+        }
+
+        const existingLocation = courseLocationMap.get(sourceId);
+        const courseToPlace: UserCourse = {
+          id: sourceId,
+          name: `${apiCourse.subj_code} ${apiCourse.code_num}`,
+          count: 1,
+          credits: apiCourse.credit_max,
+          data: apiCourse,
+        };
+
+        if (!existingLocation) {
+          addCourseToSemester(targetSemesterId, courseToPlace, catalogTargetIndex);
+        } else if (existingLocation.semesterId === targetSemesterId) {
+          const currentIndex = existingLocation.index;
+          if (
+            currentIndex !== undefined &&
+            currentIndex !== -1 &&
+            currentIndex !== catalogTargetIndex
+          ) {
+            moveCourseInSemester(
+              existingLocation.semesterId,
+              currentIndex,
+              catalogTargetIndex,
+            );
+          }
+        } else {
+          removeCourseFromSemester(existingLocation.semesterId, sourceId);
+          addCourseToSemester(targetSemesterId, courseToPlace, catalogTargetIndex);
+        }
+        return;
+      }
+
       const sourceCourse = source.data?.course as UserCourse | undefined;
-
-      // Catalog courses are handled in onDragEnd only
-      if (sourceType === "catalog-course") return;
-
       if (!sourceCourse) return;
 
       let targetIndex;
@@ -196,40 +244,6 @@ export default function WorkspaceDndProvider({
       const targetId = target.id as string;
       const sourceType = source.data?.type;
       const targetType = target.data?.type;
-
-      // --- CATALOG TO PLANNER ---
-      if (sourceType === "catalog-course") {
-        const apiCourse = source.data?.course as APICourse | undefined;
-        if (!apiCourse) return;
-
-        const targetSemesterId =
-          targetType === "semester"
-            ? target.data?.semesterId || targetId
-            : courseLocationMap.get(targetId)?.semesterId;
-
-        if (!targetSemesterId) return;
-
-        let targetIndex;
-        if (isSortable(target)) {
-          targetIndex = target.index;
-        } else {
-          const targetSemester =
-            plannerCourses[
-              courseLocationMap.get(targetId)?.semesterIndex || -1
-            ];
-          targetIndex = targetSemester?.courseList.length || 0;
-        }
-
-        const newCourse: UserCourse = {
-          id: uuidv4(),
-          name: `${apiCourse.subj_code} ${apiCourse.code_num}`,
-          count: 1,
-          data: apiCourse,
-        };
-
-        addCourseToSemester(targetSemesterId, newCourse, targetIndex);
-        return;
-      }
 
       // --- UTILITY DROPZONES ---
       if (targetId === "garbage") {

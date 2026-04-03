@@ -3,12 +3,8 @@ name: Code Quality Check
 on:
   push:
     branches: ["main", "main-preview"]
-
-  # Only run on all pull requuests that modify code in the src directory
   pull_request:
     branches: ["*"]
-    paths:
-      - "src/**"
 
 jobs:
   prettier-check:

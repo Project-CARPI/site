@@ -1,8 +1,10 @@
-import { useState } from "react";
+import { useState, useRef } from "react";
 
 import { useDraggable } from "@dnd-kit/react";
 import { motion } from "framer-motion";
 import { IoAdd } from "react-icons/io5";
+import { MdDragIndicator } from "react-icons/md";
+import { v4 as uuidv4 } from "uuid";
 
 import CourseBadge from "@/components/course/CourseBadge";
 import CourseLabel from "@/components/course/CourseLabel";
@@ -27,8 +29,10 @@ const Course: React.FC<CourseProps> = ({ course }) => {
   const { filters } = useCatalog();
   const { getCourseCount } = useCourseWorkspace();
 
+  const idRef = useRef(uuidv4());
+
   const { ref, isDragging } = useDraggable({
-    id: `catalog-${course.subj_code}-${course.code_num}`,
+    id: idRef.current,
     type: "catalog-course",
     data: { type: "catalog-course", course },
   });
@@ -60,15 +64,21 @@ const Course: React.FC<CourseProps> = ({ course }) => {
       />
 
       <div className={`flex items-center justify-between`}>
-        <div>
-          <CourseLabel course={course} showCredits />
-          <div className={`flex flex-wrap mt-1 gap-1`}>
-            {attrFilters.map((attr, index) => {
-              return <Tag key={index} filter={attr} />;
-            })}
-            {semFilters?.map((semester, index) => {
-              return <Tag key={index} filter={semester} />;
-            })}
+        <div className="flex items-start gap-2">
+          <MdDragIndicator
+            size={20}
+            className="shrink-0 mt-0.5 text-darkblue/40"
+          />
+          <div>
+            <CourseLabel course={course} showCredits />
+            <div className={`flex flex-wrap mt-1 gap-1`}>
+              {attrFilters.map((attr, index) => {
+                return <Tag key={index} filter={attr} />;
+              })}
+              {semFilters?.map((semester, index) => {
+                return <Tag key={index} filter={semester} />;
+              })}
+            </div>
           </div>
         </div>
         <div

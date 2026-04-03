@@ -1,11 +1,8 @@
 name: "Setup Node Environment"
-description: "Checks out code, configures Node.js, and installs npm dependencies"
+description: "Configures Node.js and installs npm dependencies"
 runs:
   using: "composite"
   steps:
-    - name: Checkout code
-      uses: actions/checkout@v4
-
     - name: Setup Node.js
       uses: actions/setup-node@v4
       with:

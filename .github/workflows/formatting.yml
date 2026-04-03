@@ -7,8 +7,11 @@ jobs:
     name: Run Prettier Check
     runs-on: ubuntu-latest
     steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
       - name: Setup Environment
-        uses: ./.github/workflows/actions/setup-node.yml
+        uses: ./.github/workflows/actions/setup-node
 
       - name: Run Prettier check
         run: npm run prettier:check
@@ -17,8 +20,11 @@ jobs:
     name: Run ESLint
     runs-on: ubuntu-latest
     steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
       - name: Setup Environment
-        uses: ./.github/workflows/actions/setup-node.yml
+        uses: ./.github/workflows/actions/setup-node
 
       - name: Run ESLint
         run: npm run lint

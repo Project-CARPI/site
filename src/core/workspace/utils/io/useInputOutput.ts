@@ -4,6 +4,7 @@ import { useCourseWorkspace } from "@/core/workspace/useCourseWorkspace";
 import {
   cleanCourseForExport,
   enrichPlannerForImport,
+  SaveFile,
 } from "@/core/workspace/utils/io/inputOutput";
 
 export const useInputOutput = () => {
@@ -40,8 +41,8 @@ export const useInputOutput = () => {
   }, [plannerCourses]);
 
   /* IMPORT */
-  const performImport = useCallback(
-    (jsonData: any) => {
+  const importPlan = useCallback(
+    (jsonData: SaveFile) => {
       const importedPlanner = enrichPlannerForImport(jsonData.planner);
       resetPlanner(importedPlanner);
       resetToolbox([]);
@@ -49,5 +50,5 @@ export const useInputOutput = () => {
     [resetPlanner, resetToolbox],
   );
 
-  return { exportPlan, performImport };
+  return { exportPlan, importPlan };
 };

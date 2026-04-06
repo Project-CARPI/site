@@ -8,9 +8,12 @@ import {
   BiDotsVerticalRounded,
 } from "react-icons/bi";
 
-import ConfirmationDialog from "@/components/dialog";
+import Dialog from "@/components/dialog";
 import { useCourseWorkspace } from "@/core/workspace/useCourseWorkspace";
-import { SaveFileSchema } from "@/core/workspace/utils/io/inputOutput";
+import {
+  SaveFile,
+  SaveFileSchema,
+} from "@/core/workspace/utils/io/inputOutput";
 import { useInputOutput } from "@/core/workspace/utils/io/useInputOutput";
 import { cn } from "@/lib/classnames";
 
@@ -49,10 +52,10 @@ export default function ButtonTray() {
   const [activeDialog, setActiveDialog] = useState<"reset" | "import" | null>(
     null,
   );
-  const [pendingFileData, setPendingFileData] = useState<any>(null);
+  const [pendingFileData, setPendingFileData] = useState<SaveFile | null>(null);
 
   const { resetWorkspace } = useCourseWorkspace();
-  const { exportPlan, performImport } = useInputOutput();
+  const { exportPlan, importPlan } = useInputOutput();
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const handleImportClick = () => {
@@ -94,7 +97,7 @@ export default function ButtonTray() {
 
   const confirmImport = () => {
     if (pendingFileData) {
-      performImport(pendingFileData);
+      importPlan(pendingFileData);
     }
     setPendingFileData(null);
     setActiveDialog(null);
@@ -159,7 +162,7 @@ export default function ButtonTray() {
         </div>
       </div>
 
-      <ConfirmationDialog
+      <Dialog
         title="Resetting Workspace"
         open={activeDialog === "reset"}
         onOpenChange={(open) => !open && setActiveDialog(null)}
@@ -180,10 +183,10 @@ export default function ButtonTray() {
             Confirm Reset
           </button>
         </div>
-      </ConfirmationDialog>
+      </Dialog>
 
       {/* IMPORT DIALOG */}
-      <ConfirmationDialog
+      <Dialog
         title="Importing New Plan!"
         open={activeDialog === "import"}
         onOpenChange={(open) => !open && setActiveDialog(null)}
@@ -204,7 +207,7 @@ export default function ButtonTray() {
             Overwrite & Import
           </button>
         </div>
-      </ConfirmationDialog>
+      </Dialog>
     </>
   );
 }

@@ -107,17 +107,32 @@ export default function ButtonTray() {
   const buttonList = (
     <>
       <HeaderButton
-        onClick={() => setActiveDialog("reset")}
+        onClick={() => {
+          setActiveDialog("reset");
+          setIsOpen(false);
+        }}
         tooltip="Reset Workspace"
       >
         <BiReset className="w-5 h-5" />
       </HeaderButton>
 
-      <HeaderButton onClick={exportPlan} tooltip="Export Plan">
+      <HeaderButton
+        onClick={() => {
+          exportPlan();
+          setIsOpen(false);
+        }}
+        tooltip="Export Plan"
+      >
         <BiExport className="w-5 h-5" />
       </HeaderButton>
 
-      <HeaderButton onClick={handleImportClick} tooltip="Import Plan">
+      <HeaderButton
+        onClick={() => {
+          handleImportClick();
+          setIsOpen(false);
+        }}
+        tooltip="Import Plan"
+      >
         <BiImport className="w-5 h-5" />
       </HeaderButton>
     </>

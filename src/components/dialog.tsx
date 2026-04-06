@@ -1,6 +1,6 @@
 import React, { useState, useCallback, useEffect } from "react";
 
-import * as Dialog from "@radix-ui/react-dialog";
+import * as RadixDialog from "@radix-ui/react-dialog";
 
 import { cn } from "@/lib/classnames";
 
@@ -16,7 +16,7 @@ type DialogProps = {
   onOpenChange?: (open: boolean) => void;
 };
 
-export default function ConfirmationDialog({
+export default function Dialog({
   title,
   description,
   children,
@@ -92,9 +92,9 @@ export default function ConfirmationDialog({
   }, [handleClose, handleConfirm, open]);
 
   return (
-    <Dialog.Root open={open} onOpenChange={handleOpenChange}>
+    <RadixDialog.Root open={open} onOpenChange={handleOpenChange}>
       {trigger && (
-        <Dialog.Trigger
+        <RadixDialog.Trigger
           asChild
           disabled={disabled}
           onClick={(e) => {
@@ -106,16 +106,16 @@ export default function ConfirmationDialog({
           aria-disabled={disabled}
         >
           {trigger}
-        </Dialog.Trigger>
+        </RadixDialog.Trigger>
       )}
 
-      <Dialog.Portal>
-        <Dialog.Overlay
+      <RadixDialog.Portal>
+        <RadixDialog.Overlay
           className={cn(
-            "dialog-overlay fixed inset-0 z-40 bg-gray-700/40 transition-opacity",
+            "dialog-overlay fixed inset-0 z-40 bg-darkblue/50 transition-opacity",
           )}
         />
-        <Dialog.Content asChild>
+        <RadixDialog.Content asChild>
           <div
             className={cn(
               "dialog-content fixed inset-0 z-40 m-auto flex flex-col overflow-hidden",
@@ -123,20 +123,20 @@ export default function ConfirmationDialog({
               "h-fit w-3/4 md:w-fit md:max-w-lg md:min-w-sm",
             )}
           >
-            <Dialog.Title asChild>
+            <RadixDialog.Title asChild>
               <div className="flex flex-col items-center gap-4">
                 <p className="text-lg font-bold">{title}</p>
               </div>
-            </Dialog.Title>
+            </RadixDialog.Title>
 
-            <Dialog.Description asChild>
+            <RadixDialog.Description asChild>
               <div className="mt-2 w-full text-center">{description}</div>
-            </Dialog.Description>
+            </RadixDialog.Description>
 
             {children}
           </div>
-        </Dialog.Content>
-      </Dialog.Portal>
-    </Dialog.Root>
+        </RadixDialog.Content>
+      </RadixDialog.Portal>
+    </RadixDialog.Root>
   );
 }

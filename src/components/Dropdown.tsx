@@ -22,8 +22,18 @@ export default function Dropdown({
   className,
   trigger,
 }: DropdownProps) {
+  const handleValueChange = (value: string) => {
+    const selectedOption = options.find(
+      (option) => option.value.toString() === value,
+    );
+    onChange(selectedOption ? selectedOption.value : value);
+  };
+
   return (
-    <Select.Root value={selectedValue?.toString()} onValueChange={onChange}>
+    <Select.Root
+      value={selectedValue?.toString()}
+      onValueChange={handleValueChange}
+    >
       {trigger ? (
         <Select.Trigger asChild disabled={disabled} className="inline-flex">
           {trigger}
@@ -43,7 +53,7 @@ export default function Dropdown({
           disabled={disabled}
         >
           <span className="flex-1 truncate text-wrap pr-2">
-            <Select.Value placeholder="placeholder" />
+            <Select.Value />
           </span>
         </Select.Trigger>
       )}

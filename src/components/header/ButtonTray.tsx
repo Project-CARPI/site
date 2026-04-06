@@ -8,7 +8,8 @@ import {
   BiDotsVerticalRounded,
 } from "react-icons/bi";
 
-import Dialog from "@/components/dialog";
+import Dialog from "@/components/Dialog";
+import HeaderButton from "@/components/header/HeaderButton";
 import { useCourseWorkspace } from "@/core/workspace/useCourseWorkspace";
 import {
   SaveFile,
@@ -17,41 +18,11 @@ import {
 import { useInputOutput } from "@/core/workspace/utils/io/useInputOutput";
 import { cn } from "@/lib/classnames";
 
-interface HeaderButtonProps {
-  onClick?: () => void;
-  children: React.ReactNode;
-  tooltip: string;
-}
-
-function HeaderButton({ onClick, children, tooltip }: HeaderButtonProps) {
-  return (
-    <div className="relative group flex flex-col items-center">
-      <button
-        onClick={onClick}
-        className={cn(
-          "p-3 rounded-full w-fit aspect-square flex items-center justify-center hover:cursor-pointer",
-          "bg-darkblue/20 hover:bg-darkblue hover:text-carpipink transition-colors",
-        )}
-      >
-        {children}
-      </button>
-
-      {/* Tooltip Container */}
-      <div className="absolute -bottom-7 z-50 hidden group-hover:flex flex-col items-center">
-        <div className="w-2 h-2 bg-darkblue rotate-45"></div>
-        <div className="bg-darkblue text-carpipink text-tiny py-0.5 px-2 -mt-1 rounded-full whitespace-nowrap">
-          {tooltip}
-        </div>
-      </div>
-    </div>
-  );
-}
-
 export default function ButtonTray() {
   const [isOpen, setIsOpen] = useState(false);
-  const [activeDialog, setActiveDialog] = useState<"reset" | "import" | null>(
-    null,
-  );
+  const [activeDialog, setActiveDialog] = useState<
+    "reset" | "import" | "error" | null
+  >(null);
   const [pendingFileData, setPendingFileData] = useState<SaveFile | null>(null);
 
   const { resetWorkspace } = useCourseWorkspace();
@@ -74,15 +45,16 @@ export default function ButtonTray() {
         const result = SaveFileSchema.safeParse(json);
 
         if (!result.success) {
-          // You could use another dialog for errors, but for now:
-          alert("Invalid file format.");
+          console.error("File validation failed:", result.error);
+          setActiveDialog("error");
           return;
         }
 
         setPendingFileData(result.data);
         setActiveDialog("import");
       } catch {
-        alert("Failed to parse file.");
+        console.error("Failed to read or parse file.");
+        setActiveDialog("error");
       }
     };
     reader.readAsText(file);
@@ -220,6 +192,27 @@ export default function ButtonTray() {
             className="px-4 py-2 bg-slategray text-carpipink rounded-xl hover:cursor-pointer hover:bg-[color-mix(in_oklab,var(--color-slategray)_90%,black_10%)]"
           >
             Overwrite & Import
+          </button>
+        </div>
+      </Dialog>
+
+      {/* ERROR DIALOG */}
+      <Dialog
+        title="Error Importing File"
+        open={activeDialog === "error"}
+        onOpenChange={(open) => !open && setActiveDialog(null)}
+        description="There was an error importing your file. Please make sure it is a valid CARPI file and try again."
+        onConfirm={() => {
+          setActiveDialog(null);
+          return true;
+        }}
+      >
+        <div className="flex gap-4 mt-6 justify-center">
+          <button
+            onClick={() => setActiveDialog(null)}
+            className="px-4 py-2 bg-darkblue/20 hover:text-carpipink rounded-xl hover:bg-darkblue hover:cursor-pointer"
+          >
+            Close
           </button>
         </div>
       </Dialog>

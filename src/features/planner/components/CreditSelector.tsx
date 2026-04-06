@@ -53,11 +53,10 @@ export default function CreditSelector({
       trigger={
         <button
           className={cn(
-            "items-center gap-1 text-sm rounded-lg px-1.5 py-0.5 border transition-colors",
+            "inline-flex items-center gap-1 text-sm rounded-lg px-1.5 py-0.5 border transition-colors",
             "bg-carpipink/10 border-carpipink/30 hover:bg-carpipink/20 ",
             "focus:outline-none focus-visible:ring-1 focus-visible:ring-carpipink",
           )}
-          // onPointerDown={(e) => e.stopPropagation()}
           aria-label="Select credits"
         >
           <Select.Value className="font-bold" />
@@ -67,7 +66,6 @@ export default function CreditSelector({
           </span>
         </button>
       }
-      aria-label="Select credits"
     />
   );
 }

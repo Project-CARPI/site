@@ -119,8 +119,8 @@ export default function ConfirmationDialog({
           <div
             className={cn(
               "dialog-content fixed inset-0 z-40 m-auto flex flex-col overflow-hidden",
-              "bg-panel rounded-3xl p-6 shadow-md focus:outline-none",
-              "h-fit w-3/4 md:w-fit md:max-w-3xl",
+              "bg-carpipink rounded-3xl p-6 shadow-md focus:outline-none border border-darkblue",
+              "h-fit w-3/4 md:w-fit md:max-w-lg md:min-w-sm",
             )}
           >
             <Dialog.Title asChild>

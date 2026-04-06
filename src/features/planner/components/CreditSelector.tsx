@@ -1,6 +1,10 @@
 import { useMemo } from "react";
 
+import * as Select from "@radix-ui/react-select";
+
+import Dropdown from "@/components/Dropdown";
 import { useCourseWorkspace } from "@/core/workspace/useCourseWorkspace";
+import { cn } from "@/lib/classnames";
 
 export default function CreditSelector({
   semesterId,
@@ -30,9 +34,9 @@ export default function CreditSelector({
     return options;
   }, [minCredits, maxCredits, isVariableCredits]);
 
-  const handleCreditChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+  const handleCreditChange = (value: string | number) => {
     if (semesterId) {
-      updateCourseCredits(semesterId, courseId, parseInt(e.target.value));
+      updateCourseCredits(semesterId, courseId, Number(value));
     }
   };
 
@@ -42,26 +46,28 @@ export default function CreditSelector({
   const creditText = currentCredits === 1 ? "credit" : "credits";
 
   return (
-    <div
-      className="relative flex items-center gap-1 text-sm bg-carpipink/10 rounded-lg px-1.5 py-0.5 border border-carpipink/30 hover:bg-carpipink/20 transition-colors"
-      onPointerDown={(e) => e.stopPropagation()}
-    >
-      <span className="font-bold">{currentCredits}</span>
-      <span className="text-xs opacity-80 block lg:hidden">cr</span>
-      <span className="text-xs opacity-80 hidden lg:block">{creditText}</span>
-
-      <select
-        value={currentCredits}
-        onChange={handleCreditChange}
-        className="absolute inset-0 w-full h-full opacity-0 cursor-pointer appearance-none"
-        aria-label="Select credits"
-      >
-        {creditOptions.map((c) => (
-          <option key={c} value={c} className="text-darkblue">
-            {c}
-          </option>
-        ))}
-      </select>
-    </div>
+    <Dropdown
+      selectedValue={currentCredits}
+      onChange={handleCreditChange}
+      options={creditOptions.map((c) => ({ value: c, label: c.toString() }))}
+      trigger={
+        <button
+          className={cn(
+            "items-center gap-1 text-sm rounded-lg px-1.5 py-0.5 border transition-colors",
+            "bg-carpipink/10 border-carpipink/30 hover:bg-carpipink/20 ",
+            "focus:outline-none focus-visible:ring-1 focus-visible:ring-carpipink",
+          )}
+          // onPointerDown={(e) => e.stopPropagation()}
+          aria-label="Select credits"
+        >
+          <Select.Value className="font-bold" />
+          <span className="text-xs opacity-80 block lg:hidden">cr</span>
+          <span className="text-xs opacity-80 hidden lg:block">
+            {creditText}
+          </span>
+        </button>
+      }
+      aria-label="Select credits"
+    />
   );
 }

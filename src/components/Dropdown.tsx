@@ -49,7 +49,7 @@ export default function Dropdown({
       )}
 
       <Select.Portal>
-        <Select.Content className="bg-carpipink z-50 max-h-60 overflow-auto rounded-2xl border border-darkblue shadow-lg ">
+        <Select.Content className="bg-carpipink min-w-25 z-50 max-h-60 overflow-auto rounded-2xl border border-darkblue shadow-lg ">
           <Select.Viewport className="p-1">
             {options.map((option) => (
               <DropdownItem key={option.value.toString()} value={option.value}>

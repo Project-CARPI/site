@@ -112,13 +112,13 @@ export default function Dialog({
       <RadixDialog.Portal>
         <RadixDialog.Overlay
           className={cn(
-            "dialog-overlay fixed inset-0 z-40 bg-darkblue/50 transition-opacity",
+            "dialog-overlay fixed inset-0 z-100 bg-darkblue/50 transition-opacity",
           )}
         />
         <RadixDialog.Content asChild>
           <div
             className={cn(
-              "dialog-content fixed inset-0 z-40 m-auto flex flex-col overflow-hidden",
+              "dialog-content fixed inset-0 z-100 m-auto flex flex-col overflow-hidden",
               "bg-carpipink rounded-3xl p-6 shadow-md focus:outline-none border border-darkblue",
               "h-fit w-3/4 md:w-fit md:max-w-lg md:min-w-sm",
             )}

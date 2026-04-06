@@ -14,6 +14,7 @@ export default function HeaderButton({
   return (
     <div className="relative group flex flex-col items-center">
       <button
+        aria-label="CARPI Options"
         onClick={onClick}
         className={cn(
           "p-3 rounded-full w-fit aspect-square flex items-center justify-center hover:cursor-pointer",

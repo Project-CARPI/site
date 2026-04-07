@@ -8,6 +8,7 @@ import {
 } from "@dnd-kit/react";
 import { isSortable } from "@dnd-kit/react/sortable";
 import { MdDragIndicator, MdOutlineMoreHoriz } from "react-icons/md";
+import { v4 as uuidv4 } from "uuid";
 
 import CourseLabel from "@/components/course/CourseLabel";
 import { useCourseWorkspace } from "@/core/workspace/useCourseWorkspace";
@@ -34,6 +35,7 @@ export default function WorkspaceDndProvider({
 
   const snapshotToolbox = useRef(structuredClone(toolboxCourses));
   const snapshotPlanner = useRef(structuredClone(plannerCourses));
+  const catalogDragCourseIdRef = useRef<string>("");
 
   const [draggedCatalogCourse, setDraggedCatalogCourse] =
     useState<APICourse | null>(null);
@@ -73,6 +75,7 @@ export default function WorkspaceDndProvider({
       snapshotToolbox.current = structuredClone(toolboxCourses);
       if (source?.data?.type === "catalog-course") {
         setDraggedCatalogCourse(source.data.course as APICourse);
+        catalogDragCourseIdRef.current = uuidv4();
       }
     },
     [plannerCourses, toolboxCourses],
@@ -121,9 +124,10 @@ export default function WorkspaceDndProvider({
           catalogTargetIndex = targetSemester?.courseList.length ?? 0;
         }
 
-        const existingLocation = courseLocationMap.get(sourceId);
+        const plannerCourseId = catalogDragCourseIdRef.current;
+        const existingLocation = courseLocationMap.get(plannerCourseId);
         const courseToPlace: UserCourse = {
-          id: sourceId,
+          id: plannerCourseId,
           name: `${apiCourse.subj_code} ${apiCourse.code_num}`,
           count: 1,
           credits: apiCourse.credit_max,
@@ -131,7 +135,11 @@ export default function WorkspaceDndProvider({
         };
 
         if (!existingLocation) {
-          addCourseToSemester(targetSemesterId, courseToPlace, catalogTargetIndex);
+          addCourseToSemester(
+            targetSemesterId,
+            courseToPlace,
+            catalogTargetIndex,
+          );
         } else if (existingLocation.semesterId === targetSemesterId) {
           const currentIndex = existingLocation.index;
           if (
@@ -146,8 +154,15 @@ export default function WorkspaceDndProvider({
             );
           }
         } else {
-          removeCourseFromSemester(existingLocation.semesterId, sourceId);
-          addCourseToSemester(targetSemesterId, courseToPlace, catalogTargetIndex);
+          removeCourseFromSemester(
+            existingLocation.semesterId,
+            plannerCourseId,
+          );
+          addCourseToSemester(
+            targetSemesterId,
+            courseToPlace,
+            catalogTargetIndex,
+          );
         }
         return;
       }

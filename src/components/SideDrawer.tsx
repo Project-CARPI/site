@@ -1,5 +1,8 @@
 import { Drawer } from "vaul";
 
+import { findFiltersForCourse } from "@/components/course/utils";
+import { useFilterStore } from "@/features/catalog/search/filters/useFilterStore";
+import Tag from "@/features/catalog/Tag";
 import useIsDesktop from "@/lib/hooks/useIsDesktop";
 import { UserCourse } from "@/lib/types";
 
@@ -15,7 +18,18 @@ export function CourseDetailsDrawer({
   course,
 }: CourseDetailsDrawerProps) {
   const isDesktop = useIsDesktop();
+  const { filters } = useFilterStore();
   const direction = isDesktop ? "left" : "bottom";
+
+  const attrFilters = findFiltersForCourse(
+    course.data.attr_list || [],
+    filters.attributes,
+  );
+  const semFilters = findFiltersForCourse(
+    course.data.sem_list || [],
+    filters.semesters,
+  );
+
   return (
     <Drawer.Root
       direction={direction}
@@ -44,7 +58,14 @@ export function CourseDetailsDrawer({
                 </span>
               </Drawer.Title>
 
-              <div>{}</div>
+              <div className="flex flex-wrap gap-2 mb-4">
+                {attrFilters.map((attr, index) => {
+                  return <Tag key={index} filter={attr} />;
+                })}
+                {semFilters?.map((semester, index) => {
+                  return <Tag key={index} filter={semester} />;
+                })}
+              </div>
 
               <Drawer.Description className="mb-4 text-carpipink">
                 {course.data.desc_text || "No description available."}

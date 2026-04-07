@@ -11,8 +11,8 @@ import CourseLabel from "@/components/course/CourseLabel";
 import { useCourseWorkspace } from "@/core/workspace/useCourseWorkspace";
 import { useCatalog } from "@/features/catalog/search/context/useCatalog";
 import Tag from "@/features/catalog/Tag";
-import { APICourse, FilterData } from "@/lib/types";
 import useIsDesktop from "@/lib/hooks/useIsDesktop";
+import { APICourse, FilterData } from "@/lib/types";
 
 const findFiltersForCourse = (
   api_list: string[],

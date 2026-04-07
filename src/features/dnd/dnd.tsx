@@ -308,7 +308,6 @@ export default function WorkspaceDndProvider({
       resetToolbox,
       consolidateToolbox,
       courseLocationMap,
-      addCourseToSemester,
       removeCourseFromSemester,
       removeCourseFromToolbox,
       insertCourseIntoToolbox,

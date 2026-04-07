@@ -2,8 +2,8 @@ import { useState } from "react";
 
 import { motion } from "framer-motion";
 
+import Tag from "@/components/Tag";
 import { useCatalog } from "@/features/catalog/search/context/useCatalog";
-import Tag from "@/features/catalog/Tag";
 import useIsDesktop from "@/lib/hooks/useIsDesktop";
 import { FilterCategory, FilterData } from "@/lib/types";
 

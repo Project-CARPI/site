@@ -1,9 +1,8 @@
 import { Drawer } from "vaul";
 
-import { findFiltersForCourse } from "@/components/course/utils";
-import { useFilterStore } from "@/features/catalog/search/filters/useFilterStore";
-import Tag from "@/features/catalog/Tag";
+import Tag from "@/components/Tag";
 import useIsDesktop from "@/lib/hooks/useIsDesktop";
+import { useCourseFilters } from "@/lib/stores/useFilterStore";
 import { UserCourse } from "@/lib/types";
 
 interface CourseDetailsDrawerProps {
@@ -18,17 +17,9 @@ export function CourseDetailsDrawer({
   course,
 }: CourseDetailsDrawerProps) {
   const isDesktop = useIsDesktop();
-  const { filters } = useFilterStore();
-  const direction = isDesktop ? "left" : "bottom";
+  const { attrFilters, semFilters } = useCourseFilters(course.data);
 
-  const attrFilters = findFiltersForCourse(
-    course.data.attr_list || [],
-    filters.attributes,
-  );
-  const semFilters = findFiltersForCourse(
-    course.data.sem_list || [],
-    filters.semesters,
-  );
+  const direction = isDesktop ? "left" : "bottom";
 
   return (
     <Drawer.Root

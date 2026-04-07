@@ -1,7 +1,7 @@
 import { ReactNode, useState, useEffect, useRef, useMemo } from "react";
 
 import { CatalogContext } from "@/features/catalog/search/context/context";
-import { useFilterStore } from "@/features/catalog/search/filters/useFilterStore";
+import { useFilterStore } from "@/lib/stores/useFilterStore";
 import api from "@/lib/axios";
 import { APICourse, FilterData } from "@/lib/types";
 

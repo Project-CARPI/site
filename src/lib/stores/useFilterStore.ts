@@ -1,7 +1,7 @@
 import { create } from "zustand";
 
 import api from "@/lib/axios";
-import { FilterData, FilterCategory } from "@/lib/types";
+import { FilterData, FilterCategory, APICourse } from "@/lib/types";
 
 const formatApiData = (type: FilterCategory, data: Record<string, string>) => {
   return Object.entries(data).map(([code, value], index) => ({
@@ -58,3 +58,17 @@ export const useFilterStore = create<FilterState>((set, get) => ({
     }
   },
 }));
+
+export const useCourseFilters = (course: APICourse) => {
+  return useFilterStore((state) => {
+    const attrFilters = state.filters.attributes.filter((attr) =>
+      (course.attr_list || []).includes(attr.code),
+    );
+
+    const semFilters = state.filters.semesters.filter((sem) =>
+      (course.sem_list || []).includes(sem.code),
+    );
+
+    return { attrFilters, semFilters };
+  });
+};

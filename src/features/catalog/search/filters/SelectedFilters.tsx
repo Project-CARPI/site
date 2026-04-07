@@ -1,5 +1,5 @@
+import Tag from "@/components/Tag";
 import { useCatalog } from "@/features/catalog/search/context/useCatalog";
-import Tag from "@/features/catalog/Tag";
 
 export default function SelectedFilters() {
   const { toggleFilter, selectedFilters } = useCatalog();

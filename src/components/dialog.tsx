@@ -1,4 +1,4 @@
-import React, { useState, useCallback, useEffect } from "react";
+import React, { useState, useCallback } from "react";
 
 import * as RadixDialog from "@radix-ui/react-dialog";
 
@@ -8,10 +8,8 @@ type DialogProps = {
   title: string;
   description: React.ReactNode;
   children: React.ReactNode;
-  onConfirm: () => boolean | Promise<boolean>;
   trigger?: React.ReactNode;
   disabled?: boolean;
-  autoClose?: boolean;
   open?: boolean;
   onOpenChange?: (open: boolean) => void;
 };
@@ -20,10 +18,8 @@ export default function Dialog({
   title,
   description,
   children,
-  onConfirm,
   trigger,
   disabled = false,
-  autoClose = false,
   open: controlledOpen,
   onOpenChange,
 }: DialogProps) {
@@ -42,54 +38,6 @@ export default function Dialog({
     },
     [isControlled, onOpenChange],
   );
-
-  const handleClose = useCallback(() => {
-    handleOpenChange(false);
-    return true;
-  }, [handleOpenChange]);
-
-  const handleConfirm = useCallback(async () => {
-    // If autoClose is enabled, we optimistically close
-    // the dialog before calling onConfirm
-    if (autoClose) {
-      handleOpenChange(false);
-      onConfirm();
-      return true;
-    }
-
-    const success = await onConfirm();
-    if (success) {
-      handleOpenChange(false);
-    }
-    return success;
-  }, [autoClose, onConfirm, handleOpenChange]);
-
-  useEffect(() => {
-    // If the dialog is not open, then don't add the keydown listener
-    if (!open) return;
-
-    // Add keydown listener for Enter and Escape keys to trigger confirm or cancel
-    // actions.
-    const handleKeyDown = (e: KeyboardEvent) => {
-      // Ignore key events coming from text inputs or editable elements
-      const target = e.target as HTMLElement | null;
-      const tagName = target?.tagName;
-      const isTextInput =
-        tagName === "INPUT" ||
-        tagName === "TEXTAREA" ||
-        target?.isContentEditable;
-      if (isTextInput) {
-        return;
-      }
-
-      if (e.key === "Escape") handleClose();
-      else if (e.key === "Enter") handleConfirm();
-    };
-
-    window.addEventListener("keydown", handleKeyDown);
-
-    return () => window.removeEventListener("keydown", handleKeyDown);
-  }, [handleClose, handleConfirm, open]);
 
   return (
     <RadixDialog.Root open={open} onOpenChange={handleOpenChange}>

@@ -1,10 +1,9 @@
 // import { useDroppable } from "@dnd-kit/core";
 
 import CatalogResults from "@/features/catalog/components/CatalogResults";
-// import TrashDropZone from "@/features/catalog/components/TrashDropzone";
 import { CatalogProvider } from "@/features/catalog/search/context/provider";
 import { useCatalog } from "@/features/catalog/search/context/useCatalog";
-import SelectedFiltersList from "@/features/catalog/search/filters/SelectedFilters";
+import SelectedFilters from "@/features/catalog/search/filters/SelectedFilters";
 import SearchBar from "@/features/catalog/search/SearchBar";
 import useIsDesktop from "@/lib/hooks/useIsDesktop";
 
@@ -32,7 +31,7 @@ function CatalogContent() {
         <h1 className="font-bold text-xl">Courses</h1>
         <SearchBar />
 
-        {isDesktop && <SelectedFiltersList />}
+        {isDesktop && <SelectedFilters />}
       </div>
 
       {(isDesktop || !showFilterPanel) && <CatalogResults />}

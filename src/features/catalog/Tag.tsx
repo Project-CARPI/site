@@ -1,6 +1,5 @@
 import { IoClose } from "react-icons/io5";
 
-import { useCatalog } from "@/features/catalog/search/context/useCatalog";
 import useIsDesktop from "@/lib/hooks/useIsDesktop.ts";
 import { FilterData } from "@/lib/types";
 
@@ -51,6 +50,7 @@ interface TagProps {
   isSelected?: boolean;
   showCode?: boolean;
   isRemovable?: boolean;
+  onToggle?: (filter: FilterData) => void;
 }
 
 export default function Tag({
@@ -59,8 +59,8 @@ export default function Tag({
   isSelectable = false,
   isSelected = false,
   isRemovable = false,
+  onToggle,
 }: TagProps) {
-  const { toggleFilter } = useCatalog();
   const isDesktop = useIsDesktop();
 
   // Determine content: value or code
@@ -78,8 +78,8 @@ export default function Tag({
       : `border-darkblue text-darkblue ${accentColor.hover_bg}`;
 
   const handleClick = () => {
-    if (isSelectable || isRemovable) {
-      toggleFilter(filter);
+    if ((isSelectable || isRemovable) && onToggle) {
+      onToggle(filter);
     }
   };
 

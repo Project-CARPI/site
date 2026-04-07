@@ -1,25 +1,14 @@
 import { ReactNode, useState, useEffect, useRef, useMemo } from "react";
 
 import { CatalogContext } from "@/features/catalog/search/context/context";
+import { useFilterStore } from "@/features/catalog/search/filters/useFilterStore";
 import api from "@/lib/axios";
-import { APICourse, FilterData, FilterCategory } from "@/lib/types";
-
-const formatApiData = (type: FilterCategory, data: Record<string, string>) => {
-  return Object.entries(data).map(([code, value], index) => ({
-    id: index,
-    code,
-    value,
-    type,
-  }));
-};
+import { APICourse, FilterData } from "@/lib/types";
 
 export function CatalogProvider({ children }: { children: ReactNode }) {
+  const { filters, fetchFilters } = useFilterStore();
+
   const [showFilterPanel, setShowFilterPanel] = useState(false);
-  const [filters, setFilters] = useState({
-    subjects: [] as FilterData[],
-    attributes: [] as FilterData[],
-    semesters: [] as FilterData[],
-  });
   const [selectedFilters, setSelectedFilters] = useState<FilterData[]>([]);
   const [searchResults, setSearchResults] = useState<APICourse[]>([]);
   const [searchPrompt, setSearchPrompt] = useState("");
@@ -27,27 +16,11 @@ export function CatalogProvider({ children }: { children: ReactNode }) {
   const [hasSearched, setHasSearched] = useState(false);
 
   const debounceTimeout = useRef<ReturnType<typeof setTimeout> | null>(null);
-  // const lastNoResultQuery = useRef<string | null>(null);
 
+  // Fetch filter options on mount
   useEffect(() => {
-    const fetchAllFilters = async () => {
-      try {
-        const [sub, attr, sem] = await Promise.all([
-          api.get("/course/filter/values/subjects"),
-          api.get("/course/filter/values/attributes"),
-          api.get("/course/filter/values/semesters"),
-        ]);
-        setFilters({
-          subjects: formatApiData("Subject", sub.data),
-          attributes: formatApiData("Attribute", attr.data),
-          semesters: formatApiData("Semester", sem.data),
-        });
-      } catch (error) {
-        console.error("Failed to fetch filters:", error);
-      }
-    };
-    fetchAllFilters();
-  }, []);
+    fetchFilters();
+  }, [fetchFilters]);
 
   const toggleFilter = (filter: FilterData) => {
     setSelectedFilters((prev) => {
@@ -100,7 +73,7 @@ export function CatalogProvider({ children }: { children: ReactNode }) {
 
   const value = useMemo(
     () => ({
-      filters,
+      filters, // <-- Still providing this down to Context consumers so existing code doesn't break
       selectedFilters,
       toggleFilter,
       clearFilters: () => setSelectedFilters([]),

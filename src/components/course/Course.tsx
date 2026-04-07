@@ -12,6 +12,7 @@ import CourseMenuContent from "@/features/planner/components/course/CourseMenuCo
 import CreditSelector from "@/features/planner/components/CreditSelector";
 import { usePlannerCourse } from "@/features/planner/usePlannerCourse";
 import { cn } from "@/lib/classnames";
+import useIsDesktop from "@/lib/hooks/useIsDesktop";
 import { UserCourse } from "@/lib/types";
 
 type CourseVariant = "toolbox" | "planner";
@@ -95,6 +96,8 @@ function PlannerCourseView({
     course,
     semesterId: semesterId ?? null,
   });
+
+  const isDesktop = useIsDesktop();
   const [popoverOpen, setPopoverOpen] = useState(false);
 
   if (!semesterId) {
@@ -109,7 +112,7 @@ function PlannerCourseView({
 
   return (
     <ContextMenu.Root>
-      <ContextMenu.Trigger>
+      <ContextMenu.Trigger disabled={!isDesktop}>
         <div
           ref={innerRef}
           className={cn(

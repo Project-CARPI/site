@@ -1,3 +1,5 @@
+import { useMemo } from "react";
+
 import { create } from "zustand";
 
 import api from "@/lib/axios";
@@ -60,15 +62,18 @@ export const useFilterStore = create<FilterState>((set, get) => ({
 }));
 
 export const useCourseFilters = (course: APICourse) => {
-  return useFilterStore((state) => {
-    const attrFilters = state.filters.attributes.filter((attr) =>
+  // ONLY use global filters
+  const filters = useFilterStore((state) => state.filters);
+
+  return useMemo(() => {
+    const attrFilters = filters.attributes.filter((attr) =>
       (course.attr_list || []).includes(attr.code),
     );
 
-    const semFilters = state.filters.semesters.filter((sem) =>
+    const semFilters = filters.semesters.filter((sem) =>
       (course.sem_list || []).includes(sem.code),
     );
 
     return { attrFilters, semFilters };
-  });
+  }, [filters, course.attr_list, course.sem_list]);
 };

@@ -109,9 +109,18 @@ function PlannerCourseView({
 
   return (
     <ContextMenu.Root>
-      <ContextMenu.Trigger>
+      <ContextMenu.Trigger asChild>
         <div
           ref={innerRef}
+          onContextMenu={(e) => {
+            if (
+              typeof window !== "undefined" &&
+              window.matchMedia("(pointer: coarse)").matches
+            ) {
+              e.stopPropagation();
+              e.preventDefault();
+            }
+          }}
           className={cn(
             "relative flex justify-between bg-darkblue rounded-2xl text-carpipink gap-4 px-2 py-3",
             "hover:shadow-lg",
@@ -125,7 +134,12 @@ function PlannerCourseView({
             <CourseLabel course={course.data} showCredits />
           </div>
 
-          <div className="flex flex-row gap-2">
+          <div
+            className="flex flex-row gap-2"
+            onPointerDown={(e) => e.stopPropagation()}
+            onClick={(e) => e.stopPropagation()}
+            onContextMenu={(e) => e.stopPropagation()}
+          >
             <div className="items-center flex">
               <CreditSelector
                 semesterId={semesterId}

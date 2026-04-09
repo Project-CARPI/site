@@ -3,7 +3,7 @@ import { z } from "zod";
 /* API SCHEMAS */
 export const APICourseSchema = z.object({
   subj_code: z.string(),
-  code_num: z.coerce.number(),
+  code_num: z.coerce.string(),
   title: z.string(),
   desc_text: z.string(),
   credit_min: z.coerce.number(),

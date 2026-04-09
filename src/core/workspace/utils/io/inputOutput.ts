@@ -68,7 +68,7 @@ export const enrichCourseForImport = (exported: ExportCourse): UserCourse => {
     count: exported.count || 1,
     data: {
       subj_code: exported.code.split(" ")[0],
-      code_num: parseInt(exported.code.split(" ")[1]),
+      code_num: exported.code.split(" ")[1],
       title: exported.title,
       desc_text: exported.course_info.description,
       credit_min: exported.course_info.credit_min,

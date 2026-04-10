@@ -140,7 +140,7 @@ Please reach out to one of the current developers for information on how to get 
 ## Authors
 
 <a href="https://github.com/Project-CARPI/site/graphs/contributors">
-  <img src="https://contrib.rocks/image?repo=your-username/project-carpi" />
+  <img src="https://contrib.rocks/image?repo=Project-CARPI/site" />
 </a>
 
 ## License

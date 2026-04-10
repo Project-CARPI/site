@@ -1,0 +1,143 @@
+@import "tailwindcss";
+@plugin 'tailwind-scrollbar';
+
+@theme {
+  --color-carpipink: oklch(88.46% 0.0441 18.02); /* #F5CECE */
+  --color-steelblue: oklch(68.85% 0.0588 236.57); /* #78a1bb */
+  --color-dustygrape: oklch(49.23% 0.0665 275.21); /* #565E87 */
+  --color-darkblue: oklch(31.09% 0.0378 267.38); /* #283044 */
+  --color-mutedteal: oklch(77.97% 0.0441 181.55); /* #99C1B9 */
+  --color-burgundy: oklch(36.07% 0.1294 18.64); /* #721121 */
+  --color-slategray: oklch(54.39% 0.0444 212.21); /* #51777F */
+  --color-copperwood: oklch(53.68% 0.1081 63.18); /* #AA6822 */
+  --color-rosewood: oklch(54.14% 0.206 10.45); /* #c91752 */
+
+  --text-tiny: 0.625rem;
+  --text-tiny--font-weight: 500;
+}
+
+body {
+  background-color: var(--color-carpipink);
+  scrollbar-color: var(--color-darkblue) var(--color-carpipink);
+  scrollbar-width: thin;
+}
+
+body.no-scroll-during-drag {
+  /* This prevents the entire page from scrolling */
+  overflow: hidden !important;
+
+  /* This can also help prevent other touch behaviors on some browsers */
+  touch-action: none !important;
+}
+
+/* scrollbar for webkit browsers */
+::-webkit-scrollbar {
+  width: 12px;
+  height: 12px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--color-carpipink);
+}
+
+::-webkit-scrollbar-thumb {
+  background-color: var(--color-darkblue);
+  border-radius: 9999px;
+  border: 3px solid var(--color-carpipink);
+}
+
+/* prevent blurriness of images */
+img {
+  image-rendering: crisp-edges;
+  image-rendering: -webkit-optimize-contrast;
+}
+
+/* The active item currently following your cursor */
+[data-dnd-dragging="true"] {
+  opacity: 1 !important;
+}
+
+/* The cloned placeholder left behind in the list */
+[data-dnd-placeholder="clone"] {
+  opacity: 0.5 !important;
+}
+
+/* Allow Toolbox courses to freely expand into Planner courses when dragged */
+[data-dnd-dragging="true"][data-group="toolbox"] {
+  width: auto !important;
+  max-width: none !important;
+  height: auto !important;
+  max-height: none !important;
+}
+
+/* Confirmation Dialog animations */
+.dialog-overlay[data-state="open"] {
+  animation: dialog-overlay-show 400ms ease-out;
+}
+
+.dialog-overlay[data-state="closed"] {
+  animation: dialog-overlay-hide 300ms ease-in;
+  animation-delay: 50ms;
+}
+
+.dialog-content[data-state="open"] {
+  animation: dialog-content-show 400ms cubic-bezier(0.16, 1, 0.3, 1);
+  animation-delay: 100ms;
+  animation-fill-mode: backwards;
+}
+
+.dialog-content[data-state="closed"] {
+  animation: dialog-content-hide 250ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* Reduce motion for users who prefer it */
+@media (prefers-reduced-motion: reduce) {
+  .dialog-overlay[data-state="open"],
+  .dialog-overlay[data-state="closed"],
+  .dialog-content[data-state="open"],
+  .dialog-content[data-state="closed"] {
+    animation: none !important;
+    animation-delay: 0ms !important;
+  }
+}
+
+/* Keyframes for dialog animations */
+@keyframes dialog-overlay-show {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes dialog-overlay-hide {
+  from {
+    opacity: 1;
+  }
+  to {
+    opacity: 0;
+  }
+}
+
+@keyframes dialog-content-show {
+  from {
+    opacity: 0;
+    transform: scale(0.92) translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}
+
+@keyframes dialog-content-hide {
+  from {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+  to {
+    opacity: 0;
+    transform: scale(0.95) translateY(10px);
+  }
+}

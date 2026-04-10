@@ -45,12 +45,12 @@ npm -v
 1. Clone the repository and navigate into the frontend directory:
 
 ```bash
-git clone [https://github.com/your-username/project-carpi.git](https://github.com/your-username/project-carpi.git)
+git clone https://github.com/Project-CARPI/site.git
 cd project-carpi/site
 ```
 
 2. Use the correct Node version:
-   If you have `nvm` installed, you can simply run the following command to read the `.nvmrc` file and use Node v24.14.0:
+   If you have `nvm` installed, you can simply run the following command to read the `.nvmrc` file and use Node v24.14:
 
 ```bash
 nvm use

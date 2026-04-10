@@ -7,6 +7,7 @@ import { MdOutlineMoreHoriz, MdDragIndicator } from "react-icons/md";
 
 import CourseBadge from "@/components/course/CourseBadge";
 import CourseLabel from "@/components/course/CourseLabel";
+import { useCatalogDragId } from "@/features/dnd/CatalogDragContext";
 import { SortableItemProps } from "@/features/dnd/props";
 import CourseMenuContent from "@/features/planner/components/course/CourseMenuContent";
 import CreditSelector from "@/features/planner/components/CreditSelector";
@@ -31,6 +32,8 @@ export default function Course({
   semesterId = null,
 }: CourseProps) {
   const dndType = `${variant}-course`;
+  const catalogDragId = useCatalogDragId();
+  const isCatalogPlaceholder = catalogDragId === id;
 
   const { handleRef, ref, isDragging } = useSortable({
     id,
@@ -56,7 +59,7 @@ export default function Course({
     <PlannerCourseView
       innerRef={ref}
       handleRef={handleRef}
-      isDragging={isDragging}
+      isDragging={isDragging || isCatalogPlaceholder}
       course={course}
       semesterId={semesterId}
     />
@@ -115,7 +118,7 @@ function PlannerCourseView({
           className={cn(
             "relative flex justify-between bg-darkblue rounded-2xl text-carpipink gap-4 px-2 py-3",
             "hover:shadow-lg",
-            isDragging ? "cursor-grabbing" : "cursor-grab",
+            isDragging ? "cursor-grabbing opacity-0" : "cursor-grab",
           )}
         >
           <div className="flex gap-2 items-center">

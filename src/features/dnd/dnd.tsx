@@ -5,6 +5,7 @@ import {
   DragDropProvider,
   DragDropEventHandlers,
   DragOverlay,
+  useDragOperation,
 } from "@dnd-kit/react";
 import { isSortable } from "@dnd-kit/react/sortable";
 import { MdDragIndicator, MdOutlineMoreHoriz } from "react-icons/md";
@@ -12,6 +13,7 @@ import { v4 as uuidv4 } from "uuid";
 
 import CourseLabel from "@/components/course/CourseLabel";
 import { useCourseWorkspace } from "@/core/workspace/useCourseWorkspace";
+import { CatalogDragContext } from "@/features/dnd/CatalogDragContext";
 import { APICourse, UserCourse } from "@/lib/types";
 
 export default function WorkspaceDndProvider({
@@ -37,8 +39,10 @@ export default function WorkspaceDndProvider({
   const snapshotPlanner = useRef(structuredClone(plannerCourses));
   const catalogDragCourseIdRef = useRef<string>("");
 
-  const [draggedCatalogCourse, setDraggedCatalogCourse] =
-    useState<APICourse | null>(null);
+  // Exposed via context so Course.tsx can make the in-flight placeholder transparent
+  const [catalogDragCourseId, setCatalogDragCourseId] = useState<string | null>(
+    null,
+  );
 
   const [sensors] = useState(() => [
     PointerSensor.configure({
@@ -74,8 +78,9 @@ export default function WorkspaceDndProvider({
       snapshotPlanner.current = structuredClone(plannerCourses);
       snapshotToolbox.current = structuredClone(toolboxCourses);
       if (source?.data?.type === "catalog-course") {
-        setDraggedCatalogCourse(source.data.course as APICourse);
-        catalogDragCourseIdRef.current = uuidv4();
+        const newId = uuidv4();
+        catalogDragCourseIdRef.current = newId;
+        setCatalogDragCourseId(newId);
       }
     },
     [plannerCourses, toolboxCourses],
@@ -244,7 +249,7 @@ export default function WorkspaceDndProvider({
 
   const handleDragEnd = useCallback<DragDropEventHandlers["onDragEnd"]>(
     (event) => {
-      setDraggedCatalogCourse(null);
+      setCatalogDragCourseId(null);
 
       const { source, target } = event.operation;
 
@@ -315,24 +320,38 @@ export default function WorkspaceDndProvider({
   );
 
   return (
-    <DragDropProvider
-      sensors={sensors}
-      onDragStart={handleDragStart}
-      onDragOver={handleDragOver}
-      onDragEnd={handleDragEnd}
-    >
-      {children}
-      <DragOverlay disabled={!draggedCatalogCourse} dropAnimation={null}>
-        {draggedCatalogCourse && (
-          <div className="flex justify-between bg-darkblue rounded-2xl text-carpipink gap-4 px-2 py-3 shadow-xl cursor-grabbing select-none">
-            <div className="flex gap-2 items-center">
-              <MdDragIndicator size={22} />
-              <CourseLabel course={draggedCatalogCourse} showCredits />
-            </div>
-            <MdOutlineMoreHoriz className="text-2xl opacity-40" />
+    <CatalogDragContext.Provider value={catalogDragCourseId}>
+      <DragDropProvider
+        sensors={sensors}
+        onDragStart={handleDragStart}
+        onDragOver={handleDragOver}
+        onDragEnd={handleDragEnd}
+      >
+        {children}
+        <CatalogDragOverlay />
+      </DragDropProvider>
+    </CatalogDragContext.Provider>
+  );
+}
+
+function CatalogDragOverlay() {
+  const operation = useDragOperation();
+  const apiCourse =
+    operation?.source?.data?.type === "catalog-course"
+      ? (operation.source.data.course as APICourse)
+      : null;
+
+  return (
+    <DragOverlay disabled={!apiCourse} dropAnimation={null}>
+      {apiCourse && (
+        <div className="flex justify-between bg-darkblue rounded-2xl text-carpipink gap-4 px-2 py-3 shadow-xl cursor-grabbing select-none">
+          <div className="flex gap-2 items-center">
+            <MdDragIndicator size={22} />
+            <CourseLabel course={apiCourse} showCredits />
           </div>
-        )}
-      </DragOverlay>
-    </DragDropProvider>
+          <MdOutlineMoreHoriz className="text-2xl opacity-40" />
+        </div>
+      )}
+    </DragOverlay>
   );
 }

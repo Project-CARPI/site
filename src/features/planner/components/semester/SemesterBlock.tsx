@@ -2,7 +2,7 @@ import React, { useState, useRef, useEffect } from "react";
 
 import { CollisionPriority } from "@dnd-kit/abstract";
 import { closestCenter } from "@dnd-kit/collision";
-import { useDroppable } from "@dnd-kit/react";
+import { useDroppable, useDragOperation } from "@dnd-kit/react";
 import { useSortable } from "@dnd-kit/react/sortable";
 import { AnimatePresence } from "framer-motion";
 import { MdDragIndicator, MdDeleteOutline } from "react-icons/md";
@@ -37,6 +37,10 @@ export default function SemesterBlock({ semester, index }: SemesterBlockProps) {
     collisionPriority: CollisionPriority.Low,
     collisionDetector: closestCenter,
   });
+
+  const dragOperation = useDragOperation();
+  const isDraggingCatalog =
+    dragOperation?.source?.data?.type === "catalog-course";
 
   // --- DROPPABLE: For receiving Courses inside the Semester ---
   const { ref: droppableRef, isDropTarget } = useDroppable({
@@ -198,7 +202,7 @@ export default function SemesterBlock({ semester, index }: SemesterBlockProps) {
               ref={droppableRef}
               className={cn(
                 "flex flex-col gap-2 h-full min-h-15 rounded-xl transition-colors",
-                isDropTarget && "bg-black/5",
+                isDropTarget && !isDraggingCatalog && "bg-black/5",
               )}
             >
               {semester.courseList.length === 0 ? (

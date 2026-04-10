@@ -1,11 +1,17 @@
 <p align="center">
-  <img src="./public/carpi-black.svg" width="20%" alt="CARPI logo" />
+  <img src="./public/carpi-black.svg" width="20%" alt="CARPI Logo" />
 </p>
 
 <div align="center">
-  <h1>Project CARPI - Frontend</h1>
+<h1>CARPI Course Planner - Frontend</h1>
+  <a href="http://carpi.cs.rpi.edu/">
+    <img alt="Visit the website!" src="https://img.shields.io/badge/Website-0373FC?logo=telegram&logoColor=FFFFFF">
+  </a>
   <a href="https://opensource.org/license/mit">
-    <img alt="License: MIT" src="https://img.shields.io/badge/License_MIT-F5CECE" />
+    <img alt="License: MIT" src="https://img.shields.io/badge/License-MIT-pink">
+  </a>
+  <a href="https://discord.com/invite/xRBvFHgcYT">
+    <img alt="Join our Discord server!" src="https://img.shields.io/discord/1067560508946919564?label=Discord">
   </a>
   <h4>Built for RPI Students</h4>
 </div>

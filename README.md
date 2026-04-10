@@ -14,9 +14,12 @@
     <img alt="Join our Discord server!" src="https://img.shields.io/discord/1067560508946919564?label=Discord">
   </a>
   <h4>Built for RPI Students</h4>
-</div>
 
-Project CARPI, standing for Cool Academic RPI, allows you to plan each semester with our academic calendar menu, easy search of the course catalog, and customizable planner.
+The CARPI Course Planner allows you to plan future semesters with ease. Features a course catalog for quickly finding historical and current courses, a toolbox for holding your desired courses, and a planner to organize courses into your long-term plan.
+
+<img src="public/planner-example.png" style="border-radius:15px;">
+
+</div>
 
 ## Features
 

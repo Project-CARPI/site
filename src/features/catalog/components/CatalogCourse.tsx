@@ -68,10 +68,12 @@ const Course: React.FC<CourseProps> = ({ course }) => {
 
       <div className={`flex items-center justify-between`}>
         <div className="flex items-start gap-2">
-          <MdDragIndicator
-            size={20}
-            className="shrink-0 mt-0.5 text-darkblue/40"
-          />
+          {isDesktop && (
+            <MdDragIndicator
+              size={20}
+              className="shrink-0 mt-0.5 text-darkblue/40"
+            />
+          )}
           <div>
             <CourseLabel course={course} showCredits />
             <div className={`flex flex-wrap mt-1 gap-1`}>

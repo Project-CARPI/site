@@ -82,12 +82,6 @@ export function CourseWorkspaceProvider({ children }: { children: ReactNode }) {
   const toolboxActions = useToolboxActions(dispatchToolbox, toolboxCourses);
 
   const resetWorkspace = useCallback(() => {
-    // confirmation dialog to prevent accidental resets
-    const confirmed = window.confirm(
-      "Are you sure you want to reset your entire workspace? This will delete all semesters and courses in your toolbox.",
-    );
-    if (!confirmed) return;
-
     const emptyPlanner = createInitialPlannerState(6);
     plannerActions.resetPlanner(emptyPlanner);
     toolboxActions.resetToolbox([]);

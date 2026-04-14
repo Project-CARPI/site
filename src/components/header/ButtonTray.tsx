@@ -8,46 +8,25 @@ import {
   BiDotsVerticalRounded,
 } from "react-icons/bi";
 
+import Dialog from "@/components/Dialog";
+import HeaderButton from "@/components/header/HeaderButton";
 import { useCourseWorkspace } from "@/core/workspace/useCourseWorkspace";
+import {
+  SaveFile,
+  SaveFileSchema,
+} from "@/core/workspace/utils/io/inputOutput";
 import { useInputOutput } from "@/core/workspace/utils/io/useInputOutput";
 import { cn } from "@/lib/classnames";
 
-interface HeaderButtonProps {
-  onClick?: () => void;
-  children: React.ReactNode;
-  tooltip: string;
-}
-
-function HeaderButton({ onClick, children, tooltip }: HeaderButtonProps) {
-  return (
-    <div className="relative group flex flex-col items-center">
-      <button
-        onClick={onClick}
-        className={cn(
-          "p-3 rounded-full w-fit aspect-square flex items-center justify-center hover:cursor-pointer",
-          "bg-darkblue/20 hover:bg-darkblue hover:text-carpipink transition-colors",
-        )}
-      >
-        {children}
-      </button>
-
-      {/* Tooltip Container */}
-      <div className="absolute -bottom-7 z-50 hidden group-hover:flex flex-col items-center">
-        <div className="w-2 h-2 bg-darkblue rotate-45"></div>
-        <div className="bg-darkblue text-carpipink text-tiny py-0.5 px-2 -mt-1 rounded-full whitespace-nowrap">
-          {tooltip}
-        </div>
-      </div>
-    </div>
-  );
-}
-
 export default function ButtonTray() {
   const [isOpen, setIsOpen] = useState(false);
+  const [activeDialog, setActiveDialog] = useState<
+    "reset" | "import" | "error" | null
+  >(null);
+  const [pendingFileData, setPendingFileData] = useState<SaveFile | null>(null);
 
   const { resetWorkspace } = useCourseWorkspace();
   const { exportPlan, importPlan } = useInputOutput();
-
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const handleImportClick = () => {
@@ -57,21 +36,75 @@ export default function ButtonTray() {
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
-    if (file) {
-      importPlan(file);
+    if (!file) return;
+
+    const reader = new FileReader();
+    reader.onload = (event) => {
+      try {
+        const json = JSON.parse(event.target?.result as string);
+        const result = SaveFileSchema.safeParse(json);
+
+        if (!result.success) {
+          console.error("File validation failed:", result.error);
+          setActiveDialog("error");
+          return;
+        }
+
+        setPendingFileData(result.data);
+        setActiveDialog("import");
+      } catch {
+        console.error("Failed to read or parse file.");
+        setActiveDialog("error");
+      }
+    };
+    reader.readAsText(file);
+    e.target.value = ""; // Reset input
+  };
+
+  const confirmReset = () => {
+    resetWorkspace();
+    setActiveDialog(null);
+    return true;
+  };
+
+  const confirmImport = () => {
+    if (pendingFileData) {
+      importPlan(pendingFileData);
     }
-    e.target.value = "";
+    setPendingFileData(null);
+    setActiveDialog(null);
+    return true;
   };
 
   const buttonList = (
     <>
-      <HeaderButton onClick={resetWorkspace} tooltip="Reset Workspace">
+      <HeaderButton
+        onClick={() => {
+          setActiveDialog("reset");
+          setIsOpen(false);
+        }}
+        tooltip="Reset Workspace"
+      >
         <BiReset className="w-5 h-5" />
       </HeaderButton>
-      <HeaderButton onClick={exportPlan} tooltip="Export Plan">
+
+      <HeaderButton
+        onClick={() => {
+          exportPlan();
+          setIsOpen(false);
+        }}
+        tooltip="Export Plan"
+      >
         <BiExport className="w-5 h-5" />
       </HeaderButton>
-      <HeaderButton onClick={handleImportClick} tooltip="Import Plan">
+
+      <HeaderButton
+        onClick={() => {
+          handleImportClick();
+          setIsOpen(false);
+        }}
+        tooltip="Import Plan"
+      >
         <BiImport className="w-5 h-5" />
       </HeaderButton>
     </>
@@ -115,6 +148,68 @@ export default function ButtonTray() {
           </AnimatePresence>
         </div>
       </div>
+
+      <Dialog
+        title="Resetting Workspace"
+        open={activeDialog === "reset"}
+        onOpenChange={(open) => !open && setActiveDialog(null)}
+        description="Are you sure you want to reset your entire workspace? This will delete all semesters and courses."
+      >
+        <div className="flex gap-4 mt-6 justify-center">
+          <button
+            onClick={() => setActiveDialog(null)}
+            className="px-4 py-2 bg-darkblue/20 hover:text-carpipink rounded-xl hover:bg-darkblue hover:cursor-pointer"
+          >
+            Cancel
+          </button>
+          <button
+            onClick={confirmReset}
+            className="px-4 py-2 bg-rosewood text-carpipink rounded-xl hover:cursor-pointer hover:bg-[color-mix(in_oklab,var(--color-rosewood)_90%,black_10%)]"
+          >
+            Confirm Reset
+          </button>
+        </div>
+      </Dialog>
+
+      {/* IMPORT DIALOG */}
+      <Dialog
+        title="Importing New Plan!"
+        open={activeDialog === "import"}
+        onOpenChange={(open) => !open && setActiveDialog(null)}
+        description="Importing will overwrite your current plan. This action cannot be undone."
+      >
+        <div className="flex gap-4 mt-6 justify-center">
+          <button
+            onClick={() => setActiveDialog(null)}
+            className="px-4 py-2 bg-darkblue/20 hover:text-carpipink rounded-xl hover:bg-darkblue hover:cursor-pointer"
+          >
+            Cancel
+          </button>
+          <button
+            onClick={confirmImport}
+            className="px-4 py-2 bg-slategray text-carpipink rounded-xl hover:cursor-pointer hover:bg-[color-mix(in_oklab,var(--color-slategray)_90%,black_10%)]"
+          >
+            Overwrite & Import
+          </button>
+        </div>
+      </Dialog>
+
+      {/* ERROR DIALOG */}
+      <Dialog
+        title="Error Importing File"
+        open={activeDialog === "error"}
+        onOpenChange={(open) => !open && setActiveDialog(null)}
+        description="There was an error importing your file. Please make sure it is a valid CARPI file and try again."
+      >
+        <div className="flex gap-4 mt-6 justify-center">
+          <button
+            onClick={() => setActiveDialog(null)}
+            className="px-4 py-2 bg-darkblue/20 hover:text-carpipink rounded-xl hover:bg-darkblue hover:cursor-pointer"
+          >
+            Close
+          </button>
+        </div>
+      </Dialog>
     </>
   );
 }

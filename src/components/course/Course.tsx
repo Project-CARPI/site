@@ -13,6 +13,7 @@ import CourseMenuContent from "@/features/planner/components/course/CourseMenuCo
 import CreditSelector from "@/features/planner/components/CreditSelector";
 import { usePlannerCourse } from "@/features/planner/usePlannerCourse";
 import { cn } from "@/lib/classnames";
+import useIsTouch from "@/lib/hooks/useIsTouch";
 import { UserCourse } from "@/lib/types";
 
 type CourseVariant = "toolbox" | "planner";
@@ -98,6 +99,8 @@ function PlannerCourseView({
     course,
     semesterId: semesterId ?? null,
   });
+
+  const isTouch = useIsTouch();
   const [popoverOpen, setPopoverOpen] = useState(false);
 
   if (!semesterId) {
@@ -112,9 +115,18 @@ function PlannerCourseView({
 
   return (
     <ContextMenu.Root>
-      <ContextMenu.Trigger>
+      <ContextMenu.Trigger disabled={!isTouch} asChild>
         <div
           ref={innerRef}
+          onContextMenu={(e) => {
+            if (
+              typeof window !== "undefined" &&
+              window.matchMedia("(pointer: coarse)").matches
+            ) {
+              e.stopPropagation();
+              e.preventDefault();
+            }
+          }}
           className={cn(
             "relative flex justify-between bg-darkblue rounded-2xl text-carpipink gap-4 px-2 py-3",
             "hover:shadow-lg",
@@ -128,7 +140,12 @@ function PlannerCourseView({
             <CourseLabel course={course.data} showCredits />
           </div>
 
-          <div className="flex flex-row gap-2">
+          <div
+            className="flex flex-row gap-2"
+            onPointerDown={(e) => e.stopPropagation()}
+            onClick={(e) => e.stopPropagation()}
+            onContextMenu={(e) => e.stopPropagation()}
+          >
             <div className="items-center flex">
               <CreditSelector
                 semesterId={semesterId}

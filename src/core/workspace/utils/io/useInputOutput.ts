@@ -4,7 +4,7 @@ import { useCourseWorkspace } from "@/core/workspace/useCourseWorkspace";
 import {
   cleanCourseForExport,
   enrichPlannerForImport,
-  SaveFileSchema,
+  SaveFile,
 } from "@/core/workspace/utils/io/inputOutput";
 
 export const useInputOutput = () => {
@@ -42,41 +42,10 @@ export const useInputOutput = () => {
 
   /* IMPORT */
   const importPlan = useCallback(
-    (file: File) => {
-      const reader = new FileReader();
-
-      reader.onload = (event) => {
-        try {
-          const json = JSON.parse(event.target?.result as string);
-
-          // Validate against schema
-          const result = SaveFileSchema.safeParse(json);
-          if (!result.success) {
-            alert("Error: The selected file is not a valid Carpi plan.");
-            console.error(result.error);
-            return;
-          }
-
-          if (
-            !confirm(
-              "Importing will overwrite your current plan. Are you sure?",
-            )
-          ) {
-            return;
-          }
-
-          // Clean Data and Update State
-          const importedPlanner = enrichPlannerForImport(result.data.planner);
-
-          resetPlanner(importedPlanner);
-          resetToolbox([]);
-        } catch (err) {
-          console.error(err);
-          alert("Failed to parse file.");
-        }
-      };
-
-      reader.readAsText(file);
+    (jsonData: SaveFile) => {
+      const importedPlanner = enrichPlannerForImport(jsonData.planner);
+      resetPlanner(importedPlanner);
+      resetToolbox([]);
     },
     [resetPlanner, resetToolbox],
   );

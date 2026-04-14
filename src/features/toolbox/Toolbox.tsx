@@ -18,7 +18,7 @@ export default function Toolbox() {
   const { ref } = useDroppable({
     id: "toolbox",
     type: "toolbox",
-    accept: ["planner-course", "toolbox-course"],
+    accept: ["planner-course", "toolbox-course", "catalog-course"],
     collisionPriority: CollisionPriority.High,
     collisionDetector: pointerIntersection,
   });

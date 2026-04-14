@@ -26,6 +26,7 @@ export default function WorkspaceDndProvider({
     toolboxCourses,
     moveSemester,
     addCourseToSemester,
+    addCourseToToolbox,
     removeCourseFromSemester,
     removeCourseFromToolbox,
     resetPlanner,
@@ -106,17 +107,33 @@ export default function WorkspaceDndProvider({
       const sourceType = source.data?.type;
       const targetType = target.data?.type;
 
-      // --- CATALOG TO PLANNER ---
+      // --- CATALOG TO PLANNER / TOOLBOX ---
       if (sourceType === "catalog-course") {
         const apiCourse = source.data?.course as APICourse | undefined;
         if (!apiCourse) return;
+
+        const plannerCourseId = catalogDragCourseIdRef.current;
+        const existingLocation = courseLocationMap.get(plannerCourseId);
 
         const targetSemesterId =
           targetType === "semester"
             ? target.data?.semesterId || targetId
             : courseLocationMap.get(targetId)?.semesterId;
 
-        if (!targetSemesterId) return;
+        if (!targetSemesterId) {
+          // Hovering over toolbox — remove the placeholder from the planner
+          // so the user sees it leave the semester
+          if (
+            (targetId === "toolbox" || targetType === "toolbox-course") &&
+            existingLocation
+          ) {
+            removeCourseFromSemester(
+              existingLocation.semesterId,
+              plannerCourseId,
+            );
+          }
+          return;
+        }
 
         let catalogTargetIndex: number | undefined;
         if (isSortable(target)) {
@@ -129,8 +146,6 @@ export default function WorkspaceDndProvider({
           catalogTargetIndex = targetSemester?.courseList.length ?? 0;
         }
 
-        const plannerCourseId = catalogDragCourseIdRef.current;
-        const existingLocation = courseLocationMap.get(plannerCourseId);
         const courseToPlace: UserCourse = {
           id: plannerCourseId,
           name: `${apiCourse.subj_code} ${apiCourse.code_num}`,
@@ -252,6 +267,44 @@ export default function WorkspaceDndProvider({
       setCatalogDragCourseId(null);
 
       const { source, target } = event.operation;
+      const sourceType = source?.data?.type;
+
+      // --- CATALOG DRAG END ---
+      // Catalog placements are committed incrementally in handleDragOver, so we
+      // only need to undo on an explicit cancel (Escape), handle a toolbox drop,
+      // or otherwise leave the placed course in the planner as-is.
+      if (sourceType === "catalog-course") {
+        const plannerCourseId = catalogDragCourseIdRef.current;
+        const apiCourse = source?.data?.course as APICourse | undefined;
+        const targetId = target?.id as string | undefined;
+        const targetType = target?.data?.type;
+
+        if (event.canceled) {
+          resetPlanner(snapshotPlanner.current);
+          return;
+        }
+
+        if (targetId === "toolbox" || targetType === "toolbox-course") {
+          // Remove the temporarily placed planner placeholder, if any
+          const placedLocation = courseLocationMap.get(plannerCourseId);
+          if (placedLocation) {
+            removeCourseFromSemester(
+              placedLocation.semesterId,
+              plannerCourseId,
+            );
+          }
+          // Smart-add to toolbox (increments count for duplicates)
+          if (apiCourse) {
+            addCourseToToolbox(apiCourse);
+          }
+          consolidateToolbox();
+          return;
+        }
+
+        // Successful planner drop or released outside — course is already
+        // committed to the semester via handleDragOver; nothing more to do.
+        return;
+      }
 
       if (event.canceled || !target) {
         resetPlanner(snapshotPlanner.current);
@@ -262,7 +315,6 @@ export default function WorkspaceDndProvider({
 
       const sourceId = source.id as string;
       const targetId = target.id as string;
-      const sourceType = source.data?.type;
       const targetType = target.data?.type;
 
       // --- UTILITY DROPZONES ---
@@ -312,6 +364,7 @@ export default function WorkspaceDndProvider({
       resetPlanner,
       resetToolbox,
       consolidateToolbox,
+      addCourseToToolbox,
       courseLocationMap,
       removeCourseFromSemester,
       removeCourseFromToolbox,

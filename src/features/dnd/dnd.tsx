@@ -301,7 +301,7 @@ export default function WorkspaceDndProvider({
           return;
         }
 
-        // Successful planner drop or released outside — course is already
+        // Successful planner drop or released outside -- course is already
         // committed to the semester via handleDragOver; nothing more to do.
         return;
       }

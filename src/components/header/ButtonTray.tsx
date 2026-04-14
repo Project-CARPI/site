@@ -154,7 +154,6 @@ export default function ButtonTray() {
         open={activeDialog === "reset"}
         onOpenChange={(open) => !open && setActiveDialog(null)}
         description="Are you sure you want to reset your entire workspace? This will delete all semesters and courses."
-        onConfirm={confirmReset}
       >
         <div className="flex gap-4 mt-6 justify-center">
           <button
@@ -178,7 +177,6 @@ export default function ButtonTray() {
         open={activeDialog === "import"}
         onOpenChange={(open) => !open && setActiveDialog(null)}
         description="Importing will overwrite your current plan. This action cannot be undone."
-        onConfirm={confirmImport}
       >
         <div className="flex gap-4 mt-6 justify-center">
           <button
@@ -202,10 +200,6 @@ export default function ButtonTray() {
         open={activeDialog === "error"}
         onOpenChange={(open) => !open && setActiveDialog(null)}
         description="There was an error importing your file. Please make sure it is a valid CARPI file and try again."
-        onConfirm={() => {
-          setActiveDialog(null);
-          return true;
-        }}
       >
         <div className="flex gap-4 mt-6 justify-center">
           <button

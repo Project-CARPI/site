@@ -38,8 +38,8 @@ export function CourseDetailsDrawer({
         >
           <div
             className={cn(
-              " w-full relative  grow p-8 flex flex-col rounded-2xl overflow-y-auto",
-              "bg-darkblue md:border-carpipink/50 md:border",
+              " w-full relative  grow p-8 flex flex-col rounded-2xl overflow-y-auto shadow-2xl shadow-darkblue",
+              "bg-darkblue md:border-[color-mix(in_oklab,var(--color-carpipink)_40%,white_60%)] md:border-2",
             )}
           >
             <div className="flex items-start justify-between">

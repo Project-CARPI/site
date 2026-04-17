@@ -50,7 +50,9 @@ node -v
 npm -v
 ```
 
-### Installation
+If you plan to use Docker, ensure you have [Docker Desktop](https://www.docker.com/products/docker-desktop/) installed.
+
+### Local Installation
 
 1. Clone the repository and navigate into the project directory:
 
@@ -78,6 +80,37 @@ To expose the app on your local network:
 
 ```bash
 npm run dev -- --host
+```
+
+### Docker Installation
+
+If you prefer an isolated containerized environment, you can use our Docker Compose setup.
+
+1. Clone the repository and navigate into the project directory:
+
+```bash
+git clone https://github.com/Project-CARPI/site.git
+cd site
+```
+
+2. Build the image and spin up the container:
+
+```bash
+docker compose up --build
+```
+
+To run the container in detached mode (in the background), append the -d flag:
+
+```bash
+docker compose up -d
+```
+
+The app will now be accessible at `http://localhost:5173` (or the port specified in your docker compose configuration).
+
+To stop the container, run:
+
+```bash
+docker compose down
 ```
 
 ### Available Scripts
@@ -137,6 +170,7 @@ npm run preview
 - [@dnd-kit](https://dndkit.com/)
 - [Framer Motion](https://www.framer.com/motion/)
 - [Zod](https://zod.dev/)
+- [Docker](https://www.docker.com/)
 
 ## Contributing
 

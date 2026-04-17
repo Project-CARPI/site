@@ -2,7 +2,6 @@ services:
   web:
     build: .
     image: carpi-dev:latest
-    container_name: carpi-dev
 
     # expose port 5173
     ports:

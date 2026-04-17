@@ -1,8 +1,8 @@
 import { ReactNode, useState, useEffect, useRef, useMemo } from "react";
 
 import { CatalogContext } from "@/features/catalog/search/context/context";
-import { useFilterStore } from "@/lib/stores/useFilterStore";
 import api from "@/lib/axios";
+import { useFilterStore } from "@/lib/stores/useFilterStore";
 import { APICourse, FilterData } from "@/lib/types";
 
 export function CatalogProvider({ children }: { children: ReactNode }) {

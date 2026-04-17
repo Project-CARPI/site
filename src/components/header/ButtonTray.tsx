@@ -9,6 +9,7 @@ import {
 } from "react-icons/bi";
 
 import Button from "@/components/Button";
+import Dialog from "@/components/Dialog";
 import { useCourseWorkspace } from "@/core/workspace/useCourseWorkspace";
 import {
   SaveFile,

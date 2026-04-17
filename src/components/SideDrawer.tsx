@@ -1,3 +1,5 @@
+import type { CSSProperties } from "react";
+
 import { BiX } from "react-icons/bi";
 import { Drawer } from "vaul";
 
@@ -32,9 +34,7 @@ export function CourseDetailsDrawer({
             "md:left-2 md:top-2 bottom-2 fixed z-50",
             "outline-none md:w-[calc(100%-16px)] lg:w-1/3 flex h-2/5 md:h-[calc(100%-16px)]",
           )}
-          style={
-            { "--initial-transform": "calc(100% + 8px)" } as React.CSSProperties
-          }
+          style={{ "--initial-transform": "calc(100% + 8px)" } as CSSProperties}
         >
           <div
             className={cn(

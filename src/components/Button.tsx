@@ -1,8 +1,10 @@
+import type { ReactNode } from "react";
+
 import { cn } from "@/lib/classnames";
 
 interface ButtonProps {
   onClick?: () => void;
-  children: React.ReactNode;
+  children: ReactNode;
   tooltip: string;
   inverted?: boolean; // Optional prop to invert colors
 }

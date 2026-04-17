@@ -130,7 +130,7 @@ function PlannerCourseView({
           className={cn(
             "relative flex justify-between bg-darkblue rounded-2xl text-carpipink gap-4 px-2 py-3",
             "hover:shadow-lg",
-            isDragging ? "cursor-grabbing opacity-0" : "cursor-grab",
+            isDragging ? "cursor-grabbing opacity-50" : "cursor-grab",
           )}
         >
           <div className="flex gap-2 items-center">

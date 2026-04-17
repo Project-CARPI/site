@@ -21,6 +21,7 @@ interface FilterState {
     semesters: FilterData[];
   };
   isFetchingFilters: boolean;
+  hasFetchedFilters: boolean;
   fetchFilters: () => Promise<void>;
 }
 
@@ -31,11 +32,11 @@ export const useFilterStore = create<FilterState>((set, get) => ({
     semesters: [],
   },
   isFetchingFilters: false,
+  hasFetchedFilters: false,
 
   fetchFilters: async () => {
-    // Prevent refetching if we already have the data
-    const currentFilters = get().filters;
-    if (currentFilters.subjects.length > 0) return;
+    // Prevent refetching if we have already successfully fetched the data
+    if (get().hasFetchedFilters) return;
 
     set({ isFetchingFilters: true });
 
@@ -52,6 +53,7 @@ export const useFilterStore = create<FilterState>((set, get) => ({
           attributes: formatApiData("Attribute", attr.data),
           semesters: formatApiData("Semester", sem.data),
         },
+        hasFetchedFilters: true,
       });
     } catch (error) {
       console.error("Failed to fetch filters:", error);

@@ -6,7 +6,8 @@ import { useFilterStore } from "@/lib/stores/useFilterStore";
 import { APICourse, FilterData } from "@/lib/types";
 
 export function CatalogProvider({ children }: { children: ReactNode }) {
-  const { filters, fetchFilters } = useFilterStore();
+  const filters = useFilterStore((state) => state.filters);
+  const fetchFilters = useFilterStore((state) => state.fetchFilters);
 
   const [showFilterPanel, setShowFilterPanel] = useState(false);
   const [selectedFilters, setSelectedFilters] = useState<FilterData[]>([]);

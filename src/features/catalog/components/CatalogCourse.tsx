@@ -26,7 +26,7 @@ const Course: React.FC<CourseProps> = ({ course }) => {
 
   return (
     <div
-      className="hover:cursor-pointer hover:bg-darkblue/10 border border-black rounded-xl w-full p-4"
+      className="hover:cursor-pointer hover:bg-darkblue/10 border border-black rounded-xl w-full p-4 relative"
       onClick={toggleOpen}
     >
       <CourseBadge

@@ -29,6 +29,16 @@ export default function ButtonTray() {
   const { exportPlan, importPlan } = useInputOutput();
   const fileInputRef = useRef<HTMLInputElement>(null);
 
+  const handleResetClick = () => {
+    setActiveDialog("reset");
+    setIsOpen(false);
+  };
+
+  const handleExportClick = () => {
+    exportPlan();
+    setIsOpen(false);
+  };
+
   const handleImportClick = () => {
     fileInputRef.current?.click();
     setIsOpen(false);
@@ -78,10 +88,10 @@ export default function ButtonTray() {
 
   const buttonList = (
     <>
-      <Button onClick={resetWorkspace} tooltip="Reset Workspace">
+      <Button onClick={handleResetClick} tooltip="Reset Workspace">
         <BiReset className="w-5 h-5" />
       </Button>
-      <Button onClick={exportPlan} tooltip="Export Plan">
+      <Button onClick={handleExportClick} tooltip="Export Plan">
         <BiExport className="w-5 h-5" />
       </Button>
       <Button onClick={handleImportClick} tooltip="Import Plan">

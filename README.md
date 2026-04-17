@@ -76,12 +76,6 @@ npm run dev
 
 By default, Vite serves the app on localhost (usually `http://localhost:5173`).
 
-To expose the app on your local network:
-
-```bash
-npm run dev -- --host
-```
-
 ### Docker Installation
 
 If you prefer an isolated containerized environment, you can use our Docker Compose setup.

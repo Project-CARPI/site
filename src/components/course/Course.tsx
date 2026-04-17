@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, type HTMLAttributes } from "react";
 
 import { useSortable } from "@dnd-kit/react/sortable";
 import * as ContextMenu from "@radix-ui/react-context-menu";
@@ -60,7 +60,8 @@ export default function Course({
     <PlannerCourseView
       innerRef={ref}
       handleRef={handleRef}
-      isDragging={isDragging || isCatalogPlaceholder}
+      isDragging={isDragging}
+      isCatalogPlaceholder={isCatalogPlaceholder}
       course={course}
       semesterId={semesterId}
     />
@@ -71,6 +72,7 @@ type ViewProps = {
   innerRef?: (element: HTMLElement | null) => void;
   handleRef?: (element: HTMLElement | null) => void;
   isDragging: boolean;
+  isCatalogPlaceholder?: boolean;
   course: UserCourse;
   semesterId?: string | null;
 };
@@ -92,9 +94,30 @@ function PlannerCourseView({
   innerRef,
   handleRef,
   isDragging,
+  isCatalogPlaceholder = false,
   course,
   semesterId,
 }: ViewProps) {
+  // Catalog drags mount a real <Course /> as the in-flight placeholder. dnd-kit
+  // doesn't know about that element, so we manually apply the same contract it
+  // uses for its own sortable placeholders (`data-dnd-placeholder="clone"` +
+  // `inert` + `aria-hidden` + `tabIndex=-1`). That lets the existing CSS rule
+  // (`[data-dnd-placeholder="clone"] { opacity: 0.5 !important }`) and `inert`
+  // handle the ghost appearance and interaction-suppression uniformly -- the
+  // same way the toolbox-originated placeholder works out of the box.
+  // `inert` typing wasn't added until React 19, hence the cast.
+  const placeholderAttrs = (
+    isCatalogPlaceholder
+      ? {
+          "data-dnd-placeholder": "clone",
+          inert: "",
+          "aria-hidden": true,
+          tabIndex: -1,
+        }
+      : {}
+  ) as HTMLAttributes<HTMLDivElement>;
+
+  const isGhost = isDragging || isCatalogPlaceholder;
   const menuOptions = usePlannerCourse({
     course,
     semesterId: semesterId ?? null,
@@ -118,6 +141,7 @@ function PlannerCourseView({
       <ContextMenu.Trigger disabled={!isTouch} asChild>
         <div
           ref={innerRef}
+          {...placeholderAttrs}
           onContextMenu={(e) => {
             if (
               typeof window !== "undefined" &&
@@ -130,7 +154,7 @@ function PlannerCourseView({
           className={cn(
             "relative flex justify-between bg-darkblue rounded-2xl text-carpipink gap-4 px-2 py-3",
             "hover:shadow-lg",
-            isDragging ? "cursor-grabbing opacity-50" : "cursor-grab",
+            isGhost ? "cursor-grabbing" : "cursor-grab",
           )}
         >
           <div className="flex gap-2 items-center">

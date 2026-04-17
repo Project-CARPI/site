@@ -82,7 +82,9 @@ export default function SemesterBlock({ semester, index }: SemesterBlockProps) {
   const hasDuplicateCourses = semester.courseList.some((course, index) => {
     return (
       semester.courseList.findIndex(
-        (c) => c.data.title === course.data.title,
+        (c) =>
+          c.data.subj_code === course.data.subj_code &&
+          c.data.code_num === course.data.code_num,
       ) !== index
     );
   });

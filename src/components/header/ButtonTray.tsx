@@ -10,15 +10,22 @@ import {
 
 import Button from "@/components/Button";
 import { useCourseWorkspace } from "@/core/workspace/useCourseWorkspace";
+import {
+  SaveFile,
+  SaveFileSchema,
+} from "@/core/workspace/utils/io/inputOutput";
 import { useInputOutput } from "@/core/workspace/utils/io/useInputOutput";
 import { cn } from "@/lib/classnames";
 
 export default function ButtonTray() {
   const [isOpen, setIsOpen] = useState(false);
+  const [activeDialog, setActiveDialog] = useState<
+    "reset" | "import" | "error" | null
+  >(null);
+  const [pendingFileData, setPendingFileData] = useState<SaveFile | null>(null);
 
   const { resetWorkspace } = useCourseWorkspace();
   const { exportPlan, importPlan } = useInputOutput();
-
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const handleImportClick = () => {
@@ -28,10 +35,44 @@ export default function ButtonTray() {
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
-    if (file) {
-      importPlan(file);
+    if (!file) return;
+
+    const reader = new FileReader();
+    reader.onload = (event) => {
+      try {
+        const json = JSON.parse(event.target?.result as string);
+        const result = SaveFileSchema.safeParse(json);
+
+        if (!result.success) {
+          console.error("File validation failed:", result.error);
+          setActiveDialog("error");
+          return;
+        }
+
+        setPendingFileData(result.data);
+        setActiveDialog("import");
+      } catch {
+        console.error("Failed to read or parse file.");
+        setActiveDialog("error");
+      }
+    };
+    reader.readAsText(file);
+    e.target.value = ""; // Reset input
+  };
+
+  const confirmReset = () => {
+    resetWorkspace();
+    setActiveDialog(null);
+    return true;
+  };
+
+  const confirmImport = () => {
+    if (pendingFileData) {
+      importPlan(pendingFileData);
     }
-    e.target.value = "";
+    setPendingFileData(null);
+    setActiveDialog(null);
+    return true;
   };
 
   const buttonList = (
@@ -83,6 +124,74 @@ export default function ButtonTray() {
           </AnimatePresence>
         </div>
       </div>
+
+      <Dialog
+        title="Resetting Workspace"
+        open={activeDialog === "reset"}
+        onOpenChange={(open) => !open && setActiveDialog(null)}
+        description="Are you sure you want to reset your entire workspace? This will delete all semesters and courses."
+        onConfirm={confirmReset}
+      >
+        <div className="flex gap-4 mt-6 justify-center">
+          <button
+            onClick={() => setActiveDialog(null)}
+            className="px-4 py-2 bg-darkblue/20 hover:text-carpipink rounded-xl hover:bg-darkblue hover:cursor-pointer"
+          >
+            Cancel
+          </button>
+          <button
+            onClick={confirmReset}
+            className="px-4 py-2 bg-rosewood text-carpipink rounded-xl hover:cursor-pointer hover:bg-[color-mix(in_oklab,var(--color-rosewood)_90%,black_10%)]"
+          >
+            Confirm Reset
+          </button>
+        </div>
+      </Dialog>
+
+      {/* IMPORT DIALOG */}
+      <Dialog
+        title="Importing New Plan!"
+        open={activeDialog === "import"}
+        onOpenChange={(open) => !open && setActiveDialog(null)}
+        description="Importing will overwrite your current plan. This action cannot be undone."
+        onConfirm={confirmImport}
+      >
+        <div className="flex gap-4 mt-6 justify-center">
+          <button
+            onClick={() => setActiveDialog(null)}
+            className="px-4 py-2 bg-darkblue/20 hover:text-carpipink rounded-xl hover:bg-darkblue hover:cursor-pointer"
+          >
+            Cancel
+          </button>
+          <button
+            onClick={confirmImport}
+            className="px-4 py-2 bg-slategray text-carpipink rounded-xl hover:cursor-pointer hover:bg-[color-mix(in_oklab,var(--color-slategray)_90%,black_10%)]"
+          >
+            Overwrite & Import
+          </button>
+        </div>
+      </Dialog>
+
+      {/* ERROR DIALOG */}
+      <Dialog
+        title="Error Importing File"
+        open={activeDialog === "error"}
+        onOpenChange={(open) => !open && setActiveDialog(null)}
+        description="There was an error importing your file. Please make sure it is a valid CARPI file and try again."
+        onConfirm={() => {
+          setActiveDialog(null);
+          return true;
+        }}
+      >
+        <div className="flex gap-4 mt-6 justify-center">
+          <button
+            onClick={() => setActiveDialog(null)}
+            className="px-4 py-2 bg-darkblue/20 hover:text-carpipink rounded-xl hover:bg-darkblue hover:cursor-pointer"
+          >
+            Close
+          </button>
+        </div>
+      </Dialog>
     </>
   );
 }

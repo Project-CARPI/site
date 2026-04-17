@@ -67,11 +67,16 @@ export function CourseDetailsDrawer({
             </div>
 
             <div className="flex flex-wrap gap-2 mb-4">
-              {attrFilters.map((attr, index) => {
-                return <Tag key={index} filter={attr} />;
+              {attrFilters.map((attr) => {
+                return <Tag key={`${attr.type}-${attr.code}`} filter={attr} />;
               })}
-              {semFilters?.map((semester, index) => {
-                return <Tag key={index} filter={semester} />;
+              {semFilters?.map((semester) => {
+                return (
+                  <Tag
+                    key={`${semester.type}-${semester.code}`}
+                    filter={semester}
+                  />
+                );
               })}
             </div>
 

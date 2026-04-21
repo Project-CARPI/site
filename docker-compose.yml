@@ -1,0 +1,17 @@
+services:
+  web:
+    build: .
+    image: carpi-dev:latest
+
+    # expose port 5173
+    ports:
+      - "5173:5173"
+
+    # mount the current directory to /app in the container
+    volumes:
+      - .:/app
+      - /app/node_modules
+
+    # interactive terminal
+    stdin_open: true
+    tty: true

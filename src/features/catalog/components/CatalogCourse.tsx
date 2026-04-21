@@ -5,35 +5,18 @@ import { IoAdd } from "react-icons/io5";
 
 import CourseBadge from "@/components/course/CourseBadge";
 import CourseLabel from "@/components/course/CourseLabel";
+import Tag from "@/components/Tag";
 import { useCourseWorkspace } from "@/core/workspace/useCourseWorkspace";
-import { useCatalog } from "@/features/catalog/search/context/useCatalog";
-import Tag from "@/features/catalog/Tag";
-import { APICourse, FilterData } from "@/lib/types";
-
-const findFiltersForCourse = (
-  api_list: string[],
-  filterDataType: FilterData[],
-) => {
-  return filterDataType.filter((attr) => api_list.includes(attr.code));
-};
+import { useCourseFilters } from "@/lib/stores/useFilterStore";
+import { APICourse } from "@/lib/types";
 
 interface CourseProps {
   course: APICourse;
 }
 
 const Course: React.FC<CourseProps> = ({ course }) => {
-  const { addCourseToToolbox } = useCourseWorkspace();
-  const { filters } = useCatalog();
-  const { getCourseCount } = useCourseWorkspace();
-
-  const attrFilters = findFiltersForCourse(
-    course.attr_list || [],
-    filters.attributes,
-  );
-  const semFilters = findFiltersForCourse(
-    course.sem_list || [],
-    filters.semesters,
-  );
+  const { addCourseToToolbox, getCourseCount } = useCourseWorkspace();
+  const { attrFilters, semFilters } = useCourseFilters(course);
 
   const [isOpen, setIsOpen] = useState(false);
   const toggleOpen = (e: React.MouseEvent<HTMLDivElement>) => {
@@ -43,7 +26,7 @@ const Course: React.FC<CourseProps> = ({ course }) => {
 
   return (
     <div
-      className="hover:cursor-pointer hover:bg-darkblue/10 border border-black rounded-xl w-full p-4"
+      className="hover:cursor-pointer hover:bg-darkblue/10 border border-black rounded-xl w-full p-4 relative"
       onClick={toggleOpen}
     >
       <CourseBadge

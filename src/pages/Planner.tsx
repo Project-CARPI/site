@@ -23,7 +23,7 @@ const Planner: React.FC = () => {
   return (
     <div className="md:h-[calc(100vh-10rem)]">
       <section className="h-full w-full flex flex-col gap-4">
-        <div className="flex justify-between sticky top-0 z-10 bg-carpipink pt-4">
+        <div className="flex justify-between sticky top-0 bg-carpipink pt-4">
           <h1 className="font-bold text-xl">Planner</h1>
           <ActionMenu />
         </div>

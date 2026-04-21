@@ -1,6 +1,6 @@
 export interface APICourse {
   subj_code: string;
-  code_num: number;
+  code_num: string;
   title: string;
   desc_text: string;
   credit_min: number;
@@ -20,4 +20,5 @@ export interface UserCourse {
   name: string;
   count: number;
   data: APICourse;
+  credits: number;
 }

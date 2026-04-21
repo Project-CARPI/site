@@ -9,8 +9,10 @@ import CourseBadge from "@/components/course/CourseBadge";
 import CourseLabel from "@/components/course/CourseLabel";
 import { SortableItemProps } from "@/features/dnd/props";
 import CourseMenuContent from "@/features/planner/components/course/CourseMenuContent";
+import CreditSelector from "@/features/planner/components/CreditSelector";
 import { usePlannerCourse } from "@/features/planner/usePlannerCourse";
 import { cn } from "@/lib/classnames";
+import useIsTouch from "@/lib/hooks/useIsTouch";
 import { UserCourse } from "@/lib/types";
 
 type CourseVariant = "toolbox" | "planner";
@@ -94,16 +96,34 @@ function PlannerCourseView({
     course,
     semesterId: semesterId ?? null,
   });
+
+  const isTouch = useIsTouch();
   const [popoverOpen, setPopoverOpen] = useState(false);
+
+  if (!semesterId) {
+    console.warn(
+      "PlannerCourseView rendered without semesterId. Context menu actions may not work properly.",
+    );
+    return;
+  }
 
   const menuClassName =
     "bg-carpipink rounded-xl border border-darkblue text-darkblue text-xs p-1.5 shadow-lg z-50 flex flex-col w-fit";
 
   return (
     <ContextMenu.Root>
-      <ContextMenu.Trigger>
+      <ContextMenu.Trigger disabled={!isTouch} asChild>
         <div
           ref={innerRef}
+          onContextMenu={(e) => {
+            if (
+              typeof window !== "undefined" &&
+              window.matchMedia("(pointer: coarse)").matches
+            ) {
+              e.stopPropagation();
+              e.preventDefault();
+            }
+          }}
           className={cn(
             "relative flex justify-between bg-darkblue rounded-2xl text-carpipink gap-4 px-2 py-3",
             "hover:shadow-lg",
@@ -117,28 +137,45 @@ function PlannerCourseView({
             <CourseLabel course={course.data} showCredits />
           </div>
 
-          <Popover.Root
-            open={popoverOpen && !isDragging}
-            onOpenChange={setPopoverOpen}
+          <div
+            className="flex flex-row gap-2"
+            onPointerDown={(e) => e.stopPropagation()}
+            onClick={(e) => e.stopPropagation()}
+            onContextMenu={(e) => e.stopPropagation()}
           >
-            <Popover.Trigger asChild>
-              <button className="outline-none">
-                <MdOutlineMoreHoriz className="cursor-pointer text-2xl" />
-              </button>
-            </Popover.Trigger>
-            <Popover.Content
-              className={menuClassName}
-              side="bottom"
-              align="end"
-            >
-              <CourseMenuContent
-                options={menuOptions}
-                onItemSelect={() => setPopoverOpen(false)}
-                ItemComponent="button"
-                SeparatorComponent="div"
+            <div className="items-center flex">
+              <CreditSelector
+                semesterId={semesterId}
+                courseId={course.id}
+                currentCredits={course.credits}
+                minCredits={course.data.credit_min}
+                maxCredits={course.data.credit_max}
               />
-            </Popover.Content>
-          </Popover.Root>
+            </div>
+
+            <Popover.Root
+              open={popoverOpen && !isDragging}
+              onOpenChange={setPopoverOpen}
+            >
+              <Popover.Trigger asChild>
+                <button className="outline-none">
+                  <MdOutlineMoreHoriz className="cursor-pointer text-2xl" />
+                </button>
+              </Popover.Trigger>
+              <Popover.Content
+                className={menuClassName}
+                side="bottom"
+                align="end"
+              >
+                <CourseMenuContent
+                  options={menuOptions}
+                  onItemSelect={() => setPopoverOpen(false)}
+                  ItemComponent="button"
+                  SeparatorComponent="div"
+                />
+              </Popover.Content>
+            </Popover.Root>
+          </div>
         </div>
       </ContextMenu.Trigger>
 

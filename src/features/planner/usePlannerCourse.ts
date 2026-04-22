@@ -16,11 +16,13 @@ export interface MenuOption {
 interface UsePlannerCourseProps {
   course: UserCourse;
   semesterId: string | null;
+  onOpenDetails: () => void;
 }
 
 export const usePlannerCourse = ({
   course,
   semesterId,
+  onOpenDetails,
 }: UsePlannerCourseProps) => {
   const {
     addCourseToSemester,
@@ -89,8 +91,14 @@ export const usePlannerCourse = ({
   return useMemo<MenuOption[]>(
     () => [
       {
+        label: "View Course Details",
+        action: onOpenDetails,
+        disabled: semesterId === null,
+      },
+      {
         label: "Duplicate Course",
         action: handleDuplicate,
+        hasSeparatorBefore: true,
       },
       {
         label: "Move to Next Semester",

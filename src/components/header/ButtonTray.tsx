@@ -8,8 +8,8 @@ import {
   BiDotsVerticalRounded,
 } from "react-icons/bi";
 
+import Button from "@/components/Button";
 import Dialog from "@/components/Dialog";
-import HeaderButton from "@/components/header/HeaderButton";
 import { useCourseWorkspace } from "@/core/workspace/useCourseWorkspace";
 import {
   SaveFile,
@@ -28,6 +28,16 @@ export default function ButtonTray() {
   const { resetWorkspace } = useCourseWorkspace();
   const { exportPlan, importPlan } = useInputOutput();
   const fileInputRef = useRef<HTMLInputElement>(null);
+
+  const handleResetClick = () => {
+    setActiveDialog("reset");
+    setIsOpen(false);
+  };
+
+  const handleExportClick = () => {
+    exportPlan();
+    setIsOpen(false);
+  };
 
   const handleImportClick = () => {
     fileInputRef.current?.click();
@@ -78,35 +88,15 @@ export default function ButtonTray() {
 
   const buttonList = (
     <>
-      <HeaderButton
-        onClick={() => {
-          setActiveDialog("reset");
-          setIsOpen(false);
-        }}
-        tooltip="Reset Workspace"
-      >
+      <Button onClick={handleResetClick} tooltip="Reset Workspace">
         <BiReset className="w-5 h-5" />
-      </HeaderButton>
-
-      <HeaderButton
-        onClick={() => {
-          exportPlan();
-          setIsOpen(false);
-        }}
-        tooltip="Export Plan"
-      >
+      </Button>
+      <Button onClick={handleExportClick} tooltip="Export Plan">
         <BiExport className="w-5 h-5" />
-      </HeaderButton>
-
-      <HeaderButton
-        onClick={() => {
-          handleImportClick();
-          setIsOpen(false);
-        }}
-        tooltip="Import Plan"
-      >
+      </Button>
+      <Button onClick={handleImportClick} tooltip="Import Plan">
         <BiImport className="w-5 h-5" />
-      </HeaderButton>
+      </Button>
     </>
   );
 
@@ -123,12 +113,9 @@ export default function ButtonTray() {
       <div className="absolute right-5 top-0 h-full flex items-center z-50">
         <div className="hidden md:flex gap-2">{buttonList}</div>
         <div className="md:hidden relative flex flex-col items-center justify-center">
-          <HeaderButton
-            onClick={() => setIsOpen(!isOpen)}
-            tooltip="More Options"
-          >
+          <Button onClick={() => setIsOpen(!isOpen)} tooltip="More Options">
             <BiDotsVerticalRounded className="w-5 h-5" />
-          </HeaderButton>
+          </Button>
 
           <AnimatePresence>
             {isOpen && (
@@ -154,7 +141,6 @@ export default function ButtonTray() {
         open={activeDialog === "reset"}
         onOpenChange={(open) => !open && setActiveDialog(null)}
         description="Are you sure you want to reset your entire workspace? This will delete all semesters and courses."
-        onConfirm={confirmReset}
       >
         <div className="flex gap-4 mt-6 justify-center">
           <button
@@ -178,7 +164,6 @@ export default function ButtonTray() {
         open={activeDialog === "import"}
         onOpenChange={(open) => !open && setActiveDialog(null)}
         description="Importing will overwrite your current plan. This action cannot be undone."
-        onConfirm={confirmImport}
       >
         <div className="flex gap-4 mt-6 justify-center">
           <button
@@ -202,10 +187,6 @@ export default function ButtonTray() {
         open={activeDialog === "error"}
         onOpenChange={(open) => !open && setActiveDialog(null)}
         description="There was an error importing your file. Please make sure it is a valid CARPI file and try again."
-        onConfirm={() => {
-          setActiveDialog(null);
-          return true;
-        }}
       >
         <div className="flex gap-4 mt-6 justify-center">
           <button

@@ -1,8 +1,8 @@
+import Tag from "@/components/Tag";
 import { useCatalog } from "@/features/catalog/search/context/useCatalog";
-import Tag from "@/features/catalog/Tag";
 
 export default function SelectedFilters() {
-  const { selectedFilters } = useCatalog();
+  const { toggleFilter, selectedFilters } = useCatalog();
 
   if (selectedFilters.length === 0) return null;
 
@@ -13,6 +13,7 @@ export default function SelectedFilters() {
           key={`${filter.type}-${filter.code}`}
           filter={filter}
           isRemovable={true}
+          onToggle={toggleFilter}
         />
       ))}
     </div>

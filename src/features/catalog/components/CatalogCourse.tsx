@@ -1,6 +1,6 @@
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
-import { useDraggable } from "@dnd-kit/react";
+import { useSortable } from "@dnd-kit/react/sortable";
 import { motion } from "framer-motion";
 import { IoAdd } from "react-icons/io5";
 import { MdDragIndicator } from "react-icons/md";
@@ -23,13 +23,26 @@ const Course: React.FC<CourseProps> = ({ course }) => {
   const { attrFilters, semFilters } = useCourseFilters(course);
   const isDesktop = useIsDesktop();
 
-  const draggableIdRef = useRef(uuidv4());
-  const { ref: dragRef, isDragging } = useDraggable({
-    id: draggableIdRef.current,
+  const [draggableId, setDraggableId] = useState(() => uuidv4());
+  const { ref: dragRef, isDragging } = useSortable({
+    id: draggableId,
     type: "catalog-course",
+    accept: "catalog-course",
+    feedback: "clone",
+    index: 0,
     data: { type: "catalog-course", course },
     disabled: !isDesktop,
   });
+
+  // Regenerate the draggable id after each drag ends so the committed course
+  // keeps the old id while the catalog card gets a fresh one for the next drag.
+  const wasDraggingRef = useRef(false);
+  useEffect(() => {
+    if (wasDraggingRef.current && !isDragging) {
+      setDraggableId(uuidv4());
+    }
+    wasDraggingRef.current = isDragging;
+  }, [isDragging]);
 
   const [isOpen, setIsOpen] = useState(false);
   const toggleOpen = (e: React.MouseEvent<HTMLDivElement>) => {

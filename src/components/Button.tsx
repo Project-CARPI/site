@@ -7,6 +7,7 @@ interface ButtonProps {
   children: ReactNode;
   tooltip: string;
   inverted?: boolean; // Optional prop to invert colors
+  customStyles?: string; // Optional prop for additional custom styles
 }
 
 export default function Button({
@@ -14,6 +15,7 @@ export default function Button({
   children,
   tooltip,
   inverted,
+  customStyles = "",
 }: ButtonProps) {
   return (
     <div className="relative group flex flex-col items-center">
@@ -24,6 +26,7 @@ export default function Button({
           inverted
             ? "bg-carpipink/20 text-carpipink hover:text-darkblue hover:bg-carpipink transition-colors"
             : "bg-[color-mix(in_oklab,var(--color-darkblue)_25%,var(--color-carpipink)_75%)] hover:bg-darkblue hover:text-carpipink transition-colors",
+          customStyles,
         )}
       >
         {children}

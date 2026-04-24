@@ -18,6 +18,7 @@ import {
   SaveFileSchema,
 } from "@/core/workspace/utils/io/inputOutput";
 import { useInputOutput } from "@/core/workspace/utils/io/useInputOutput";
+import { cn } from "@/lib/classnames";
 
 export default function ButtonTray() {
   const [isOpen, setIsOpen] = useState(false);
@@ -132,7 +133,11 @@ export default function ButtonTray() {
     {
       id: "export",
       component: (
-        <Button onClick={handleExportClick} tooltip="Export Plan">
+        <Button
+          onClick={handleExportClick}
+          tooltip="Export Plan"
+          customStyles="bg-darkblue text-carpipink"
+        >
           <BiExport className="w-5 h-5" />
         </Button>
       ),
@@ -140,33 +145,47 @@ export default function ButtonTray() {
     {
       id: "discord",
       component: (
-        <Button onClick={handleDiscordClick} tooltip="Join our Discord">
-          <BiLogoDiscordAlt className="w-5 h-5" />
+        <Button
+          onClick={handleDiscordClick}
+          tooltip="Join our Discord"
+          customStyles="bg-[#5865f2] text-[#e0e3ff] p-1.5"
+        >
+          <BiLogoDiscordAlt className="w-8 h-8" />
         </Button>
       ),
     },
     {
       id: "import",
       component: (
-        <Button onClick={handleImportClick} tooltip="Import Plan">
+        <Button
+          onClick={handleImportClick}
+          tooltip="Import Plan"
+          customStyles="bg-darkblue text-carpipink"
+        >
           <BiImport className="w-5 h-5" />
         </Button>
       ),
     },
-
     {
       id: "github",
       component: (
-        <Button onClick={handleGithubClick} tooltip="View on GitHub">
-          <BiLogoGithub className="w-5 h-5" />
+        <Button
+          onClick={handleGithubClick}
+          tooltip="View on GitHub"
+          customStyles="bg-[#8534F3] text-[#e0e3ff] p-1.5"
+        >
+          <BiLogoGithub className="w-8 h-8" />
         </Button>
       ),
     },
-
     {
       id: "reset",
       component: (
-        <Button onClick={handleResetClick} tooltip="Reset Workspace">
+        <Button
+          onClick={handleResetClick}
+          tooltip="Reset Workspace"
+          customStyles="bg-darkblue text-carpipink"
+        >
           <BiReset className="w-5 h-5" />
         </Button>
       ),
@@ -241,7 +260,15 @@ export default function ButtonTray() {
             transition={{ type: "spring", stiffness: 300, damping: 20 }}
             className="relative z-50 bg-carpipink rounded-full"
           >
-            <Button onClick={() => setIsOpen(!isOpen)} tooltip="More Options">
+            <Button
+              onClick={() => setIsOpen(!isOpen)}
+              tooltip="More Options"
+              customStyles={cn(
+                isOpen
+                  ? "bg-darkblue text-carpipink transition-colors duration-300"
+                  : "",
+              )}
+            >
               <BiDotsVerticalRounded className="w-5 h-5" />
             </Button>
           </motion.div>

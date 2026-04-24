@@ -88,20 +88,17 @@ export default function ButtonTray() {
     return true;
   };
 
+  const openExternalLinkAndClose = (url: string) => {
+    window.open(url, "_blank", "noopener,noreferrer");
+    setIsOpen(false);
+  };
+
   const handleDiscordClick = () => {
-    window.open(
-      "https://discord.com/invite/xRBvFHgcYT",
-      "_blank",
-      "noopener,noreferrer",
-    );
+    openExternalLinkAndClose("https://discord.com/invite/xRBvFHgcYT");
   };
 
   const handleGithubClick = () => {
-    window.open(
-      "https://github.com/Project-CARPI",
-      "_blank",
-      "noopener,noreferrer",
-    );
+    openExternalLinkAndClose("https://github.com/Project-CARPI");
   };
 
   const mainButtons = (

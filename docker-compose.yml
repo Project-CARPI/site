@@ -26,7 +26,7 @@ services:
     # Ensure image is built locally and is not pulled from a registry
     pull_policy: build
     restart: on-failure
-    # Enable interactive mode to allow scraper command input and output
+    # Enable interactive mode to allow Vite command input and output
     stdin_open: true
     tty: true
     ports:

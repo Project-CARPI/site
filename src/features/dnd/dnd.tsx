@@ -1,11 +1,19 @@
 import { useState, useCallback, useRef, useMemo } from "react";
 
 import { PointerSensor, KeyboardSensor } from "@dnd-kit/dom";
-import { DragDropProvider, DragDropEventHandlers } from "@dnd-kit/react";
+import {
+  DragDropProvider,
+  DragDropEventHandlers,
+  DragOverlay,
+  useDragOperation,
+} from "@dnd-kit/react";
 import { isSortable } from "@dnd-kit/react/sortable";
+import { MdDragIndicator, MdOutlineMoreHoriz } from "react-icons/md";
+import { v4 as uuidv4 } from "uuid";
 
+import CourseLabel from "@/components/course/CourseLabel";
 import { useCourseWorkspace } from "@/core/workspace/useCourseWorkspace";
-import { UserCourse } from "@/lib/types";
+import { APICourse, UserCourse } from "@/lib/types";
 
 export default function WorkspaceDndProvider({
   children,
@@ -17,6 +25,7 @@ export default function WorkspaceDndProvider({
     toolboxCourses,
     moveSemester,
     addCourseToSemester,
+    addCourseToToolbox,
     removeCourseFromSemester,
     removeCourseFromToolbox,
     resetPlanner,
@@ -69,6 +78,9 @@ export default function WorkspaceDndProvider({
       const { source, target } = event.operation;
 
       if (!source || !target || source.type === "semester") return;
+
+      // Catalog drags are deferred to handleDragEnd
+      if (source.data?.type === "catalog-course") return;
 
       const sourceId = source.id as string;
       const targetId = target.id as string;
@@ -163,6 +175,42 @@ export default function WorkspaceDndProvider({
     (event) => {
       const { source, target } = event.operation;
 
+      // --- CATALOG DROP ---
+      if (source?.data?.type === "catalog-course") {
+        if (event.canceled || !target) return;
+        const apiCourse = source.data?.course as APICourse | undefined;
+        if (!apiCourse) return;
+        const targetId = target.id as string;
+        const targetType = target.data?.type;
+
+        if (targetId === "toolbox" || targetType === "toolbox-course") {
+          addCourseToToolbox(apiCourse);
+          return;
+        }
+
+        const targetSemesterId =
+          targetType === "semester"
+            ? (target.data?.semesterId as string | undefined) || targetId
+            : courseLocationMap.get(targetId)?.semesterId;
+        if (!targetSemesterId) return;
+
+        const targetIndex = isSortable(target)
+          ? target.index
+          : (plannerCourses[
+              courseLocationMap.get(targetId)?.semesterIndex ?? -1
+            ]?.courseList.length ?? 0);
+
+        const newCourse: UserCourse = {
+          id: uuidv4(),
+          name: `${apiCourse.subj_code} ${apiCourse.code_num}`,
+          count: 1,
+          credits: apiCourse.credit_max,
+          data: apiCourse,
+        };
+        addCourseToSemester(targetSemesterId, newCourse, targetIndex);
+        return;
+      }
+
       if (event.canceled || !target) {
         resetPlanner(snapshotPlanner.current);
         resetToolbox(snapshotToolbox.current);
@@ -223,6 +271,8 @@ export default function WorkspaceDndProvider({
       resetToolbox,
       consolidateToolbox,
       courseLocationMap,
+      addCourseToSemester,
+      addCourseToToolbox,
       removeCourseFromSemester,
       removeCourseFromToolbox,
       insertCourseIntoToolbox,
@@ -237,6 +287,29 @@ export default function WorkspaceDndProvider({
       onDragEnd={handleDragEnd}
     >
       {children}
+      <CatalogDragOverlay />
     </DragDropProvider>
+  );
+}
+
+function CatalogDragOverlay() {
+  const operation = useDragOperation();
+  const apiCourse =
+    operation?.source?.data?.type === "catalog-course"
+      ? (operation.source.data.course as APICourse)
+      : null;
+
+  return (
+    <DragOverlay disabled={!apiCourse} dropAnimation={null}>
+      {apiCourse && (
+        <div className="flex justify-between bg-darkblue rounded-2xl text-carpipink gap-4 px-2 py-3 shadow-xl cursor-grabbing select-none">
+          <div className="flex gap-2 items-center">
+            <MdDragIndicator size={22} />
+            <CourseLabel course={apiCourse} showCredits />
+          </div>
+          <MdOutlineMoreHoriz className="text-2xl opacity-40" />
+        </div>
+      )}
+    </DragOverlay>
   );
 }

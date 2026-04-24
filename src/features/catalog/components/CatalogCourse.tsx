@@ -1,12 +1,16 @@
-import { useState } from "react";
+import { useRef, useState } from "react";
 
+import { useDraggable } from "@dnd-kit/react";
 import { motion } from "framer-motion";
 import { IoAdd } from "react-icons/io5";
+import { MdDragIndicator } from "react-icons/md";
+import { v4 as uuidv4 } from "uuid";
 
 import CourseBadge from "@/components/course/CourseBadge";
 import CourseLabel from "@/components/course/CourseLabel";
 import Tag from "@/components/Tag";
 import { useCourseWorkspace } from "@/core/workspace/useCourseWorkspace";
+import useIsDesktop from "@/lib/hooks/useIsDesktop";
 import { useCourseFilters } from "@/lib/stores/useFilterStore";
 import { APICourse } from "@/lib/types";
 
@@ -17,6 +21,15 @@ interface CourseProps {
 const Course: React.FC<CourseProps> = ({ course }) => {
   const { addCourseToToolbox, getCourseCount } = useCourseWorkspace();
   const { attrFilters, semFilters } = useCourseFilters(course);
+  const isDesktop = useIsDesktop();
+
+  const draggableIdRef = useRef(uuidv4());
+  const { ref: dragRef, isDragging } = useDraggable({
+    id: draggableIdRef.current,
+    type: "catalog-course",
+    data: { type: "catalog-course", course },
+    disabled: !isDesktop,
+  });
 
   const [isOpen, setIsOpen] = useState(false);
   const toggleOpen = (e: React.MouseEvent<HTMLDivElement>) => {
@@ -26,7 +39,10 @@ const Course: React.FC<CourseProps> = ({ course }) => {
 
   return (
     <div
-      className="hover:cursor-pointer hover:bg-darkblue/10 border border-black rounded-xl w-full p-4 relative"
+      ref={dragRef}
+      className={`hover:cursor-pointer hover:bg-darkblue/10 border border-black rounded-xl w-full p-4 relative ${
+        isDragging ? "opacity-50" : ""
+      }`}
       onClick={toggleOpen}
     >
       <CourseBadge
@@ -35,18 +51,30 @@ const Course: React.FC<CourseProps> = ({ course }) => {
       />
 
       <div className={`flex items-center justify-between`}>
-        <div>
-          <CourseLabel course={course} showCredits />
-          <div className={`flex flex-wrap mt-1 gap-1`}>
-            {attrFilters.map((attr, index) => {
-              return <Tag key={index} filter={attr} />;
-            })}
-            {semFilters?.map((semester, index) => {
-              return <Tag key={index} filter={semester} />;
-            })}
+        <div className="flex items-center gap-2 min-w-0">
+          {isDesktop && (
+            <MdDragIndicator
+              size={22}
+              className="shrink-0 text-darkblue/40 cursor-grab active:cursor-grabbing"
+            />
+          )}
+          <div>
+            <CourseLabel course={course} showCredits />
+            <div className={`flex flex-wrap mt-1 gap-1`}>
+              {attrFilters.map((attr, index) => {
+                return <Tag key={index} filter={attr} />;
+              })}
+              {semFilters?.map((semester, index) => {
+                return <Tag key={index} filter={semester} />;
+              })}
+            </div>
           </div>
         </div>
-        <div id="add-button" className={``}>
+        <div
+          id="add-button"
+          onPointerDown={(e) => e.stopPropagation()}
+          className={``}
+        >
           <AddButton
             addCourse={(e) => {
               e.stopPropagation();

@@ -41,7 +41,7 @@ export default function SemesterBlock({ semester, index }: SemesterBlockProps) {
   // --- DROPPABLE: For receiving Courses inside the Semester ---
   const { ref: droppableRef, isDropTarget } = useDroppable({
     id: `dropzone-${semester.semesterID}`,
-    accept: ["planner-course", "toolbox-course"], // Accept courses
+    accept: ["planner-course", "toolbox-course", "catalog-course"], // Accept courses
     data: { type: "semester", semesterId: semester.semesterID },
   });
 

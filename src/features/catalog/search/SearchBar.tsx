@@ -5,7 +5,7 @@ import { IoClose, IoSearchOutline, IoFilter } from "react-icons/io5";
 import { useCatalog } from "@/features/catalog/search/context/useCatalog";
 import FilterPanel from "@/features/catalog/search/filters/FilterPanel";
 import FilterPanelPopup from "@/features/catalog/search/filters/FilterPopup";
-import SelectedFiltersList from "@/features/catalog/search/filters/SelectedFilters";
+import SelectedFilters from "@/features/catalog/search/filters/SelectedFilters";
 import useIsDesktop from "@/lib/hooks/useIsDesktop";
 
 export default function SearchBar() {
@@ -74,7 +74,7 @@ export default function SearchBar() {
 
         {showFilterPanel && isDesktop && <FilterPanelPopup />}
       </div>
-      {!isDesktop && <SelectedFiltersList />}
+      {!isDesktop && <SelectedFilters />}
       {showFilterPanel && !isDesktop && <FilterPanel />}
     </div>
   );

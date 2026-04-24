@@ -8,6 +8,7 @@ import { MdOutlineMoreHoriz, MdDragIndicator } from "react-icons/md";
 
 import CourseBadge from "@/components/course/CourseBadge";
 import CourseLabel from "@/components/course/CourseLabel";
+import { CourseDetailsDrawer } from "@/components/SideDrawer";
 import { SortableItemProps } from "@/features/dnd/props";
 import CourseMenuContent from "@/features/planner/components/course/CourseMenuContent";
 import CreditSelector from "@/features/planner/components/CreditSelector";
@@ -137,9 +138,11 @@ function PlannerCourseView({
 }: ViewProps) {
   const placeholderAttrs = getCatalogPlaceholderAttrs(isCatalogPlaceholder);
   const isGhost = isDragging || isCatalogPlaceholder;
+  const [isDrawerOpen, setIsDrawerOpen] = useState(false);
   const menuOptions = usePlannerCourse({
     course,
     semesterId: semesterId ?? null,
+    onOpenDetails: () => setIsDrawerOpen(true),
   });
 
   const isTouch = useIsTouch();
@@ -226,6 +229,11 @@ function PlannerCourseView({
               </Popover.Content>
             </Popover.Root>
           </div>
+          <CourseDetailsDrawer
+            open={isDrawerOpen}
+            onOpenChange={setIsDrawerOpen}
+            course={course}
+          />
         </div>
       </ContextMenu.Trigger>
 

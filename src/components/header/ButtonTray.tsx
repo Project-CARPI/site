@@ -120,11 +120,20 @@ export default function ButtonTray() {
 
   const socialButtons = (
     <>
-      <Button onClick={handleDiscordClick} tooltip="Join our Discord">
-        <BiLogoDiscordAlt className="w-5 h-5" />
+      <Button
+        onClick={handleDiscordClick}
+        tooltip="Join our Discord"
+        customStyles="hover:bg-[#5865f2] hover:text-[#e0e3ff] hover:p-1.5 p-3 transition-all duration-300"
+      >
+        <BiLogoDiscordAlt className="group-hover:w-8 group-hover:h-8 w-5 h-5 transition-all duration-300" />
       </Button>
-      <Button onClick={handleGithubClick} tooltip="View on GitHub">
-        <BiLogoGithub className="w-5 h-5" />
+
+      <Button
+        onClick={handleGithubClick}
+        tooltip="View on GitHub"
+        customStyles="hover:bg-[#8534F3] hover:text-[#e0e3ff] hover:p-1.5 p-3 transition-all duration-300"
+      >
+        <BiLogoGithub className="group-hover:w-8 group-hover:h-8 w-5 h-5 transition-all duration-300" />
       </Button>
     </>
   );

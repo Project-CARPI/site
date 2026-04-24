@@ -1,3 +1,21 @@
+# Docker Compose configuration for the CARPI website development environment.
+#
+# To start the development environment, run:
+# docker compose run --rm --service-ports site
+#
+# This will build the Docker image for the site service if it doesn't already
+# exist, and then start the container. An interactive terminal will be attached
+# to the container so Vite commands can be entered.
+#
+# To stop the development environment, use Q+Enter in the terminal. The
+# container will automatically be removed after it stops due to the --rm flag.
+#
+# Alternatively, you can run the container in detached (background) mode with:
+# docker compose up -d
+#
+# To stop the detached container, run:
+# docker compose down
+
 name: carpi-site-dev-environment
 
 services:

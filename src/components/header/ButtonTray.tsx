@@ -98,7 +98,7 @@ export default function ButtonTray() {
 
   const handleGithubClick = () => {
     window.open(
-      "https://github.com/your-username/project-carpi",
+      "https://github.com/Project-CARPI",
       "_blank",
       "noopener,noreferrer",
     );

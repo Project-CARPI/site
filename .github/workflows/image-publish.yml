@@ -1,0 +1,17 @@
+name: Build and Push Docker Image to GHCR
+
+# Run this workflow every time code is pushed or merged to the main branch
+on:
+  # Temporary test trigger
+  ["push"]
+  # push:
+  #   branches:
+  #     - main
+
+jobs:
+  call-build-and-push:
+    uses: project-carpi/.github/.github/workflows/image-publish.yml@main
+    permissions:
+      contents: read
+      packages: write
+    secrets: inherit

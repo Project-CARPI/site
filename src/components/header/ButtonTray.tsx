@@ -6,6 +6,8 @@ import {
   BiImport,
   BiReset,
   BiDotsVerticalRounded,
+  BiLogoDiscordAlt,
+  BiLogoGithub,
 } from "react-icons/bi";
 
 import Button from "@/components/Button";
@@ -16,7 +18,6 @@ import {
   SaveFileSchema,
 } from "@/core/workspace/utils/io/inputOutput";
 import { useInputOutput } from "@/core/workspace/utils/io/useInputOutput";
-import { cn } from "@/lib/classnames";
 
 export default function ButtonTray() {
   const [isOpen, setIsOpen] = useState(false);
@@ -86,7 +87,23 @@ export default function ButtonTray() {
     return true;
   };
 
-  const buttonList = (
+  const handleDiscordClick = () => {
+    window.open(
+      "https://discord.com/invite/xRBvFHgcYT",
+      "_blank",
+      "noopener,noreferrer",
+    );
+  };
+
+  const handleGithubClick = () => {
+    window.open(
+      "https://github.com/your-username/project-carpi",
+      "_blank",
+      "noopener,noreferrer",
+    );
+  };
+
+  const mainButtons = (
     <>
       <Button onClick={handleResetClick} tooltip="Reset Workspace">
         <BiReset className="w-5 h-5" />
@@ -100,6 +117,62 @@ export default function ButtonTray() {
     </>
   );
 
+  const socialButtons = (
+    <>
+      <Button onClick={handleDiscordClick} tooltip="Join our Discord">
+        <BiLogoDiscordAlt className="w-5 h-5" />
+      </Button>
+      <Button onClick={handleGithubClick} tooltip="View on GitHub">
+        <BiLogoGithub className="w-5 h-5" />
+      </Button>
+    </>
+  );
+
+  const mobileRadialButtons = [
+    {
+      id: "export",
+      component: (
+        <Button onClick={handleExportClick} tooltip="Export Plan">
+          <BiExport className="w-5 h-5" />
+        </Button>
+      ),
+    },
+    {
+      id: "discord",
+      component: (
+        <Button onClick={handleDiscordClick} tooltip="Join our Discord">
+          <BiLogoDiscordAlt className="w-5 h-5" />
+        </Button>
+      ),
+    },
+    {
+      id: "import",
+      component: (
+        <Button onClick={handleImportClick} tooltip="Import Plan">
+          <BiImport className="w-5 h-5" />
+        </Button>
+      ),
+    },
+
+    {
+      id: "github",
+      component: (
+        <Button onClick={handleGithubClick} tooltip="View on GitHub">
+          <BiLogoGithub className="w-5 h-5" />
+        </Button>
+      ),
+    },
+
+    {
+      id: "reset",
+      component: (
+        <Button onClick={handleResetClick} tooltip="Reset Workspace">
+          <BiReset className="w-5 h-5" />
+        </Button>
+      ),
+    },
+  ];
+
   return (
     <>
       <input
@@ -110,32 +183,72 @@ export default function ButtonTray() {
         className="hidden"
       />
 
-      <div className="absolute right-5 top-0 h-full flex items-center z-50">
-        <div className="hidden md:flex gap-2">{buttonList}</div>
-        <div className="md:hidden relative flex flex-col items-center justify-center">
-          <Button onClick={() => setIsOpen(!isOpen)} tooltip="More Options">
-            <BiDotsVerticalRounded className="w-5 h-5" />
-          </Button>
+      <div className="absolute right-4 md:right-0 top-0 h-full flex items-center z-50">
+        {/* DESKTOP */}
+        <div className="hidden md:flex gap-2">
+          {mainButtons}
+          <div className="w-0.5 bg-darkblue/10 rounded-full my-2 mx-1" />
+          {socialButtons}
+        </div>
 
+        {/* MOBILE */}
+        <div className="md:hidden relative flex items-center justify-center">
           <AnimatePresence>
-            {isOpen && (
-              <motion.div
-                initial={{ opacity: 0, y: -10, scale: 0.95 }}
-                animate={{ opacity: 1, y: 0, scale: 1 }}
-                exit={{ opacity: 0, y: -10, scale: 0.95 }}
-                transition={{ duration: 0.2 }}
-                className={cn(
-                  "absolute top-full mt-2 flex flex-col gap-2 p-2 rounded-full shadow-xl z-50",
-                  "bg-carpipink border-darkblue/10 border",
-                )}
-              >
-                {buttonList}
-              </motion.div>
-            )}
+            {isOpen &&
+              mobileRadialButtons.map((btn, index) => {
+                // Number of pixels the buttons push outwards
+                const RADIUS = index % 2 === 0 ? 60 : 105;
+                const START_ANGLE = 80;
+                const END_ANGLE = 190;
+
+                // Calculate the specific angle for this button
+                const angleDeg =
+                  START_ANGLE +
+                  index *
+                    ((END_ANGLE - START_ANGLE) /
+                      (mobileRadialButtons.length - 1));
+                const angleRad = angleDeg * (Math.PI / 180);
+
+                // Convert angle & radius into X and Y coordinate offsets
+                const x = RADIUS * Math.cos(angleRad);
+                const y = RADIUS * Math.sin(angleRad);
+
+                return (
+                  <motion.div
+                    key={btn.id}
+                    initial={{ opacity: 0, x: 0, y: 0, scale: 0.5 }}
+                    animate={{ opacity: 1, x, y, scale: 1 }}
+                    exit={{ opacity: 0, x: 0, y: 0, scale: 0.5 }}
+                    transition={{
+                      type: "spring",
+                      stiffness: 260,
+                      damping: 20,
+                      delay: index * 0.04,
+                    }}
+                    className="absolute z-40"
+                  >
+                    {btn.component}
+                  </motion.div>
+                );
+              })}
           </AnimatePresence>
+
+          <motion.div
+            animate={{
+              scale: isOpen ? 0.8 : 1,
+              rotate: isOpen ? 90 : 0,
+            }}
+            transition={{ type: "spring", stiffness: 300, damping: 20 }}
+            className="relative z-50 bg-carpipink rounded-full"
+          >
+            <Button onClick={() => setIsOpen(!isOpen)} tooltip="More Options">
+              <BiDotsVerticalRounded className="w-5 h-5" />
+            </Button>
+          </motion.div>
         </div>
       </div>
 
+      {/* RESET DIALOG */}
       <Dialog
         title="Resetting Workspace"
         open={activeDialog === "reset"}

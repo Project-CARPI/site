@@ -23,7 +23,7 @@ export default function Button({
           "p-3 rounded-full w-fit aspect-square flex items-center justify-center hover:cursor-pointer",
           inverted
             ? "bg-carpipink/20 text-carpipink hover:text-darkblue hover:bg-carpipink transition-colors"
-            : "bg-darkblue/20 hover:bg-darkblue hover:text-carpipink transition-colors",
+            : "bg-[color-mix(in_oklab,var(--color-darkblue)_25%,var(--color-carpipink)_75%)] hover:bg-darkblue hover:text-carpipink transition-colors",
         )}
       >
         {children}

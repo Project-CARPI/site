@@ -1,7 +1,6 @@
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 
 import ButtonTray from "@/components/header/ButtonTray";
-import SocialTray from "@/components/header/SocialTray";
 import { CourseWorkspaceProvider } from "@/core/workspace/provider";
 import WorkspaceDndProvider from "@/features/dnd/dnd.tsx";
 import Toolbox from "@/features/toolbox/Toolbox";

@@ -1,5 +1,6 @@
-import { useState } from "react";
+import { useState, type HTMLAttributes } from "react";
 
+import { useDragOperation } from "@dnd-kit/react";
 import { useSortable } from "@dnd-kit/react/sortable";
 import * as ContextMenu from "@radix-ui/react-context-menu";
 import * as Popover from "@radix-ui/react-popover";
@@ -34,6 +35,15 @@ export default function Course({
 }: CourseProps) {
   const dndType = `${variant}-course`;
 
+  // The in-flight node for a catalog drag is rendered by us (not dnd-kit's
+  // sortable ghost), so read the active drag operation and flag ourselves as
+  // the placeholder when our id matches the placeholderId stashed on the
+  // source in handleDragStart.
+  const operation = useDragOperation();
+  const isCatalogPlaceholder =
+    operation?.source?.data?.type === "catalog-course" &&
+    operation.source.data.placeholderId === id;
+
   const { handleRef, ref, isDragging } = useSortable({
     id,
     group,
@@ -49,6 +59,7 @@ export default function Course({
       <ToolboxCourseView
         innerRef={ref}
         isDragging={isDragging}
+        isCatalogPlaceholder={isCatalogPlaceholder}
         course={course}
       />
     );
@@ -59,6 +70,7 @@ export default function Course({
       innerRef={ref}
       handleRef={handleRef}
       isDragging={isDragging}
+      isCatalogPlaceholder={isCatalogPlaceholder}
       course={course}
       semesterId={semesterId}
     />
@@ -69,14 +81,21 @@ type ViewProps = {
   innerRef?: (element: HTMLElement | null) => void;
   handleRef?: (element: HTMLElement | null) => void;
   isDragging: boolean;
+  isCatalogPlaceholder?: boolean;
   course: UserCourse;
   semesterId?: string | null;
 };
 
-function ToolboxCourseView({ innerRef, isDragging, course }: ViewProps) {
+function ToolboxCourseView({
+  innerRef,
+  isDragging,
+  isCatalogPlaceholder = false,
+  course,
+}: ViewProps) {
   return (
     <div
       ref={innerRef}
+      {...getCatalogPlaceholderAttrs(isCatalogPlaceholder)}
       data-shadow={isDragging || undefined}
       className="relative bg-carpipink text-nowrap rounded-md w-fit px-3 py-1 hover:cursor-grab active:cursor-grabbing select-none"
     >
@@ -86,13 +105,39 @@ function ToolboxCourseView({ innerRef, isDragging, course }: ViewProps) {
   );
 }
 
+// Catalog drags mount a real <Course /> as the in-flight placeholder. dnd-kit
+// doesn't know about that element, so we manually apply the same contract it
+// uses for its own sortable placeholders (`data-dnd-placeholder="clone"` +
+// `inert` + `aria-hidden` + `tabIndex=-1`). That lets the existing CSS rule
+// (`[data-dnd-placeholder="clone"] { opacity: 0.5 !important }`) and `inert`
+// handle the ghost appearance and interaction-suppression uniformly -- the
+// same way the toolbox-originated placeholder works out of the box.
+// `inert` typing wasn't added until React 19, hence the cast.
+function getCatalogPlaceholderAttrs(
+  isCatalogPlaceholder: boolean,
+): HTMLAttributes<HTMLDivElement> {
+  return (
+    isCatalogPlaceholder
+      ? {
+          "data-dnd-placeholder": "clone",
+          inert: "",
+          "aria-hidden": true,
+          tabIndex: -1,
+        }
+      : {}
+  ) as HTMLAttributes<HTMLDivElement>;
+}
+
 function PlannerCourseView({
   innerRef,
   handleRef,
   isDragging,
+  isCatalogPlaceholder = false,
   course,
   semesterId,
 }: ViewProps) {
+  const placeholderAttrs = getCatalogPlaceholderAttrs(isCatalogPlaceholder);
+  const isGhost = isDragging || isCatalogPlaceholder;
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
   const menuOptions = usePlannerCourse({
     course,
@@ -118,6 +163,7 @@ function PlannerCourseView({
       <ContextMenu.Trigger disabled={!isTouch} asChild>
         <div
           ref={innerRef}
+          {...placeholderAttrs}
           onContextMenu={(e) => {
             if (
               typeof window !== "undefined" &&
@@ -130,11 +176,11 @@ function PlannerCourseView({
           className={cn(
             "relative flex justify-between bg-darkblue rounded-2xl text-carpipink gap-4 px-2 py-3",
             "hover:shadow-lg",
-            isDragging ? "cursor-grabbing" : "cursor-grab",
+            isGhost ? "cursor-grabbing" : "cursor-grab",
           )}
         >
           <div className="flex gap-2 items-center">
-            <button ref={handleRef}>
+            <button ref={handleRef} type="button" aria-label="Drag to reorder">
               <MdDragIndicator size={22} />
             </button>
             <CourseLabel course={course.data} showCredits />
@@ -161,7 +207,11 @@ function PlannerCourseView({
               onOpenChange={setPopoverOpen}
             >
               <Popover.Trigger asChild>
-                <button className="outline-none">
+                <button
+                  type="button"
+                  className="outline-none"
+                  aria-label="Course options"
+                >
                   <MdOutlineMoreHoriz className="cursor-pointer text-2xl" />
                 </button>
               </Popover.Trigger>

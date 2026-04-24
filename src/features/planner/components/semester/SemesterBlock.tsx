@@ -2,7 +2,7 @@ import React, { useState, useRef, useEffect } from "react";
 
 import { CollisionPriority } from "@dnd-kit/abstract";
 import { closestCenter } from "@dnd-kit/collision";
-import { useDroppable } from "@dnd-kit/react";
+import { useDroppable, useDragOperation } from "@dnd-kit/react";
 import { useSortable } from "@dnd-kit/react/sortable";
 import { AnimatePresence } from "framer-motion";
 import { MdDragIndicator, MdDeleteOutline } from "react-icons/md";
@@ -38,10 +38,14 @@ export default function SemesterBlock({ semester, index }: SemesterBlockProps) {
     collisionDetector: closestCenter,
   });
 
+  const dragOperation = useDragOperation();
+  const isDraggingCatalog =
+    dragOperation?.source?.data?.type === "catalog-course";
+
   // --- DROPPABLE: For receiving Courses inside the Semester ---
   const { ref: droppableRef, isDropTarget } = useDroppable({
     id: `dropzone-${semester.semesterID}`,
-    accept: ["planner-course", "toolbox-course"], // Accept courses
+    accept: ["planner-course", "toolbox-course", "catalog-course"], // Accept courses
     data: { type: "semester", semesterId: semester.semesterID },
   });
 
@@ -104,6 +108,8 @@ export default function SemesterBlock({ semester, index }: SemesterBlockProps) {
           <div className="flex items-center gap-2 flex-1 min-w-0">
             <button
               ref={handleRef}
+              type="button"
+              aria-label="Drag to reorder semester"
               className={cn(
                 "hover:bg-darkblue/20 py-1.5 px-0.75 rounded-lg shrink-0 ",
                 isDragging
@@ -138,6 +144,7 @@ export default function SemesterBlock({ semester, index }: SemesterBlockProps) {
           <div className="flex items-center gap-1">
             <div className="relative group/delete-btn flex flex-col items-center">
               <button
+                type="button"
                 onClick={() => handleDeleteSemester(semester.semesterID)}
                 className="text-darkblue/40 hover:text-rosewood transition-colors p-1 hover:bg-rosewood/10 rounded-lg hover:cursor-pointer"
                 aria-label="Delete Semester"
@@ -197,7 +204,7 @@ export default function SemesterBlock({ semester, index }: SemesterBlockProps) {
               ref={droppableRef}
               className={cn(
                 "flex flex-col gap-2 h-full min-h-15 rounded-xl transition-colors",
-                isDropTarget && "bg-black/5",
+                isDropTarget && !isDraggingCatalog && "bg-black/5",
               )}
             >
               {semester.courseList.length === 0 ? (

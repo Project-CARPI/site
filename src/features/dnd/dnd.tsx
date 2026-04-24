@@ -13,7 +13,6 @@ import { v4 as uuidv4 } from "uuid";
 
 import CourseLabel from "@/components/course/CourseLabel";
 import { useCourseWorkspace } from "@/core/workspace/useCourseWorkspace";
-import { CatalogDragContext } from "@/features/dnd/CatalogDragContext";
 import { APICourse, UserCourse } from "@/lib/types";
 
 export default function WorkspaceDndProvider({
@@ -34,16 +33,11 @@ export default function WorkspaceDndProvider({
     consolidateToolbox,
     moveCourseInSemester,
     insertCourseIntoToolbox,
+    moveCourseInToolbox,
   } = useCourseWorkspace();
 
   const snapshotToolbox = useRef(structuredClone(toolboxCourses));
   const snapshotPlanner = useRef(structuredClone(plannerCourses));
-  const catalogDragCourseIdRef = useRef<string>("");
-
-  // Exposed via context so Course.tsx can make the in-flight placeholder transparent
-  const [catalogDragCourseId, setCatalogDragCourseId] = useState<string | null>(
-    null,
-  );
 
   const [sensors] = useState(() => [
     PointerSensor.configure({
@@ -79,9 +73,10 @@ export default function WorkspaceDndProvider({
       snapshotPlanner.current = structuredClone(plannerCourses);
       snapshotToolbox.current = structuredClone(toolboxCourses);
       if (source?.data?.type === "catalog-course") {
-        const newId = uuidv4();
-        catalogDragCourseIdRef.current = newId;
-        setCatalogDragCourseId(newId);
+        // Mint a fresh placeholder id per drag and stash it on source.data so
+        // any component reading useDragOperation() can identify the in-flight
+        // placeholder without a parallel context.
+        source.data = { ...source.data, placeholderId: uuidv4() };
       }
     },
     [plannerCourses, toolboxCourses],
@@ -110,29 +105,61 @@ export default function WorkspaceDndProvider({
       // --- CATALOG TO PLANNER / TOOLBOX ---
       if (sourceType === "catalog-course") {
         const apiCourse = source.data?.course as APICourse | undefined;
-        if (!apiCourse) return;
+        const placeholderId = source.data?.placeholderId as string | undefined;
+        if (!apiCourse || !placeholderId) return;
 
-        const plannerCourseId = catalogDragCourseIdRef.current;
-        const existingLocation = courseLocationMap.get(plannerCourseId);
+        const existingLocation = courseLocationMap.get(placeholderId);
+        const toolboxIndex = toolboxCourses.findIndex(
+          (c) => c.id === placeholderId,
+        );
+        const isInToolbox = toolboxIndex !== -1;
+
+        const courseToPlace: UserCourse = {
+          id: placeholderId,
+          name: `${apiCourse.subj_code} ${apiCourse.code_num}`,
+          count: 1,
+          credits: apiCourse.credit_max,
+          data: apiCourse,
+        };
+
+        const isToolboxTarget =
+          targetId === "toolbox" || targetType === "toolbox-course";
+
+        // --- CATALOG OVER TOOLBOX: maintain a ghost entry in the toolbox ---
+        if (isToolboxTarget) {
+          // Pull the placeholder out of the planner if it's there
+          if (existingLocation) {
+            removeCourseFromSemester(
+              existingLocation.semesterId,
+              placeholderId,
+            );
+          }
+
+          const targetToolboxIndex = isSortable(target)
+            ? target.index
+            : toolboxCourses.length;
+
+          if (!isInToolbox) {
+            insertCourseIntoToolbox(courseToPlace, targetToolboxIndex);
+          } else if (
+            toolboxIndex !== targetToolboxIndex &&
+            targetToolboxIndex !== undefined
+          ) {
+            moveCourseInToolbox(toolboxIndex, targetToolboxIndex);
+          }
+          return;
+        }
 
         const targetSemesterId =
           targetType === "semester"
             ? target.data?.semesterId || targetId
             : courseLocationMap.get(targetId)?.semesterId;
 
-        if (!targetSemesterId) {
-          // Hovering over toolbox — remove the placeholder from the planner
-          // so the user sees it leave the semester
-          if (
-            (targetId === "toolbox" || targetType === "toolbox-course") &&
-            existingLocation
-          ) {
-            removeCourseFromSemester(
-              existingLocation.semesterId,
-              plannerCourseId,
-            );
-          }
-          return;
+        if (!targetSemesterId) return;
+
+        // Moving out of the toolbox ghost into a semester
+        if (isInToolbox) {
+          removeCourseFromToolbox(placeholderId);
         }
 
         let catalogTargetIndex: number | undefined;
@@ -145,14 +172,6 @@ export default function WorkspaceDndProvider({
             ];
           catalogTargetIndex = targetSemester?.courseList.length ?? 0;
         }
-
-        const courseToPlace: UserCourse = {
-          id: plannerCourseId,
-          name: `${apiCourse.subj_code} ${apiCourse.code_num}`,
-          count: 1,
-          credits: apiCourse.credit_max,
-          data: apiCourse,
-        };
 
         if (!existingLocation) {
           addCourseToSemester(
@@ -174,10 +193,7 @@ export default function WorkspaceDndProvider({
             );
           }
         } else {
-          removeCourseFromSemester(
-            existingLocation.semesterId,
-            plannerCourseId,
-          );
+          removeCourseFromSemester(existingLocation.semesterId, placeholderId);
           addCourseToSemester(
             targetSemesterId,
             courseToPlace,
@@ -253,19 +269,19 @@ export default function WorkspaceDndProvider({
     },
     [
       plannerCourses,
+      toolboxCourses,
       addCourseToSemester,
       removeCourseFromToolbox,
       removeCourseFromSemester,
       courseLocationMap,
       moveCourseInSemester,
       insertCourseIntoToolbox,
+      moveCourseInToolbox,
     ],
   );
 
   const handleDragEnd = useCallback<DragDropEventHandlers["onDragEnd"]>(
     (event) => {
-      setCatalogDragCourseId(null);
-
       const { source, target } = event.operation;
       const sourceType = source?.data?.type;
 
@@ -274,29 +290,25 @@ export default function WorkspaceDndProvider({
       // only need to undo on an explicit cancel (Escape), handle a toolbox drop,
       // or otherwise leave the placed course in the planner as-is.
       if (sourceType === "catalog-course") {
-        const plannerCourseId = catalogDragCourseIdRef.current;
+        const placeholderId = source?.data?.placeholderId as string | undefined;
         const apiCourse = source?.data?.course as APICourse | undefined;
         const targetId = target?.id as string | undefined;
         const targetType = target?.data?.type;
 
         if (event.canceled) {
           resetPlanner(snapshotPlanner.current);
+          resetToolbox(snapshotToolbox.current);
           return;
         }
 
         if (targetId === "toolbox" || targetType === "toolbox-course") {
-          // Remove the temporarily placed planner placeholder, if any
-          const placedLocation = courseLocationMap.get(plannerCourseId);
-          if (placedLocation) {
-            removeCourseFromSemester(
-              placedLocation.semesterId,
-              plannerCourseId,
-            );
+          // Replace the ghost toolbox entry (if any) with a smart-add so
+          // duplicate counts increment instead of creating a parallel row.
+          if (placeholderId) {
+            const hadGhost = toolboxCourses.some((c) => c.id === placeholderId);
+            if (hadGhost) removeCourseFromToolbox(placeholderId);
           }
-          // Smart-add to toolbox (increments count for duplicates)
-          if (apiCourse) {
-            addCourseToToolbox(apiCourse);
-          }
+          if (apiCourse) addCourseToToolbox(apiCourse);
           consolidateToolbox();
           return;
         }
@@ -360,6 +372,7 @@ export default function WorkspaceDndProvider({
     },
     [
       plannerCourses,
+      toolboxCourses,
       moveSemester,
       resetPlanner,
       resetToolbox,
@@ -373,17 +386,15 @@ export default function WorkspaceDndProvider({
   );
 
   return (
-    <CatalogDragContext.Provider value={catalogDragCourseId}>
-      <DragDropProvider
-        sensors={sensors}
-        onDragStart={handleDragStart}
-        onDragOver={handleDragOver}
-        onDragEnd={handleDragEnd}
-      >
-        {children}
-        <CatalogDragOverlay />
-      </DragDropProvider>
-    </CatalogDragContext.Provider>
+    <DragDropProvider
+      sensors={sensors}
+      onDragStart={handleDragStart}
+      onDragOver={handleDragOver}
+      onDragEnd={handleDragEnd}
+    >
+      {children}
+      <CatalogDragOverlay />
+    </DragDropProvider>
   );
 }
 

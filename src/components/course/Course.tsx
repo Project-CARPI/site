@@ -1,5 +1,6 @@
 import { useState, type HTMLAttributes } from "react";
 
+import { useDragOperation } from "@dnd-kit/react";
 import { useSortable } from "@dnd-kit/react/sortable";
 import * as ContextMenu from "@radix-ui/react-context-menu";
 import * as Popover from "@radix-ui/react-popover";
@@ -7,7 +8,6 @@ import { MdOutlineMoreHoriz, MdDragIndicator } from "react-icons/md";
 
 import CourseBadge from "@/components/course/CourseBadge";
 import CourseLabel from "@/components/course/CourseLabel";
-import { useCatalogDragId } from "@/features/dnd/CatalogDragContext";
 import { SortableItemProps } from "@/features/dnd/props";
 import CourseMenuContent from "@/features/planner/components/course/CourseMenuContent";
 import CreditSelector from "@/features/planner/components/CreditSelector";
@@ -33,8 +33,15 @@ export default function Course({
   semesterId = null,
 }: CourseProps) {
   const dndType = `${variant}-course`;
-  const catalogDragId = useCatalogDragId();
-  const isCatalogPlaceholder = catalogDragId === id;
+
+  // The in-flight node for a catalog drag is rendered by us (not dnd-kit's
+  // sortable ghost), so read the active drag operation and flag ourselves as
+  // the placeholder when our id matches the placeholderId stashed on the
+  // source in handleDragStart.
+  const operation = useDragOperation();
+  const isCatalogPlaceholder =
+    operation?.source?.data?.type === "catalog-course" &&
+    operation.source.data.placeholderId === id;
 
   const { handleRef, ref, isDragging } = useSortable({
     id,
@@ -51,6 +58,7 @@ export default function Course({
       <ToolboxCourseView
         innerRef={ref}
         isDragging={isDragging}
+        isCatalogPlaceholder={isCatalogPlaceholder}
         course={course}
       />
     );
@@ -77,10 +85,16 @@ type ViewProps = {
   semesterId?: string | null;
 };
 
-function ToolboxCourseView({ innerRef, isDragging, course }: ViewProps) {
+function ToolboxCourseView({
+  innerRef,
+  isDragging,
+  isCatalogPlaceholder = false,
+  course,
+}: ViewProps) {
   return (
     <div
       ref={innerRef}
+      {...getCatalogPlaceholderAttrs(isCatalogPlaceholder)}
       data-shadow={isDragging || undefined}
       className="relative bg-carpipink text-nowrap rounded-md w-fit px-3 py-1 hover:cursor-grab active:cursor-grabbing select-none"
     >
@@ -88,6 +102,29 @@ function ToolboxCourseView({ innerRef, isDragging, course }: ViewProps) {
       <CourseLabel course={course.data} horizontal />
     </div>
   );
+}
+
+// Catalog drags mount a real <Course /> as the in-flight placeholder. dnd-kit
+// doesn't know about that element, so we manually apply the same contract it
+// uses for its own sortable placeholders (`data-dnd-placeholder="clone"` +
+// `inert` + `aria-hidden` + `tabIndex=-1`). That lets the existing CSS rule
+// (`[data-dnd-placeholder="clone"] { opacity: 0.5 !important }`) and `inert`
+// handle the ghost appearance and interaction-suppression uniformly -- the
+// same way the toolbox-originated placeholder works out of the box.
+// `inert` typing wasn't added until React 19, hence the cast.
+function getCatalogPlaceholderAttrs(
+  isCatalogPlaceholder: boolean,
+): HTMLAttributes<HTMLDivElement> {
+  return (
+    isCatalogPlaceholder
+      ? {
+          "data-dnd-placeholder": "clone",
+          inert: "",
+          "aria-hidden": true,
+          tabIndex: -1,
+        }
+      : {}
+  ) as HTMLAttributes<HTMLDivElement>;
 }
 
 function PlannerCourseView({
@@ -98,25 +135,7 @@ function PlannerCourseView({
   course,
   semesterId,
 }: ViewProps) {
-  // Catalog drags mount a real <Course /> as the in-flight placeholder. dnd-kit
-  // doesn't know about that element, so we manually apply the same contract it
-  // uses for its own sortable placeholders (`data-dnd-placeholder="clone"` +
-  // `inert` + `aria-hidden` + `tabIndex=-1`). That lets the existing CSS rule
-  // (`[data-dnd-placeholder="clone"] { opacity: 0.5 !important }`) and `inert`
-  // handle the ghost appearance and interaction-suppression uniformly -- the
-  // same way the toolbox-originated placeholder works out of the box.
-  // `inert` typing wasn't added until React 19, hence the cast.
-  const placeholderAttrs = (
-    isCatalogPlaceholder
-      ? {
-          "data-dnd-placeholder": "clone",
-          inert: "",
-          "aria-hidden": true,
-          tabIndex: -1,
-        }
-      : {}
-  ) as HTMLAttributes<HTMLDivElement>;
-
+  const placeholderAttrs = getCatalogPlaceholderAttrs(isCatalogPlaceholder);
   const isGhost = isDragging || isCatalogPlaceholder;
   const menuOptions = usePlannerCourse({
     course,

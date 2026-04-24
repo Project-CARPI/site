@@ -1,5 +1,8 @@
 FROM node:24.14.0-alpine
 
+# Update npm to 11.12.x to comply with project's package-lock.json
+RUN npm install -g npm@11.12.0
+
 # Store all application files in /app
 WORKDIR /site
 

@@ -20,7 +20,9 @@ name: carpi-site-dev-environment
 
 services:
   site:
-    build: .
+    build:
+      context: .
+      target: dev
     image: carpi-site:latest
     container_name: carpi-site
     # Ensure image is built locally and is not pulled from a registry
@@ -31,9 +33,6 @@ services:
     tty: true
     ports:
       - "5173:5173"
-    # Override the Dockerfile production command with the development command
-    # for Vite.
-    command: npm run dev
     # Mount local code over the code built into the container for automatic
     # reloading during development.
     volumes:

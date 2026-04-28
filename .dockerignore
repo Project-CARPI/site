@@ -1,7 +1,18 @@
-node_modules
-dist
-build
-.git
-.env
-docker-compose.yml
-Dockerfile
+# Ignore all files
+
+*
+
+# Whitelist necessary build and config files from project root
+!eslint.config.js
+!index.html
+!package-lock.json
+!package.json
+!tsconfig.app.json
+!tsconfig.json
+!tsconfig.node.json
+!vite.config.ts
+!nginx.conf
+
+# Whitelist source and public directories
+!public/
+!src/

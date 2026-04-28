@@ -11,6 +11,7 @@
 !tsconfig.json
 !tsconfig.node.json
 !vite.config.ts
+!nginx.conf
 
 # Whitelist source and public directories
 !public/
